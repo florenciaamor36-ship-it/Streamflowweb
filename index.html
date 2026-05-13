@@ -196,6 +196,38 @@
     .btn-desktop.danger { background: linear-gradient(180deg, #ef4444, #dc2626); color: #fff; border-color: #ef4444; box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
     .btn-desktop.danger:hover { background: linear-gradient(180deg, #f87171, #ef4444); box-shadow: 0 6px 15px rgba(239,68,68,0.4); }
     .btn-desktop:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    /* Estilos adicionales para botones de icono y menú contextual */
+    .btn-icono {
+      padding: 0.3rem 0.45rem;
+      min-width: unset;
+      font-size: 0.75rem;
+      line-height: 1;
+      justify-content: center;
+    }
+    .menu-contextual {
+      background: linear-gradient(145deg, #1a1f2e, #111827);
+      position: absolute;
+      right: 0;
+      top: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      z-index: 50;
+      min-width: 160px;
+      padding: 0.3rem 0;
+      display: none;
+    }
+    .menu-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 1rem;
+      background: none; border: none; color: var(--text-secondary);
+      font-size: 0.75rem; cursor: pointer; width: 100%; text-align: left;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .menu-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .menu-item.danger { color: #ef4444; }
+    .menu-item.danger:hover { background: rgba(239,68,68,0.15); }
     input, select, textarea {
       background: linear-gradient(180deg, #0f131c, #0b0f17); border: 1px solid var(--border-color);
       border-radius: var(--radius-sm); padding: 0.5rem 0.7rem; color: var(--text-primary);
@@ -634,7 +666,7 @@
         }
     }
 
-    // Control de conflictos con confirmación (CORREGIDO)
+    // Control de conflictos con confirmación
     async function persistirPerfiles() {
         guardarPerfilesLocal();
         if (!currentUser || !autoSyncEnabled) return;
@@ -648,25 +680,20 @@
                 const data = snap.data();
                 serverVersion = data.version || 0;
                 if (serverVersion > lastWriteVersion) {
-                    // Hay versión remota más nueva – preguntar al usuario
                     if (confirm("Hay una versión más reciente de los datos en la nube. ¿Querés cargarla? (Si cancelás, se mantendrán tus datos locales sin sincronizar hasta la próxima modificación)")) {
                         perfiles = data.perfiles || [];
                         guardarPerfilesLocal();
                         reconstruirPhones();
                         actualizarTodo();
                         toast("Datos remotos cargados");
-                        // Solo actualizamos version si aceptamos los datos remotos
                         lastWriteVersion = serverVersion;
                     } else {
-                        // No carga, conserva datos locales y NO actualiza lastWriteVersion
                         toast("Se conservan los datos locales");
                     }
-                    // No generamos una nueva escritura aquí, simplemente retornamos
                     actualizarSyncStatus("sincronizado");
                     return;
                 }
             }
-            // Si no hay conflicto, escribimos nuestros datos con nueva versión
             const version = Date.now();
             await setDoc(userRef, { perfiles: perfiles, version: version }, { merge: true });
             lastWriteVersion = version;
@@ -684,7 +711,6 @@
                 const data = snap.data();
                 const remoteVersion = data.version || 0;
                 if (remoteVersion > lastWriteVersion) {
-                    // Cambio remoto no provocado por nosotros
                     if (data.perfiles) {
                         perfiles = data.perfiles;
                         guardarPerfilesLocal();
@@ -852,20 +878,25 @@
                 <td>${escapeHtml(p.cuentaId || '-')}</td><td>${escapeHtml(p.perfilNombre || '-')}</td><td style="font-size:0.75rem;">${escapeHtml(p.mail || '-')}</td>
                 <td>${p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : 'Sin fecha'}</td>
                 <td><span class="badge-desktop ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td><td>${p.whatsappCliente || '-'}</td><td>${p.precioVenta ? '$' + p.precioVenta : '-'}</td>
-                <td style="display:flex;gap:0.3rem;flex-wrap:wrap;">
-                    ${p.whatsappProveedor ? `<button class="btn-desktop" title="WA Proveedor" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}
-                    ${p.whatsappCliente ? `<button class="btn-desktop" title="WA Cliente" onclick="window.open('https://wa.me/${p.whatsappCliente.replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, false))}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}
-                    <button class="btn-desktop" title="Copiar datos" onclick="copiarPerfil('${p.id}')"><i class="fas fa-copy"></i></button>
-                    ${!kioscoMode ? `
-                        <button class="btn-desktop" title="Cambiar contraseña" onclick="cambiarPass('${p.id}')"><i class="fas fa-key"></i></button>
-                        <button class="btn-desktop" title="Editar" onclick="editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>
-                    ` : ''}
-                    <button class="btn-desktop success" title="Renovar" onclick="renovarPerfil('${p.id}')"><i class="fas fa-sync-alt"></i></button>
-                    <button class="btn-desktop" title="Marcar libre" onclick="marcarLibre('${p.id}')"><i class="fas fa-circle"></i></button>
-                    ${!kioscoMode ? `<button class="btn-desktop" title="Duplicar" onclick="duplicarPerfil('${p.id}')"><i class="fas fa-clone"></i></button>` : ''}
-                    ${p.estado === 'libre' ? `<button class="btn-desktop primary" title="Vender" onclick="mostrarVentaModal('${p.id}')"><i class="fas fa-tag"></i></button>` : ''}
-                    <button class="btn-desktop" title="Reasignar fecha" onclick="mostrarReasignarModal('${p.id}')"><i class="fas fa-calendar-alt"></i></button>
-                    ${!kioscoMode ? `<button class="btn-desktop danger" title="Eliminar" onclick="eliminarPerfil('${p.id}')"><i class="fas fa-trash-alt"></i></button>` : ''}
+                <td style="position:relative; white-space:nowrap;">
+                    <div style="display:flex; gap:0.25rem; align-items:center; flex-wrap:wrap;">
+                        ${p.whatsappProveedor ? `<button class="btn-desktop btn-icono" title="WA Proveedor" onclick="event.stopPropagation();window.open('https://wa.me/${p.whatsappProveedor.replace(/\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}
+                        ${p.whatsappCliente ? `<button class="btn-desktop btn-icono" title="WA Cliente" onclick="event.stopPropagation();window.open('https://wa.me/${p.whatsappCliente.replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, false))}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}
+                        <button class="btn-desktop btn-icono" title="Copiar datos" onclick="event.stopPropagation();copiarPerfil('${p.id}')"><i class="fas fa-copy"></i></button>
+                        ${!kioscoMode ? `<button class="btn-desktop btn-icono" title="Editar" onclick="event.stopPropagation();editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>` : ''}
+                        <button class="btn-desktop btn-icono success" title="Renovar" onclick="event.stopPropagation();renovarPerfil('${p.id}')"><i class="fas fa-sync-alt"></i></button>
+                        <button class="btn-desktop btn-icono" title="Marcar libre" onclick="event.stopPropagation();marcarLibre('${p.id}')"><i class="fas fa-circle"></i></button>
+                        <div style="position:relative; display:inline-block;">
+                            <button class="btn-desktop btn-icono" title="Más acciones" onclick="event.stopPropagation();toggleMenu('menu-${p.id}')" style="padding:0.3rem 0.5rem;">⋯</button>
+                            <div id="menu-${p.id}" class="menu-contextual" style="display:none;">
+                                ${!kioscoMode ? `<button class="menu-item" onclick="event.stopPropagation();cambiarPass('${p.id}')"><i class="fas fa-key"></i> Cambiar contraseña</button>` : ''}
+                                ${!kioscoMode ? `<button class="menu-item" onclick="event.stopPropagation();duplicarPerfil('${p.id}')"><i class="fas fa-clone"></i> Duplicar</button>` : ''}
+                                ${p.estado === 'libre' ? `<button class="menu-item" onclick="event.stopPropagation();mostrarVentaModal('${p.id}')"><i class="fas fa-tag"></i> Vender</button>` : ''}
+                                <button class="menu-item" onclick="event.stopPropagation();mostrarReasignarModal('${p.id}')"><i class="fas fa-calendar-alt"></i> Reasignar</button>
+                                ${!kioscoMode ? `<button class="menu-item danger" onclick="event.stopPropagation();eliminarPerfil('${p.id}')"><i class="fas fa-trash-alt"></i> Eliminar</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -934,7 +965,6 @@
         document.getElementById("ventaPlataforma").value = p.plataforma || "Netflix"; document.getElementById("ventaCuentaId").value = p.cuentaId || ""; document.getElementById("ventaPerfilNombre").value = p.perfilNombre || ""; document.getElementById("ventaMail").value = p.mail || ""; document.getElementById("ventaPassword").value = p.password || ""; document.getElementById("ventaPin").value = p.pin || ""; document.getElementById("ventaFechaVencimiento").value = p.fechaVencimiento || ""; document.getElementById("ventaProveedor").value = p.proveedor || ""; document.getElementById("ventaPrecio").value = p.precio || ""; document.getElementById("ventaCliente").value = ""; document.getElementById("ventaObservaciones").value = p.observaciones || "";
         document.getElementById("ventaModal").classList.add("active");
         validarPrecioVenta();
-        // Habilitar el botón por si estaba deshabilitado de una venta anterior
         document.getElementById("ventaConfirmar").disabled = false;
     };
 
@@ -1134,6 +1164,22 @@
         cerrarModal('modalTicket');
     }
 
+    // Funciones del menú contextual
+    window.toggleMenu = function(menuId) {
+        const menu = document.getElementById(menuId);
+        if (!menu) return;
+        document.querySelectorAll('.menu-contextual').forEach(m => {
+            if (m.id !== menuId) m.style.display = 'none';
+        });
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    };
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.menu-contextual') && !e.target.closest('[onclick*="toggleMenu"]')) {
+            document.querySelectorAll('.menu-contextual').forEach(m => m.style.display = 'none');
+        }
+    });
+
     async function exportarJSON() {
         if (!confirm("¿Querés incluir las contraseñas en la exportación? (Seleccioná Cancelar para omitirlas)")) {
             const copia = perfiles.map(p => ({...p, password: '***', mail: '***'}));
@@ -1310,4 +1356,4 @@
     window.addEventListener("offline", () => toast("⚠️ Sin conexión"));
 </script>
 </body>
-</html>
+              </html>
