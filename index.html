@@ -130,13 +130,45 @@
     .sync-badge.synced { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1)); color: #10b981; }
     .sync-badge.waiting { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1)); color: #f59e0b; }
     .sync-badge.error { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1)); color: #ef4444; }
-    .btn-logout {
+    /* Perfil de usuario en topbar */
+    .user-profile-btn {
+      display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.6rem;
+      border-radius: 0.5rem; cursor: pointer; transition: all var(--transition);
       background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
-      color: var(--text-secondary); padding: 0.4rem 0.9rem; border-radius: 0.5rem;
-      font-size: 0.75rem; cursor: pointer; transition: all var(--transition);
-      display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      position: relative;
     }
-    .btn-logout:hover { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05)); color: #ef4444; border-color: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.2); }
+    .user-profile-btn:hover { background: var(--bg-hover); }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-red));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: #fff;
+    }
+    .user-email {
+      font-size: 0.7rem; color: var(--text-secondary); max-width: 120px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .user-dropdown {
+      display: none; position: absolute; right: 0; top: 100%; margin-top: 0.3rem;
+      background: linear-gradient(145deg, #1a1f2e, #111827);
+      border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6); z-index: 100; min-width: 200px;
+      padding: 0.5rem 0;
+    }
+    .user-dropdown.active { display: block; }
+    .user-dropdown-item {
+      display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;
+      font-size: 0.75rem; color: var(--text-secondary);
+    }
+    .user-dropdown-item i { width: 16px; }
+    .user-dropdown-divider { height: 1px; background: var(--border-color); margin: 0.3rem 0; }
+    .btn-logout {
+      background: none; border: none; color: #ef4444;
+      padding: 0.5rem 1rem; font-size: 0.75rem; cursor: pointer;
+      display: flex; align-items: center; gap: 0.5rem; width: 100%;
+      transition: background 0.2s; font-family: inherit;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.1); }
     .content-area { flex: 1; overflow-y: auto; padding: 1.5rem; }
     .page { display: none; animation: fadeIn 0.2s ease; }
     .page.active { display: block; }
@@ -196,7 +228,6 @@
     .btn-desktop.danger { background: linear-gradient(180deg, #ef4444, #dc2626); color: #fff; border-color: #ef4444; box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
     .btn-desktop.danger:hover { background: linear-gradient(180deg, #f87171, #ef4444); box-shadow: 0 6px 15px rgba(239,68,68,0.4); }
     .btn-desktop:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    /* Estilos adicionales para botones de icono y menú contextual */
     .btn-icono {
       padding: 0.3rem 0.45rem;
       min-width: unset;
@@ -308,6 +339,7 @@
       .sidebar-header { justify-content: center; padding: 1rem; }
       .stats-grid-desktop { grid-template-columns: repeat(2, 1fr); }
       .carga-grid { grid-template-columns: 1fr; }
+      .user-email { display: none; }
     }
   </style>
 </head>
@@ -347,11 +379,26 @@
         </nav>
         <div class="sidebar-footer">
             <div class="plan-badge-desktop" id="planBadge"><i class="fas fa-gift"></i> DEMO</div>
-            <button class="btn-logout" id="logoutBtn" style="width:100%;justify-content:center;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
         </div>
     </aside>
     <div class="main-container">
-        <header class="topbar"><div class="topbar-title" id="pageTitle">Dashboard</div><div class="topbar-actions"><div class="sync-badge synced" id="syncStatus"><i class="fas fa-cloud"></i> Sincronizado</div></div></header>
+        <header class="topbar">
+            <div class="topbar-title" id="pageTitle">Dashboard</div>
+            <div class="topbar-actions">
+                <div class="sync-badge synced" id="syncStatus"><i class="fas fa-cloud"></i> Sincronizado</div>
+                <div class="user-profile-btn" id="userProfileBtn" title="Perfil de usuario">
+                    <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
+                    <span class="user-email" id="userEmailDisplay">usuario</span>
+                    <i class="fas fa-chevron-down" style="font-size:0.6rem;color:var(--text-muted);"></i>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-item"><i class="fas fa-envelope"></i> <span id="dropdownEmail"></span></div>
+                        <div class="user-dropdown-item"><i class="fas fa-shield-alt"></i> <span id="dropdownProvider"></span></div>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
+        </header>
         <div class="content-area" id="contentArea">
             <div class="page active" id="page-dashboard">
                 <div class="stats-grid-desktop">
@@ -496,58 +543,18 @@
     </div>
 </div>
 
-<!-- Modales preexistentes -->
+<!-- Modales sin cambios -->
 <div class="modal-overlay-desktop" id="ventaModal"><div class="modal-content-desktop"><h3><i class="fas fa-tag"></i> Vender perfil</h3><div id="ventaPerfilInfo"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;"><div><label>Plataforma</label><select id="ventaPlataforma"><option value="Netflix">Netflix</option><option value="Netflix indiv">Netflix indiv</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Paramount">Paramount</option><option value="Crunchyrool">Crunchyrool</option><option value="Prime video">Prime video</option><option value="Spoty">Spoty</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div><div><label>Cuenta N°</label><input id="ventaCuentaId"></div><div><label>Perfil</label><input id="ventaPerfilNombre"></div><div><label>Correo</label><input type="email" id="ventaMail"></div><div><label>Contraseña</label><input id="ventaPassword"></div><div><label>PIN</label><input id="ventaPin"></div><div><label>Vencimiento</label><input type="date" id="ventaFechaVencimiento"></div><div><label>Proveedor</label><input id="ventaProveedor"></div><div><label>Precio ($)</label><input type="number" id="ventaPrecio" step="1" min="1"></div><div><label>WhatsApp cliente</label><input type="tel" id="ventaCliente" placeholder="5491112345678"></div><div><label>Observaciones</label><textarea id="ventaObservaciones" rows="2"></textarea></div></div><div class="modal-buttons-desktop"><button class="btn-desktop primary" id="ventaConfirmar">Confirmar venta</button><button class="btn-desktop" id="ventaCancelar">Cancelar</button></div><div id="ventaMessage" style="margin-top:0.8rem;font-size:0.75rem;color:var(--accent-gold);"></div></div></div>
 <div class="modal-overlay-desktop" id="reasignarModal"><div class="modal-content-desktop"><h3><i class="fas fa-calendar-alt"></i> Reasignar fecha</h3><div id="reasignarPerfilInfo"></div><label>Nueva fecha</label><input type="date" id="reasignarFecha"><div class="modal-buttons-desktop"><button class="btn-desktop primary" id="reasignarConfirmar">Reasignar</button><button class="btn-desktop" id="reasignarCancelar">Cancelar</button></div></div></div>
 <div class="modal-overlay-desktop" id="vencimientoModal"><div class="modal-content-desktop"><h3><i class="fas fa-bell"></i> Recordatorio de vencimientos</h3><div id="vencimientoModalMensaje" style="margin-bottom:1rem;font-size:0.85rem;"></div><div class="modal-buttons-desktop"><button class="btn-desktop" id="vencimientoModalCerrar">Cerrar</button></div></div></div>
-
-<!-- Nuevos modales -->
-<div class="modal-overlay-desktop" id="modalManual">
-    <div class="modal-content-desktop wide">
-        <h3><i class="fas fa-book-open"></i> Manual de Usuario Completo</h3>
-        <p style="color:var(--text-secondary);">Aprendé a usar <strong>StreamFlow Pro</strong> para gestionar tus cuentas de streaming como un profesional.</p>
-        <h4>1. Primeros pasos</h4>
-        <p>Cuando abrís la aplicación, ves una pantalla para iniciar sesión. Usá tu correo electrónico y contraseña para entrar, o el botón de Google. Si es la primera vez, podés registrarte con el enlace "Regístrate".</p>
-        <p>Una vez adentro, la pantalla principal (llamada <strong>Dashboard</strong>) muestra un resumen de tu negocio: cuántos perfiles tenés, cuántos están libres, cuáles están por vencer y las ventas del día.</p>
-        <h4>2. Cargar cuentas nuevas</h4>
-        <p>Andá a la sección <strong>Cargar Cuentas</strong> (ícono de suma o <kbd>Ctrl+N</kbd>). Ahí podés agregar cuentas de tres formas:</p>
-        <ul><li><strong>Cuenta Completa</strong>: elegís la plataforma (Netflix, Disney, etc.) y completás los datos. La app crea automáticamente la cantidad de perfiles que soporta ese servicio (por ejemplo, Netflix genera 5 perfiles).</li><li><strong>Perfil Individual</strong>: agregás un solo perfil, perfecto para renovaciones o perfiles sueltos.</li><li><strong>Carga Masiva</strong>: pegás un texto con varias cuentas y la app las reconoce. Antes de guardar, podés previsualizar para ver si todo está bien.</li></ul>
-        <h4>3. Administrar perfiles</h4>
-        <p>En <strong>Perfiles</strong> (<kbd>Ctrl+P</kbd>) ves una tabla con todas tus cuentas. Arriba tenés filtros para buscar por plataforma, estado, texto, proveedor o fechas. También podés ordenar por fecha de vencimiento.</p>
-        <p>Cada fila tiene botones de acción rápida (pasá el mouse para ver qué hace cada uno):</p>
-        <ul><li>📲 <strong>WhatsApp proveedor</strong></li><li>📲 <strong>WhatsApp cliente</strong></li><li>📋 <strong>Copiar</strong></li><li>🔑 <strong>Cambiar contraseña</strong></li><li>✏️ <strong>Editar</strong></li><li>🔄 <strong>Renovar</strong></li><li>⭕ <strong>Marcar libre</strong></li><li>🗐 <strong>Duplicar</strong></li><li>🏷️ <strong>Vender</strong></li><li>📅 <strong>Reasignar fecha</strong></li><li>🗑️ <strong>Eliminar</strong></li></ul>
-        <h4>4. Atajos de teclado</h4>
-        <p>Usá estas combinaciones para moverte rápido:</p>
-        <ul><li><kbd>Ctrl+D</kbd> Dashboard</li><li><kbd>Ctrl+N</kbd> Cargar Cuentas</li><li><kbd>Ctrl+P</kbd> Perfiles</li><li><kbd>Ctrl+H</kbd> Historial</li><li><kbd>Ctrl+S</kbd> Estadísticas</li><li><kbd>Ctrl+A</kbd> Ajustes</li><li><kbd>Ctrl+F</kbd> Buscar en Perfiles</li></ul>
-        <p><strong>Consejo:</strong> La app funciona incluso sin internet. Tus cambios se guardan y cuando vuelve la conexión, todo se sincroniza automáticamente.</p>
-        <div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalManual')">Cerrar</button></div>
-    </div>
-</div>
-
-<div class="modal-overlay-desktop" id="modalAcerca">
-    <div class="modal-content-desktop"><h3><i class="fas fa-users"></i> Acerca de Nosotros</h3><p><strong>StreamFlow Pro</strong> es el resultado de la unión de dos empresas con amplia experiencia en el mundo digital.</p><p><strong>La Clave Argentina</strong> nació como consultora de soluciones digitales para emprendedores.</p><p><strong>Tienda SSH</strong> se especializó en la venta de productos digitales y administración de cuentas.</p><p>En 2024, ambos equipos fusionaron sus conocimientos para crear <strong>StreamFlow Pro</strong>, una plataforma pensada por y para vendedores de streaming en toda Latinoamérica.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalAcerca')">Cerrar</button></div></div>
-</div>
-
-<div class="modal-overlay-desktop" id="modalTerminos">
-    <div class="modal-content-desktop"><h3><i class="fas fa-file-contract"></i> Términos y Condiciones</h3><p>Última actualización: Mayo 2026</p><p>Al utilizar <strong>StreamFlow Pro</strong>, aceptás los siguientes términos:</p><ul><li>El servicio se brinda bajo el modelo de suscripción mensual mediante token de acceso.</li><li>No está permitido compartir la cuenta ni intentar acceder a los sistemas sin autorización.</li><li>La aplicación se ofrece "tal cual" y el equipo de desarrollo trabaja para garantizar su disponibilidad, pero no se responsabiliza por pérdidas derivadas del uso incorrecto.</li><li>El software está protegido por leyes de propiedad intelectual (Ley 11.723 de Argentina y tratados internacionales).</li></ul><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalTerminos')">Cerrar</button></div></div>
-</div>
-
-<div class="modal-overlay-desktop" id="modalPrivacidad">
-    <div class="modal-content-desktop"><h3><i class="fas fa-shield-alt"></i> Política de Privacidad</h3><p>Última actualización: Mayo 2026</p><p>En <strong>StreamFlow Pro</strong> respetamos tu privacidad. Los datos que cargás (perfiles, ventas, configuración) se almacenan de forma segura en servidores privados con cifrado.</p><p>No compartimos ni vendemos tu información a terceros. Solo utilizamos tus datos para brindarte el servicio.</p><p>Podés solicitar la eliminación total de tus datos en cualquier momento a través de nuestro WhatsApp de soporte.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalPrivacidad')">Cerrar</button></div></div>
-</div>
-
-<div class="modal-overlay-desktop" id="modalTicket">
-    <div class="modal-content-desktop"><h3><i class="fas fa-headset"></i> Ticket de Soporte</h3><p>Completá el formulario y te responderemos a la brevedad.</p><form onsubmit="enviarTicket(event)" style="display:flex;flex-direction:column;gap:1rem;"><input type="text" id="ticketNombre" placeholder="Tu nombre completo" required><input type="email" id="ticketEmail" placeholder="Correo de tu cuenta" required><input type="text" id="ticketAsunto" placeholder="Asunto" value="Soporte StreamFlow Pro" readonly><textarea id="ticketMensaje" rows="4" placeholder="Describí tu consulta o problema..." required></textarea><button type="submit" class="btn-desktop primary" style="width:100%;justify-content:center;">Enviar Ticket</button></form><p style="font-size:0.75rem;margin-top:1rem;opacity:0.6;">Se abrirá tu cliente de correo con los datos cargados.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalTicket')">Cancelar</button></div></div>
-</div>
+<div class="modal-overlay-desktop" id="modalManual"><div class="modal-content-desktop wide"><h3><i class="fas fa-book-open"></i> Manual de Usuario Completo</h3><p style="color:var(--text-secondary);">Aprendé a usar <strong>StreamFlow Pro</strong> para gestionar tus cuentas de streaming como un profesional.</p><h4>1. Primeros pasos</h4><p>Cuando abrís la aplicación, ves una pantalla para iniciar sesión. Usá tu correo electrónico y contraseña para entrar, o el botón de Google. Si es la primera vez, podés registrarte con el enlace "Regístrate".</p><p>Una vez adentro, la pantalla principal (llamada <strong>Dashboard</strong>) muestra un resumen de tu negocio: cuántos perfiles tenés, cuántos están libres, cuáles están por vencer y las ventas del día.</p><h4>2. Cargar cuentas nuevas</h4><p>Andá a la sección <strong>Cargar Cuentas</strong> (ícono de suma o <kbd>Ctrl+N</kbd>). Ahí podés agregar cuentas de tres formas:</p><ul><li><strong>Cuenta Completa</strong>: elegís la plataforma (Netflix, Disney, etc.) y completás los datos. La app crea automáticamente la cantidad de perfiles que soporta ese servicio (por ejemplo, Netflix genera 5 perfiles).</li><li><strong>Perfil Individual</strong>: agregás un solo perfil, perfecto para renovaciones o perfiles sueltos.</li><li><strong>Carga Masiva</strong>: pegás un texto con varias cuentas y la app las reconoce. Antes de guardar, podés previsualizar para ver si todo está bien.</li></ul><h4>3. Administrar perfiles</h4><p>En <strong>Perfiles</strong> (<kbd>Ctrl+P</kbd>) ves una tabla con todas tus cuentas. Arriba tenés filtros para buscar por plataforma, estado, texto, proveedor o fechas. También podés ordenar por fecha de vencimiento.</p><p>Cada fila tiene botones de acción rápida (pasá el mouse para ver qué hace cada uno):</p><ul><li>📲 <strong>WhatsApp proveedor</strong></li><li>📲 <strong>WhatsApp cliente</strong></li><li>📋 <strong>Copiar</strong></li><li>🔑 <strong>Cambiar contraseña</strong></li><li>✏️ <strong>Editar</strong></li><li>🔄 <strong>Renovar</strong></li><li>⭕ <strong>Marcar libre</strong></li><li>🗐 <strong>Duplicar</strong></li><li>🏷️ <strong>Vender</strong></li><li>📅 <strong>Reasignar fecha</strong></li><li>🗑️ <strong>Eliminar</strong></li></ul><h4>4. Atajos de teclado</h4><p>Usá estas combinaciones para moverte rápido:</p><ul><li><kbd>Ctrl+D</kbd> Dashboard</li><li><kbd>Ctrl+N</kbd> Cargar Cuentas</li><li><kbd>Ctrl+P</kbd> Perfiles</li><li><kbd>Ctrl+H</kbd> Historial</li><li><kbd>Ctrl+S</kbd> Estadísticas</li><li><kbd>Ctrl+A</kbd> Ajustes</li><li><kbd>Ctrl+F</kbd> Buscar en Perfiles</li></ul><p><strong>Consejo:</strong> La app funciona incluso sin internet. Tus cambios se guardan y cuando vuelve la conexión, todo se sincroniza automáticamente.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalManual')">Cerrar</button></div></div></div>
+<div class="modal-overlay-desktop" id="modalAcerca"><div class="modal-content-desktop"><h3><i class="fas fa-users"></i> Acerca de Nosotros</h3><p><strong>StreamFlow Pro</strong> es el resultado de la unión de dos empresas con amplia experiencia en el mundo digital.</p><p><strong>La Clave Argentina</strong> nació como consultora de soluciones digitales para emprendedores.</p><p><strong>Tienda SSH</strong> se especializó en la venta de productos digitales y administración de cuentas.</p><p>En 2024, ambos equipos fusionaron sus conocimientos para crear <strong>StreamFlow Pro</strong>, una plataforma pensada por y para vendedores de streaming en toda Latinoamérica.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalAcerca')">Cerrar</button></div></div></div>
+<div class="modal-overlay-desktop" id="modalTerminos"><div class="modal-content-desktop"><h3><i class="fas fa-file-contract"></i> Términos y Condiciones</h3><p>Última actualización: Mayo 2026</p><p>Al utilizar <strong>StreamFlow Pro</strong>, aceptás los siguientes términos:</p><ul><li>El servicio se brinda bajo el modelo de suscripción mensual mediante token de acceso.</li><li>No está permitido compartir la cuenta ni intentar acceder a los sistemas sin autorización.</li><li>La aplicación se ofrece "tal cual" y el equipo de desarrollo trabaja para garantizar su disponibilidad, pero no se responsabiliza por pérdidas derivadas del uso incorrecto.</li><li>El software está protegido por leyes de propiedad intelectual (Ley 11.723 de Argentina y tratados internacionales).</li></ul><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalTerminos')">Cerrar</button></div></div></div>
+<div class="modal-overlay-desktop" id="modalPrivacidad"><div class="modal-content-desktop"><h3><i class="fas fa-shield-alt"></i> Política de Privacidad</h3><p>Última actualización: Mayo 2026</p><p>En <strong>StreamFlow Pro</strong> respetamos tu privacidad. Los datos que cargás (perfiles, ventas, configuración) se almacenan de forma segura en servidores privados con cifrado.</p><p>No compartimos ni vendemos tu información a terceros. Solo utilizamos tus datos para brindarte el servicio.</p><p>Podés solicitar la eliminación total de tus datos en cualquier momento a través de nuestro WhatsApp de soporte.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalPrivacidad')">Cerrar</button></div></div></div>
+<div class="modal-overlay-desktop" id="modalTicket"><div class="modal-content-desktop"><h3><i class="fas fa-headset"></i> Ticket de Soporte</h3><p>Completá el formulario y te responderemos a la brevedad.</p><form onsubmit="enviarTicket(event)" style="display:flex;flex-direction:column;gap:1rem;"><input type="text" id="ticketNombre" placeholder="Tu nombre completo" required><input type="email" id="ticketEmail" placeholder="Correo de tu cuenta" required><input type="text" id="ticketAsunto" placeholder="Asunto" value="Soporte StreamFlow Pro" readonly><textarea id="ticketMensaje" rows="4" placeholder="Describí tu consulta o problema..." required></textarea><button type="submit" class="btn-desktop primary" style="width:100%;justify-content:center;">Enviar Ticket</button></form><p style="font-size:0.75rem;margin-top:1rem;opacity:0.6;">Se abrirá tu cliente de correo con los datos cargados.</p><div class="modal-buttons-desktop"><button class="btn-desktop" onclick="cerrarModal('modalTicket')">Cancelar</button></div></div></div>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js').catch(function(err) {
-                console.log('Service Worker no registrado:', err);
-            });
-        });
-    }
+    if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('sw.js').catch(function(err) { console.log('Service Worker no registrado:', err); }); }); }
 </script>
 
 <script type="module">
@@ -570,692 +577,162 @@
     const googleProvider = new GoogleAuthProvider();
 
     const TOKENS_VALIDOS = new Set([
-        "SF-A7K2-M9P4-X8N1","SF-B3F8-R6W2-Q5L9","SF-C9M4-T1Y7-V2H6","SF-D5R1-K8U3-W7Z0",
-        "SF-E2X6-N4Q9-J3P5","SF-F8S3-Y1M7-B6G4","SF-G4W9-C2T8-L5R1","SF-H6V1-Z5Q3-D9F7",
-        "SF-J1M7-P3X8-K2N4","SF-K8N2-W5R9-S6T3","SF-L3Q5-F1Z7-Y4U8","SF-M9T6-H2V4-C7W1",
-        "SF-N5P8-B3G1-X9R6","SF-P1Y4-K7M2-D8S5","SF-Q6R3-T9W5-F2Z8","SF-R2X7-L4U1-J6N9",
-        "SF-S4V8-N1C3-M5Q7","SF-T7W1-H9K5-P3Y2","SF-U3Z6-F5D2-R8G4","SF-V8M9-Q2S4-X1B7",
-        "SF-W5N2-Y7T1-C6J3","SF-X1P6-K3R8-L9M4","SF-Y8Q3-S6F1-Z2W5","SF-Z4T9-V1H7-D5U2",
-        "SF-A1B2-C3D4-E5F6","SF-G7H8-I9J0-K1L2","SF-M3N4-O5P6-Q7R8","SF-S9T0-U1V2-W3X4",
-        "SF-Y5Z6-A7B8-C9D0","SF-E1F2-G3H4-I5J6","SF-K7L8-M9N0-O1P2","SF-Q3R4-S5T6-U7V8",
-        "SF-W9X0-Y1Z2-A3B4","SF-C5D6-E7F8-G9H0","SF-I1J2-K3L4-M5N6","SF-O7P8-Q9R0-S1T2"
+        "SF-A7K2-M9P4-X8N1","SF-B3F8-R6W2-Q5L9","SF-C9M4-T1Y7-V2H6","SF-D5R1-K8U3-W7Z0","SF-E2X6-N4Q9-J3P5","SF-F8S3-Y1M7-B6G4","SF-G4W9-C2T8-L5R1","SF-H6V1-Z5Q3-D9F7","SF-J1M7-P3X8-K2N4","SF-K8N2-W5R9-S6T3","SF-L3Q5-F1Z7-Y4U8","SF-M9T6-H2V4-C7W1","SF-N5P8-B3G1-X9R6","SF-P1Y4-K7M2-D8S5","SF-Q6R3-T9W5-F2Z8","SF-R2X7-L4U1-J6N9","SF-S4V8-N1C3-M5Q7","SF-T7W1-H9K5-P3Y2","SF-U3Z6-F5D2-R8G4","SF-V8M9-Q2S4-X1B7","SF-W5N2-Y7T1-C6J3","SF-X1P6-K3R8-L9M4","SF-Y8Q3-S6F1-Z2W5","SF-Z4T9-V1H7-D5U2","SF-A1B2-C3D4-E5F6","SF-G7H8-I9J0-K1L2","SF-M3N4-O5P6-Q7R8","SF-S9T0-U1V2-W3X4","SF-Y5Z6-A7B8-C9D0","SF-E1F2-G3H4-I5J6","SF-K7L8-M9N0-O1P2","SF-Q3R4-S5T6-U7V8","SF-W9X0-Y1Z2-A3B4","SF-C5D6-E7F8-G9H0","SF-I1J2-K3L4-M5N6","SF-O7P8-Q9R0-S1T2"
     ]);
 
     let perfiles = [], proveedorPhones = {}, DIAS_PROXIMO = 3;
     let autoSyncEnabled = true, notificationsEnabled = true, kioscoMode = false, ordenAsc = true;
     let editandoId = null, unsubscribeFirestore = null, currentUser = null;
     let searchDebounceTimer = null;
-    const MAX_PERFILES = 1000;
     let appDesbloqueada = true, diasPruebaRestantes = 0, planEstado = "demo";
     let lastWriteVersion = 0;
     let pendingVentaId = null, pendingReasignarId = null;
     let paginaActual = 1;
     let registrosPorPagina = 50;
 
-    function escapeHtml(unsafe) { if (!unsafe) return ""; return unsafe.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-    function csvEscape(val) {
-        if (val === null || val === undefined) return '';
-        val = String(val).replace(/"/g, '""');
-        if (/[",\n\r]/.test(val)) val = `"${val}"`;
-        return val;
-    }
+    function escapeHtml(u) { return u ? u.replace(/[&<>]/g, m => m === '&' ? '&amp;' : '<' ? '&lt;' : '&gt;') : ''; }
+    function csvEscape(v) { if (v === null || v === undefined) return ''; v = String(v).replace(/"/g, '""'); if (/[",\n\r]/.test(v)) v = `"${v}"`; return v; }
     function generarIdUnico() { return crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2,10); }
-    function parseFecha(str) { if (!str) return null; const partes = str.split("-"); if (partes.length !== 3) return null; const fecha = new Date(partes[0], partes[1]-1, partes[2]); return isNaN(fecha) ? null : fecha; }
-    function formatearFecha(str) { if (!str) return ""; const fecha = parseFecha(str); if (!fecha) return str; return fecha.getDate().toString().padStart(2,'0') + '/' + (fecha.getMonth()+1).toString().padStart(2,'0') + '/' + fecha.getFullYear(); }
+    function parseFecha(s) { if (!s) return null; const p = s.split("-"); if (p.length !== 3) return null; const f = new Date(p[0], p[1]-1, p[2]); return isNaN(f) ? null : f; }
+    function formatearFecha(s) { if (!s) return ""; const f = parseFecha(s); if (!f) return s; return f.getDate().toString().padStart(2,'0') + '/' + (f.getMonth()+1).toString().padStart(2,'0') + '/' + f.getFullYear(); }
     function aInputDate(d) { return d.getFullYear() + '-' + (d.getMonth()+1).toString().padStart(2,'0') + '-' + d.getDate().toString().padStart(2,'0'); }
-    function obtenerEstado(fechaStr) {
-        if (!fechaStr) return "libre";
-        const hoy = new Date(); hoy.setHours(0,0,0,0);
-        const venc = parseFecha(fechaStr); if (!venc) return "libre";
-        venc.setHours(0,0,0,0); const diff = Math.round((venc - hoy) / 86400000);
-        if (diff < 0) return "vencido"; if (diff <= DIAS_PROXIMO) return "proximo"; return "activo";
-    }
-    function estadoTexto(e) { const m = { activo:"Activo", proximo:"Próximo", vencido:"Vencido", libre:"Libre", vendido:"Vendido" }; return m[e] || e; }
-    function estadoClase(e) { const m = { activo:"badge-success", proximo:"badge-warning", vencido:"badge-danger", libre:"badge-info", vendido:"badge-purple" }; return m[e] || "badge-info"; }
-    function estadoRowClase(e) { const m = { activo:"row-activo", proximo:"row-proximo", vencido:"row-vencido" }; return m[e] || ""; }
+    function obtenerEstado(fs) { if (!fs) return "libre"; const h = new Date(); h.setHours(0,0,0,0); const v = parseFecha(fs); if (!v) return "libre"; v.setHours(0,0,0,0); const d = Math.round((v - h) / 86400000); if (d < 0) return "vencido"; if (d <= DIAS_PROXIMO) return "proximo"; return "activo"; }
+    function estadoTexto(e) { return { activo:"Activo", proximo:"Próximo", vencido:"Vencido", libre:"Libre", vendido:"Vendido" }[e] || e; }
+    function estadoClase(e) { return { activo:"badge-success", proximo:"badge-warning", vencido:"badge-danger", libre:"badge-info", vendido:"badge-purple" }[e] || "badge-info"; }
+    function estadoRowClase(e) { return { activo:"row-activo", proximo:"row-proximo", vencido:"row-vencido" }[e] || ""; }
 
-    function toast(mensaje) {
-        let t = document.querySelector(".toast-desktop"); if (t) t.remove();
-        t = document.createElement("div"); t.className = "toast-desktop";
-        t.innerHTML = '<i class="fas fa-info-circle"></i> ' + escapeHtml(mensaje);
-        document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
-    }
+    function toast(m) { let t = document.querySelector(".toast-desktop"); if (t) t.remove(); t = document.createElement("div"); t.className = "toast-desktop"; t.innerHTML = '<i class="fas fa-info-circle"></i> ' + escapeHtml(m); document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
-    function actualizarSyncStatus(estado) {
-        const el = document.getElementById("syncStatus"); if (!el) return;
-        el.className = "sync-badge";
-        if (estado === "sincronizado") { el.classList.add("synced"); el.innerHTML = '<i class="fas fa-cloud"></i> Sincronizado'; }
-        else if (estado === "esperando") { el.classList.add("waiting"); el.innerHTML = '<i class="fas fa-clock"></i> Sincronizando...'; }
-        else { el.classList.add("error"); el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error'; }
-    }
+    function actualizarSyncStatus(e) { const el = document.getElementById("syncStatus"); if (!el) return; el.className = "sync-badge"; if (e === "sincronizado") { el.classList.add("synced"); el.innerHTML = '<i class="fas fa-cloud"></i> Sincronizado'; } else if (e === "esperando") { el.classList.add("waiting"); el.innerHTML = '<i class="fas fa-clock"></i> Sincronizando...'; } else { el.classList.add("error"); el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error'; } }
 
-    function actualizarBadgePlan() {
-        const badge = document.getElementById("planBadge"); if (!badge) return;
-        if (!appDesbloqueada) { badge.innerHTML = '<i class="fas fa-lock"></i> BLOQUEADO'; badge.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1))'; badge.style.color = '#ef4444'; }
-        else if (planEstado === "token") { badge.innerHTML = '<i class="fas fa-crown"></i> PRO'; badge.style.background = 'linear-gradient(135deg, rgba(245,175,25,0.25), rgba(241,39,17,0.12))'; badge.style.color = '#f5af19'; }
-        else { badge.innerHTML = '<i class="fas fa-gift"></i> DEMO ' + diasPruebaRestantes + 'd'; badge.style.background = 'linear-gradient(135deg, rgba(245,175,25,0.12), rgba(245,175,25,0.05))'; badge.style.color = '#f5af19'; }
+    function actualizarBadgePlan() { const b = document.getElementById("planBadge"); if (!b) return; if (!appDesbloqueada) { b.innerHTML = '<i class="fas fa-lock"></i> BLOQUEADO'; b.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1))'; b.style.color = '#ef4444'; } else if (planEstado === "token") { b.innerHTML = '<i class="fas fa-crown"></i> PRO'; b.style.background = 'linear-gradient(135deg, rgba(245,175,25,0.25), rgba(241,39,17,0.12))'; b.style.color = '#f5af19'; } else { b.innerHTML = '<i class="fas fa-gift"></i> DEMO ' + diasPruebaRestantes + 'd'; b.style.background = 'linear-gradient(135deg, rgba(245,175,25,0.12), rgba(245,175,25,0.05))'; b.style.color = '#f5af19'; } }
+
+    function actualizarPerfilUI() {
+        if (!currentUser) return;
+        const email = currentUser.email || "Usuario";
+        const esGoogle = currentUser.providerData && currentUser.providerData.some(p => p.providerId === 'google.com');
+        const provider = esGoogle ? 'Google' : 'Email';
+        const inicial = email.charAt(0).toUpperCase();
+        document.getElementById("userEmailDisplay").textContent = email;
+        document.getElementById("userAvatar").innerHTML = inicial;
+        document.getElementById("dropdownEmail").textContent = email;
+        document.getElementById("dropdownProvider").textContent = 'Autenticado con ' + provider;
     }
 
     function guardarPerfilesLocal() { localStorage.setItem('streamflow_perfiles', JSON.stringify(perfiles)); }
-    function cargarPerfilesLocal() { const raw = localStorage.getItem('streamflow_perfiles'); if (raw) { try { perfiles = JSON.parse(raw); reconstruirPhones(); actualizarTodo(); } catch(e) { perfiles = []; } } else { perfiles = []; } }
+    function cargarPerfilesLocal() { const r = localStorage.getItem('streamflow_perfiles'); if (r) { try { perfiles = JSON.parse(r); reconstruirPhones(); actualizarTodo(); } catch(e) { perfiles = []; } } else { perfiles = []; } }
 
-    function guardarConfigLocal() {
-        localStorage.setItem("streamflow_config", JSON.stringify({
-            diasProximo: DIAS_PROXIMO, autoSync: autoSyncEnabled, notifications: notificationsEnabled, kiosco: kioscoMode,
-            fontSize: document.getElementById("fontSizeConfig").value, tema: document.body.classList.contains("light-mode") ? "light" : "dark"
-        }));
-    }
+    function guardarConfigLocal() { localStorage.setItem("streamflow_config", JSON.stringify({ diasProximo: DIAS_PROXIMO, autoSync: autoSyncEnabled, notifications: notificationsEnabled, kiosco: kioscoMode, fontSize: document.getElementById("fontSizeConfig").value, tema: document.body.classList.contains("light-mode") ? "light" : "dark" })); }
 
-    function cargarConfigLocal() {
-        const raw = localStorage.getItem("streamflow_config");
-        if (raw) {
-            try {
-                const config = JSON.parse(raw);
-                DIAS_PROXIMO = config.diasProximo || 3;
-                autoSyncEnabled = config.autoSync !== false;
-                notificationsEnabled = config.notifications !== false;
-                kioscoMode = config.kiosco === true;
-                document.getElementById("diasProximoConfig").value = DIAS_PROXIMO;
-                document.getElementById("autoSyncToggle").checked = autoSyncEnabled;
-                document.getElementById("notificationsToggle").checked = notificationsEnabled;
-                document.getElementById("kioscoToggle").checked = kioscoMode;
-                if (config.fontSize) document.getElementById("fontSizeConfig").value = config.fontSize;
-                if (config.tema === "light") { document.body.classList.add("light-mode"); document.getElementById("themeToggle").checked = true; }
-                aplicarModoKioscoVisual();
-            } catch(e) {}
-        }
-    }
+    function cargarConfigLocal() { const r = localStorage.getItem("streamflow_config"); if (r) { try { const c = JSON.parse(r); DIAS_PROXIMO = c.diasProximo || 3; autoSyncEnabled = c.autoSync !== false; notificationsEnabled = c.notifications !== false; kioscoMode = c.kiosco === true; document.getElementById("diasProximoConfig").value = DIAS_PROXIMO; document.getElementById("autoSyncToggle").checked = autoSyncEnabled; document.getElementById("notificationsToggle").checked = notificationsEnabled; document.getElementById("kioscoToggle").checked = kioscoMode; if (c.fontSize) document.getElementById("fontSizeConfig").value = c.fontSize; if (c.tema === "light") { document.body.classList.add("light-mode"); document.getElementById("themeToggle").checked = true; } aplicarModoKioscoVisual(); } catch(e) {} } }
 
-    // Control de conflictos con confirmación
     async function persistirPerfiles() {
         guardarPerfilesLocal();
         if (!currentUser || !autoSyncEnabled) return;
-        try {
-            actualizarSyncStatus("esperando");
-            const uid = currentUser.uid;
-            const userRef = doc(db, "usuarios", uid);
-            const snap = await getDoc(userRef);
-            let serverVersion = 0;
-            if (snap.exists()) {
-                const data = snap.data();
-                serverVersion = data.version || 0;
-                if (serverVersion > lastWriteVersion) {
-                    if (confirm("Hay una versión más reciente de los datos en la nube. ¿Querés cargarla? (Si cancelás, se mantendrán tus datos locales sin sincronizar hasta la próxima modificación)")) {
-                        perfiles = data.perfiles || [];
-                        guardarPerfilesLocal();
-                        reconstruirPhones();
-                        actualizarTodo();
-                        toast("Datos remotos cargados");
-                        lastWriteVersion = serverVersion;
-                    } else {
-                        toast("Se conservan los datos locales");
-                    }
-                    actualizarSyncStatus("sincronizado");
-                    return;
-                }
-            }
-            const version = Date.now();
-            await setDoc(userRef, { perfiles: perfiles, version: version }, { merge: true });
-            lastWriteVersion = version;
-            actualizarSyncStatus("sincronizado");
-        } catch(e) {
-            actualizarSyncStatus("error");
-        }
-    }
+        try { actualizarSyncStatus("esperando"); const uid = currentUser.uid; const userRef = doc(db, "usuarios", uid); const snap = await getDoc(userRef); let serverVersion = 0; if (snap.exists()) { const data = snap.data(); serverVersion = data.version || 0; if (serverVersion > lastWriteVersion) { if (confirm("Hay una versión más reciente de los datos en la nube. ¿Querés cargarla? (Si cancelás, se mantendrán tus datos locales sin sincronizar hasta la próxima modificación)")) { perfiles = data.perfiles || []; guardarPerfilesLocal(); reconstruirPhones(); actualizarTodo(); toast("Datos remotos cargados"); lastWriteVersion = serverVersion; } else { toast("Se conservan los datos locales"); } actualizarSyncStatus("sincronizado"); return; } } const version = Date.now(); await setDoc(userRef, { perfiles: perfiles, version: version }, { merge: true }); lastWriteVersion = version; actualizarSyncStatus("sincronizado"); } catch(e) { actualizarSyncStatus("error"); } }
 
-    function iniciarListenerFirestore(uid) {
-        if (unsubscribeFirestore) unsubscribeFirestore();
-        actualizarSyncStatus("esperando");
-        unsubscribeFirestore = onSnapshot(doc(db, "usuarios", uid), snap => {
-            if (snap.exists()) {
-                const data = snap.data();
-                const remoteVersion = data.version || 0;
-                if (remoteVersion > lastWriteVersion) {
-                    if (data.perfiles) {
-                        perfiles = data.perfiles;
-                        guardarPerfilesLocal();
-                        reconstruirPhones();
-                        actualizarTodo();
-                        toast("Datos actualizados desde la nube");
-                    }
-                    lastWriteVersion = remoteVersion;
-                }
-                actualizarSyncStatus("sincronizado");
-            } else {
-                setDoc(doc(db, "usuarios", uid), { perfiles: [], version: Date.now() });
-                perfiles = [];
-                guardarPerfilesLocal();
-                actualizarTodo();
-                lastWriteVersion = 0;
-                actualizarSyncStatus("sincronizado");
-            }
-        }, e => {
-            actualizarSyncStatus("error");
-            cargarPerfilesLocal();
-        });
-    }
+    function iniciarListenerFirestore(uid) { if (unsubscribeFirestore) unsubscribeFirestore(); actualizarSyncStatus("esperando"); unsubscribeFirestore = onSnapshot(doc(db, "usuarios", uid), snap => { if (snap.exists()) { const data = snap.data(); const rv = data.version || 0; if (rv > lastWriteVersion) { if (data.perfiles) { perfiles = data.perfiles; guardarPerfilesLocal(); reconstruirPhones(); actualizarTodo(); toast("Datos actualizados desde la nube"); } lastWriteVersion = rv; } actualizarSyncStatus("sincronizado"); } else { setDoc(doc(db, "usuarios", uid), { perfiles: [], version: Date.now() }); perfiles = []; guardarPerfilesLocal(); actualizarTodo(); lastWriteVersion = 0; actualizarSyncStatus("sincronizado"); } }, e => { actualizarSyncStatus("error"); cargarPerfilesLocal(); }); }
 
-    async function verificarSuscripcion(uid) {
-        const suscRef = doc(db, "usuarios", uid, "suscripcion", "estado");
-        try {
-            const snap = await getDoc(suscRef); const ahora = new Date();
-            if (!snap.exists()) { await setDoc(suscRef, { fechaPrimerIngreso: ahora.toISOString(), estado: "prueba", fechaExpiracionToken: null }); appDesbloqueada = true; diasPruebaRestantes = 3; planEstado = "demo"; actualizarBadgePlan(); return; }
-            const data = snap.data(); const fechaInicio = new Date(data.fechaPrimerIngreso); const fechaFinPrueba = new Date(fechaInicio); fechaFinPrueba.setDate(fechaFinPrueba.getDate() + 3);
-            if (data.estado === "prueba" && ahora < fechaFinPrueba) { appDesbloqueada = true; diasPruebaRestantes = Math.ceil((fechaFinPrueba - ahora) / 86400000); planEstado = "demo"; actualizarBadgePlan(); return; }
-            if (data.estado === "prueba" && ahora >= fechaFinPrueba) { appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado"; actualizarBadgePlan(); return; }
-            if (data.estado === "token" && data.fechaExpiracionToken) { const expToken = new Date(data.fechaExpiracionToken); if (ahora < expToken) { appDesbloqueada = true; diasPruebaRestantes = 0; planEstado = "token"; actualizarBadgePlan(); } else { appDesbloqueada = false; planEstado = "bloqueado"; actualizarBadgePlan(); } return; }
-            appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado"; actualizarBadgePlan();
-        } catch(e) { appDesbloqueada = true; planEstado = "demo"; actualizarBadgePlan(); }
-    }
+    async function verificarSuscripcion(uid) { const suscRef = doc(db, "usuarios", uid, "suscripcion", "estado"); try { const snap = await getDoc(suscRef); const ahora = new Date(); if (!snap.exists()) { await setDoc(suscRef, { fechaPrimerIngreso: ahora.toISOString(), estado: "prueba", fechaExpiracionToken: null }); appDesbloqueada = true; diasPruebaRestantes = 3; planEstado = "demo"; actualizarBadgePlan(); return; } const data = snap.data(); const fechaInicio = new Date(data.fechaPrimerIngreso); const fechaFinPrueba = new Date(fechaInicio); fechaFinPrueba.setDate(fechaFinPrueba.getDate() + 3); if (data.estado === "prueba" && ahora < fechaFinPrueba) { appDesbloqueada = true; diasPruebaRestantes = Math.ceil((fechaFinPrueba - ahora) / 86400000); planEstado = "demo"; actualizarBadgePlan(); return; } if (data.estado === "prueba" && ahora >= fechaFinPrueba) { appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado"; actualizarBadgePlan(); return; } if (data.estado === "token" && data.fechaExpiracionToken) { const expToken = new Date(data.fechaExpiracionToken); if (ahora < expToken) { appDesbloqueada = true; diasPruebaRestantes = 0; planEstado = "token"; actualizarBadgePlan(); } else { appDesbloqueada = false; planEstado = "bloqueado"; actualizarBadgePlan(); } return; } appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado"; actualizarBadgePlan(); } catch(e) { appDesbloqueada = true; planEstado = "demo"; actualizarBadgePlan(); } }
 
-    function tokenExpiroOffline() { const exp = localStorage.getItem('streamflow_token_expiracion'); if (!exp) return false; return new Date() > new Date(exp); }
+    function tokenExpiroOffline() { const e = localStorage.getItem('streamflow_token_expiracion'); return e ? new Date() > new Date(e) : false; }
+    function aplicarBloqueoAppOffline() { if (tokenExpiroOffline()) { appDesbloqueada = false; planEstado = "bloqueado"; diasPruebaRestantes = 0; } else { appDesbloqueada = true; planEstado = "demo"; diasPruebaRestantes = 0; } actualizarBadgePlan(); aplicarBloqueoApp(); }
 
-    function aplicarBloqueoAppOffline() {
-        if (tokenExpiroOffline()) { appDesbloqueada = false; planEstado = "bloqueado"; diasPruebaRestantes = 0; }
-        else { appDesbloqueada = true; planEstado = "demo"; diasPruebaRestantes = 0; }
-        actualizarBadgePlan(); aplicarBloqueoApp();
-    }
+    function aplicarBloqueoApp() { const allPages = document.querySelectorAll(".page"); const ajustesPage = document.getElementById("page-ajustes"); const navItems = document.querySelectorAll(".nav-item"); let bloqueoMsg = document.getElementById("bloqueoAppMsg"); if (appDesbloqueada) { if (bloqueoMsg) bloqueoMsg.remove(); allPages.forEach(t => t.style.display = ""); navItems.forEach(b => { b.style.display = ""; b.classList.remove("active"); }); document.querySelector(".nav-item[data-page='dashboard']").classList.add("active"); cambiarPagina("dashboard"); } else { allPages.forEach(t => { if (t.id !== "page-ajustes") { t.style.display = "none"; t.classList.remove("active"); } }); ajustesPage.style.display = "block"; ajustesPage.classList.add("active"); navItems.forEach(b => { if (b.dataset.page !== "ajustes") { b.style.display = "none"; b.classList.remove("active"); } else { b.classList.add("active"); } }); if (!bloqueoMsg) { bloqueoMsg = document.createElement("div"); bloqueoMsg.id = "bloqueoAppMsg"; bloqueoMsg.className = "bloqueo-app-msg"; bloqueoMsg.innerHTML = '<i class="fas fa-lock"></i><strong>Token vencido</strong><br>Ingresá un nuevo token de suscripción en Ajustes<br>para seguir usando la aplicación.'; document.getElementById("contentArea").insertBefore(bloqueoMsg, document.getElementById("contentArea").firstChild); } } actualizarBadgePlan(); aplicarModoKioscoVisual(); }
 
-    function aplicarBloqueoApp() {
-        const allPages = document.querySelectorAll(".page"); const ajustesPage = document.getElementById("page-ajustes");
-        const navItems = document.querySelectorAll(".nav-item"); let bloqueoMsg = document.getElementById("bloqueoAppMsg");
-        if (appDesbloqueada) {
-            if (bloqueoMsg) bloqueoMsg.remove();
-            allPages.forEach(t => t.style.display = ""); navItems.forEach(b => { b.style.display = ""; b.classList.remove("active"); });
-            document.querySelector(".nav-item[data-page='dashboard']").classList.add("active"); cambiarPagina("dashboard");
-        } else {
-            allPages.forEach(t => { if (t.id !== "page-ajustes") { t.style.display = "none"; t.classList.remove("active"); } });
-            ajustesPage.style.display = "block"; ajustesPage.classList.add("active");
-            navItems.forEach(b => { if (b.dataset.page !== "ajustes") { b.style.display = "none"; b.classList.remove("active"); } else { b.classList.add("active"); } });
-            if (!bloqueoMsg) {
-                bloqueoMsg = document.createElement("div"); bloqueoMsg.id = "bloqueoAppMsg"; bloqueoMsg.className = "bloqueo-app-msg";
-                bloqueoMsg.innerHTML = '<i class="fas fa-lock"></i><strong>Token vencido</strong><br>Ingresá un nuevo token de suscripción en Ajustes<br>para seguir usando la aplicación.';
-                document.getElementById("contentArea").insertBefore(bloqueoMsg, document.getElementById("contentArea").firstChild);
-            }
-        }
-        actualizarBadgePlan();
-        aplicarModoKioscoVisual();
-    }
-
-    function puedeEntrarOffline() { const item = localStorage.getItem('streamflow_offline_session'); if (!item) return false; const s = JSON.parse(item); return (Date.now() - s.lastLogin) < (30*24*60*60*1000); }
+    function puedeEntrarOffline() { const i = localStorage.getItem('streamflow_offline_session'); if (!i) return false; const s = JSON.parse(i); return (Date.now() - s.lastLogin) < (30*24*60*60*1000); }
 
     function plantillaProveedor(p) { return "🚨📺 " + p.plataforma + "\n✉️ " + p.mail + "\n🔐 " + p.password + "\n👤 " + p.perfilNombre + "\n📅 " + (p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : "-") + "\n👤 " + p.proveedor; }
-    function plantillaCliente(p, esVenta) {
-        const fv = p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : "Sin fecha";
-        return (esVenta ? "🎉 *¡CUENTA ACTIVADA!* 🎉" : "🔄 *RENOVACIÓN DE CUENTA*") + "\n\n📺 *Plataforma:* " + p.plataforma + "\n👤 *Perfil:* " + p.perfilNombre + (p.pin ? "\n🔢 *PIN:* " + p.pin : "") + "\n📧 *Usuario:* " + p.mail + "\n🔐 *Contraseña:* " + p.password + "\n📅 *Vence:* " + fv + "\n\n📋 *REGLAS DE USO Y SEGURIDAD*\n✅ Perfil verificado\n🔒 No modificar datos\n🚫 No compartir\n🛡️ Garantía hasta " + fv + "\n💎 *CUENTA PREMIUM GARANTIZADA*";
-    }
-    function copiarTexto(t) { if (navigator.clipboard) { navigator.clipboard.writeText(t).then(() => toast("Copiado al portapapeles")); } else { toast("Usá Ctrl+C"); } }
+    function plantillaCliente(p, ev) { const fv = p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : "Sin fecha"; return (ev ? "🎉 *¡CUENTA ACTIVADA!* 🎉" : "🔄 *RENOVACIÓN DE CUENTA*") + "\n\n📺 *Plataforma:* " + p.plataforma + "\n👤 *Perfil:* " + p.perfilNombre + (p.pin ? "\n🔢 *PIN:* " + p.pin : "") + "\n📧 *Usuario:* " + p.mail + "\n🔐 *Contraseña:* " + p.password + "\n📅 *Vence:* " + fv + "\n\n📋 *REGLAS DE USO Y SEGURIDAD*\n✅ Perfil verificado\n🔒 No modificar datos\n🚫 No compartir\n🛡️ Garantía hasta " + fv + "\n💎 *CUENTA PREMIUM GARANTIZADA*"; }
+    function copiarTexto(t) { if (navigator.clipboard) { navigator.clipboard.writeText(t).then(() => toast("Copiado")); } else { toast("Usá Ctrl+C"); } }
     function reconstruirPhones() { proveedorPhones = {}; perfiles.forEach(p => { if (p.proveedor && p.whatsappProveedor) proveedorPhones[p.proveedor] = p.whatsappProveedor; }); }
 
-    function generarDesdeCuenta(cuenta, nombrePerfil, cuentaIdPers) {
-        const cantidades = { "Netflix":5, "Netflix indiv":1, "Disney":7, "HBO Max":5, "Paramount":5, "Crunchyrool":1, "Prime video":6, "Spoty":1, "YouTube":1, "Otros":1 };
-        const c = cantidades[cuenta.plataforma] || 1; const cid = cuentaIdPers && cuentaIdPers.trim() ? cuentaIdPers.trim() : "CTA_" + Date.now() + "_" + Math.random().toString(36).slice(2,6);
-        const res = [];
-        for (let i = 1; i <= c; i++) {
-            res.push({ id: generarIdUnico(), plataforma: cuenta.plataforma, cuentaId: cid, mail: cuenta.mail, password: cuenta.password, perfilNombre: nombrePerfil || (c === 1 ? "Principal" : "Perfil " + i), pin: cuenta.pin || "", fechaVencimiento: cuenta.fechaVencimiento || null, proveedor: cuenta.proveedor, whatsappProveedor: cuenta.whatsappProveedor || "", observaciones: cuenta.observaciones || "", precio: cuenta.precio ? Number(cuenta.precio) : null, estado: cuenta.fechaVencimiento ? obtenerEstado(cuenta.fechaVencimiento) : "libre", fechaVenta: null, precioVenta: null, whatsappCliente: "", creadoEn: new Date().toISOString() });
-            if (nombrePerfil) break;
-        }
-        return res;
-    }
+    function generarDesdeCuenta(cuenta, nombrePerfil, cuentaIdPers) { const cant = { "Netflix":5, "Netflix indiv":1, "Disney":7, "HBO Max":5, "Paramount":5, "Crunchyrool":1, "Prime video":6, "Spoty":1, "YouTube":1, "Otros":1 }; const c = cant[cuenta.plataforma] || 1; const cid = cuentaIdPers && cuentaIdPers.trim() ? cuentaIdPers.trim() : "CTA_" + Date.now() + "_" + Math.random().toString(36).slice(2,6); const res = []; for (let i = 1; i <= c; i++) { res.push({ id: generarIdUnico(), plataforma: cuenta.plataforma, cuentaId: cid, mail: cuenta.mail, password: cuenta.password, perfilNombre: nombrePerfil || (c === 1 ? "Principal" : "Perfil " + i), pin: cuenta.pin || "", fechaVencimiento: cuenta.fechaVencimiento || null, proveedor: cuenta.proveedor, whatsappProveedor: cuenta.whatsappProveedor || "", observaciones: cuenta.observaciones || "", precio: cuenta.precio ? Number(cuenta.precio) : null, estado: cuenta.fechaVencimiento ? obtenerEstado(cuenta.fechaVencimiento) : "libre", fechaVenta: null, precioVenta: null, whatsappCliente: "", creadoEn: new Date().toISOString() }); if (nombrePerfil) break; } return res; }
 
     async function eliminarPerfil(id) { if (kioscoMode) { toast("Modo kiosco: no se puede eliminar"); return; } if (confirm("¿Eliminar este perfil permanentemente?")) { perfiles = perfiles.filter(p => p.id !== id); await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast("Perfil eliminado"); } }
     async function renovarPerfil(id) { const p = perfiles.find(p => p.id === id); if (p) { let base = p.fechaVencimiento ? parseFecha(p.fechaVencimiento) : new Date(); base.setMonth(base.getMonth() + 1); p.fechaVencimiento = aInputDate(base); p.estado = obtenerEstado(p.fechaVencimiento); await persistirPerfiles(); actualizarTodo(); copiarTexto(plantillaCliente(p, false)); toast("Renovado hasta " + formatearFecha(p.fechaVencimiento)); } }
     async function marcarLibre(id) { const p = perfiles.find(p => p.id === id); if (p && confirm("¿Marcar como libre?")) { p.estado = "libre"; p.fechaVencimiento = null; p.fechaVenta = null; p.precioVenta = null; p.whatsappCliente = ""; await persistirPerfiles(); actualizarTodo(); toast("Marcado libre"); } }
-    async function reasignarPerfil(id, nuevaFecha) { const p = perfiles.find(p => p.id === id); if (p && nuevaFecha && parseFecha(nuevaFecha)) { p.fechaVencimiento = nuevaFecha; p.estado = obtenerEstado(nuevaFecha); await persistirPerfiles(); actualizarTodo(); toast("Reasignado " + formatearFecha(nuevaFecha)); } }
+    async function reasignarPerfil(id, nf) { const p = perfiles.find(p => p.id === id); if (p && nf && parseFecha(nf)) { p.fechaVencimiento = nf; p.estado = obtenerEstado(nf); await persistirPerfiles(); actualizarTodo(); toast("Reasignado " + formatearFecha(nf)); } }
     async function duplicarPerfil(id) { const orig = perfiles.find(p => p.id === id); if (orig) { const nombre = prompt("Nombre nuevo:", orig.perfilNombre + " (copia)"); if (nombre) { const copia = { ...orig, id: generarIdUnico(), perfilNombre: nombre, estado: "libre", fechaVencimiento: null, fechaVenta: null, whatsappCliente: "" }; perfiles.push(copia); await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast("Duplicado: " + nombre); } } }
     async function cambiarPass(id) { const p = perfiles.find(p => p.id === id); if (p) { const nueva = prompt("Nueva contraseña:"); if (nueva && nueva.length >= 6 && nueva === prompt("Confirma la nueva contraseña:")) { p.password = nueva; await persistirPerfiles(); actualizarTodo(); toast("Contraseña actualizada"); } } }
-    async function venderPerfil(id, datosVenta) {
-        const p = perfiles.find(p => p.id === id);
-        if (!p) return;
-        if (p.estado !== "libre") { toast("Solo se pueden vender perfiles libres"); return; }
-        const precio = parseFloat(datosVenta.precio); if (isNaN(precio) || precio <= 0) { toast("Precio inválido"); return; }
-        p.plataforma = datosVenta.plataforma || p.plataforma; p.cuentaId = datosVenta.cuentaId || p.cuentaId; p.perfilNombre = datosVenta.perfilNombre || p.perfilNombre; p.mail = datosVenta.mail || p.mail; p.password = datosVenta.password || p.password; p.pin = datosVenta.pin || p.pin; p.fechaVencimiento = datosVenta.fechaVencimiento || p.fechaVencimiento; p.proveedor = datosVenta.proveedor || p.proveedor; p.observaciones = datosVenta.observaciones || p.observaciones;
-        p.fechaVenta = new Date().toISOString(); p.precioVenta = precio; p.whatsappCliente = datosVenta.cliente || ""; p.estado = "vendido";
-        if(!p.fechaVencimiento) { let nf = new Date(); nf.setDate(nf.getDate() + 30); p.fechaVencimiento = aInputDate(nf); }
-        p.estado = obtenerEstado(p.fechaVencimiento);
-        await persistirPerfiles(); reconstruirPhones(); actualizarTodo();
-        const mensaje = plantillaCliente(p, true);
-        if(datosVenta.cliente && datosVenta.cliente.trim()) { window.open("https://wa.me/" + datosVenta.cliente.replace(/\D/g,'') + "?text=" + encodeURIComponent(mensaje), '_blank'); toast("WhatsApp abierto con plantilla"); }
-        else { toast("Venta registrada"); } copiarTexto(mensaje);
-    }
+    async function venderPerfil(id, dv) { const p = perfiles.find(p => p.id === id); if (!p) return; if (p.estado !== "libre") { toast("Solo se pueden vender perfiles libres"); return; } const precio = parseFloat(dv.precio); if (isNaN(precio) || precio <= 0) { toast("Precio inválido"); return; } p.plataforma = dv.plataforma || p.plataforma; p.cuentaId = dv.cuentaId || p.cuentaId; p.perfilNombre = dv.perfilNombre || p.perfilNombre; p.mail = dv.mail || p.mail; p.password = dv.password || p.password; p.pin = dv.pin || p.pin; p.fechaVencimiento = dv.fechaVencimiento || p.fechaVencimiento; p.proveedor = dv.proveedor || p.proveedor; p.observaciones = dv.observaciones || p.observaciones; p.fechaVenta = new Date().toISOString(); p.precioVenta = precio; p.whatsappCliente = dv.cliente || ""; p.estado = "vendido"; if(!p.fechaVencimiento) { let nf = new Date(); nf.setDate(nf.getDate() + 30); p.fechaVencimiento = aInputDate(nf); } p.estado = obtenerEstado(p.fechaVencimiento); await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); const mensaje = plantillaCliente(p, true); if(dv.cliente && dv.cliente.trim()) { window.open("https://wa.me/" + dv.cliente.replace(/\D/g,'') + "?text=" + encodeURIComponent(mensaje), '_blank'); toast("WhatsApp abierto"); } else { toast("Venta registrada"); } copiarTexto(mensaje); }
 
-    function getFilteredPerfiles() {
-        const fp = document.getElementById("filtroPlataforma").value;
-        const bq = document.getElementById("buscarTexto").value.toLowerCase();
-        const fe = document.getElementById("filtroEstado").value;
-        const pf = document.getElementById("filtroProveedor").value.toLowerCase();
-        const fd = document.getElementById("fechaDesde").value;
-        const fh = document.getElementById("fechaHasta").value;
-        return perfiles.filter(p => {
-            if (fp && p.plataforma !== fp) return false;
-            if (fe && p.estado !== fe) return false;
-            if (bq && ![p.cuentaId, p.perfilNombre, p.proveedor, p.mail].join(" ").toLowerCase().includes(bq)) return false;
-            if (pf && (!p.proveedor || !p.proveedor.toLowerCase().includes(pf))) return false;
-            if (fd && (!p.fechaVencimiento || p.fechaVencimiento < fd)) return false;
-            if (fh && (!p.fechaVencimiento || p.fechaVencimiento > fh)) return false;
-            return true;
-        });
-    }
+    function getFilteredPerfiles() { const fp = document.getElementById("filtroPlataforma").value, bq = document.getElementById("buscarTexto").value.toLowerCase(), fe = document.getElementById("filtroEstado").value, pf = document.getElementById("filtroProveedor").value.toLowerCase(), fd = document.getElementById("fechaDesde").value, fh = document.getElementById("fechaHasta").value; return perfiles.filter(p => { if (fp && p.plataforma !== fp) return false; if (fe && p.estado !== fe) return false; if (bq && ![p.cuentaId, p.perfilNombre, p.proveedor, p.mail].join(" ").toLowerCase().includes(bq)) return false; if (pf && (!p.proveedor || !p.proveedor.toLowerCase().includes(pf))) return false; if (fd && (!p.fechaVencimiento || p.fechaVencimiento < fd)) return false; if (fh && (!p.fechaVencimiento || p.fechaVencimiento > fh)) return false; return true; }); }
 
-    function actualizarDashboard() {
-        document.getElementById("totalPerfiles").textContent = perfiles.length;
-        document.getElementById("libresHoy").textContent = perfiles.filter(p => p.estado === "libre").length;
-        document.getElementById("vencenHoy").textContent = perfiles.filter(p => p.estado === "proximo").length;
-        document.getElementById("ventasHoy").textContent = perfiles.filter(p => p.fechaVenta && p.fechaVenta.split('T')[0] === new Date().toISOString().split('T')[0]).length;
-        const vp = {}; perfiles.forEach(p => { if (p.fechaVenta) vp[p.plataforma] = (vp[p.plataforma]||0)+1; });
-        const mas = Object.entries(vp).sort((a,b) => b[1]-a[1])[0];
-        document.getElementById("menosVendido").innerHTML = mas ? "🔥 Más vendido: <strong>" + escapeHtml(mas[0]) + "</strong> con " + mas[1] + " venta(s)" : "📊 Sin ventas aún";
-        document.getElementById("totalGanado").textContent = "$" + perfiles.reduce((s,p) => s + (parseFloat(p.precioVenta)||0), 0).toLocaleString();
-        document.getElementById("cantidadVendidos").textContent = perfiles.filter(p => p.fechaVenta).length;
-    }
+    function actualizarDashboard() { document.getElementById("totalPerfiles").textContent = perfiles.length; document.getElementById("libresHoy").textContent = perfiles.filter(p => p.estado === "libre").length; document.getElementById("vencenHoy").textContent = perfiles.filter(p => p.estado === "proximo").length; document.getElementById("ventasHoy").textContent = perfiles.filter(p => p.fechaVenta && p.fechaVenta.split('T')[0] === new Date().toISOString().split('T')[0]).length; const vp = {}; perfiles.forEach(p => { if (p.fechaVenta) vp[p.plataforma] = (vp[p.plataforma]||0)+1; }); const mas = Object.entries(vp).sort((a,b) => b[1]-a[1])[0]; document.getElementById("menosVendido").innerHTML = mas ? "🔥 Más vendido: <strong>" + escapeHtml(mas[0]) + "</strong> con " + mas[1] + " venta(s)" : "📊 Sin ventas aún"; document.getElementById("totalGanado").textContent = "$" + perfiles.reduce((s,p) => s + (parseFloat(p.precioVenta)||0), 0).toLocaleString(); document.getElementById("cantidadVendidos").textContent = perfiles.filter(p => p.fechaVenta).length; }
+    function renderCombos() { const dia = new Date().getDay(); const dias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"]; document.getElementById("combosContainer").innerHTML = '<div style="padding:0.5rem;background:linear-gradient(135deg,rgba(245,175,25,0.08),rgba(241,39,17,0.04));border-radius:0.5rem;">🎯 Combo ' + dias[dia] + ': Netflix + Disney + HBO Max</div>'; }
 
-    function renderCombos() {
-        const dia = new Date().getDay(); const dias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-        document.getElementById("combosContainer").innerHTML = '<div style="padding:0.5rem;background:linear-gradient(135deg,rgba(245,175,25,0.08),rgba(241,39,17,0.04));border-radius:0.5rem;">🎯 Combo ' + dias[dia] + ': Netflix + Disney + HBO Max</div>';
-    }
+    function renderTablaPerfiles(pagina = 1) { const tbody = document.getElementById("tablaPerfiles"); if (!tbody) return; const datos = getFilteredPerfiles(); const totalResultados = datos.length; const totalPaginas = Math.ceil(totalResultados / registrosPorPagina); if (pagina < 1) pagina = 1; if (pagina > totalPaginas && totalPaginas > 0) pagina = totalPaginas; paginaActual = pagina; const inicio = (pagina - 1) * registrosPorPagina; const paginaDatos = datos.slice(inicio, inicio + registrosPorPagina); document.getElementById("resultadoContador").textContent = "Mostrando " + paginaDatos.length + " de " + totalResultados + " perfiles"; document.getElementById("paginacionInfo").textContent = "Página " + pagina + " de " + (totalPaginas || 1); document.getElementById("btnPaginaAnterior").disabled = pagina <= 1; document.getElementById("btnPaginaSiguiente").disabled = pagina >= totalPaginas; tbody.innerHTML = paginaDatos.map(p => { const fc = p.creadoEn ? new Date(p.creadoEn).toLocaleDateString() : "Sin fecha"; return `<tr class="${estadoRowClase(p.estado)}" ondblclick="editarPerfil('${p.id}')" style="cursor:pointer;" title="Creado: ${fc}"><td><span class="badge-desktop badge-info">${escapeHtml(p.plataforma)}</span></td><td>${escapeHtml(p.cuentaId || '-')}</td><td>${escapeHtml(p.perfilNombre || '-')}</td><td style="font-size:0.75rem;">${escapeHtml(p.mail || '-')}</td><td>${p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : 'Sin fecha'}</td><td><span class="badge-desktop ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td><td>${p.whatsappCliente || '-'}</td><td>${p.precioVenta ? '$' + p.precioVenta : '-'}</td><td style="position:relative;white-space:nowrap;"><div style="display:flex;gap:0.25rem;align-items:center;flex-wrap:wrap;">${p.whatsappProveedor ? `<button class="btn-desktop btn-icono" title="WA Proveedor" onclick="event.stopPropagation();window.open('https://wa.me/${p.whatsappProveedor.replace(/\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}${p.whatsappCliente ? `<button class="btn-desktop btn-icono" title="WA Cliente" onclick="event.stopPropagation();window.open('https://wa.me/${p.whatsappCliente.replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, false))}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}<button class="btn-desktop btn-icono" title="Copiar datos" onclick="event.stopPropagation();copiarPerfil('${p.id}')"><i class="fas fa-copy"></i></button>${!kioscoMode ? `<button class="btn-desktop btn-icono" title="Editar" onclick="event.stopPropagation();editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>` : ''}<button class="btn-desktop btn-icono success" title="Renovar" onclick="event.stopPropagation();renovarPerfil('${p.id}')"><i class="fas fa-sync-alt"></i></button><button class="btn-desktop btn-icono" title="Marcar libre" onclick="event.stopPropagation();marcarLibre('${p.id}')"><i class="fas fa-circle"></i></button><div style="position:relative;display:inline-block;"><button class="btn-desktop btn-icono" title="Más acciones" onclick="event.stopPropagation();toggleMenu('menu-${p.id}')" style="padding:0.3rem 0.5rem;">⋯</button><div id="menu-${p.id}" class="menu-contextual" style="display:none;">${!kioscoMode ? `<button class="menu-item" onclick="event.stopPropagation();cambiarPass('${p.id}')"><i class="fas fa-key"></i> Cambiar contraseña</button>` : ''}${!kioscoMode ? `<button class="menu-item" onclick="event.stopPropagation();duplicarPerfil('${p.id}')"><i class="fas fa-clone"></i> Duplicar</button>` : ''}${p.estado === 'libre' ? `<button class="menu-item" onclick="event.stopPropagation();mostrarVentaModal('${p.id}')"><i class="fas fa-tag"></i> Vender</button>` : ''}<button class="menu-item" onclick="event.stopPropagation();mostrarReasignarModal('${p.id}')"><i class="fas fa-calendar-alt"></i> Reasignar</button>${!kioscoMode ? `<button class="menu-item danger" onclick="event.stopPropagation();eliminarPerfil('${p.id}')"><i class="fas fa-trash-alt"></i> Eliminar</button>` : ''}</div></div></div></td></tr>`; }).join(''); }
 
-    function renderTablaPerfiles(pagina = 1) {
-        const tbody = document.getElementById("tablaPerfiles"); if (!tbody) return;
-        const datos = getFilteredPerfiles();
-        const totalResultados = datos.length;
-        const totalPaginas = Math.ceil(totalResultados / registrosPorPagina);
-        if (pagina < 1) pagina = 1;
-        if (pagina > totalPaginas && totalPaginas > 0) pagina = totalPaginas;
-        paginaActual = pagina;
-        const inicio = (pagina - 1) * registrosPorPagina;
-        const paginaDatos = datos.slice(inicio, inicio + registrosPorPagina);
-
-        document.getElementById("resultadoContador").textContent = "Mostrando " + paginaDatos.length + " de " + totalResultados + " perfiles";
-        document.getElementById("paginacionInfo").textContent = "Página " + pagina + " de " + (totalPaginas || 1);
-        document.getElementById("btnPaginaAnterior").disabled = pagina <= 1;
-        document.getElementById("btnPaginaSiguiente").disabled = pagina >= totalPaginas;
-
-        tbody.innerHTML = paginaDatos.map(p => {
-            const fechaCreado = p.creadoEn ? new Date(p.creadoEn).toLocaleDateString() : "Sin fecha";
-            return `
-            <tr class="${estadoRowClase(p.estado)}" ondblclick="editarPerfil('${p.id}')" style="cursor:pointer;" title="Creado: ${fechaCreado}">
-                <td><span class="badge-desktop badge-info">${escapeHtml(p.plataforma)}</span></td>
-                <td>${escapeHtml(p.cuentaId || '-')}</td><td>${escapeHtml(p.perfilNombre || '-')}</td><td style="font-size:0.75rem;">${escapeHtml(p.mail || '-')}</td>
-                <td>${p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : 'Sin fecha'}</td>
-                <td><span class="badge-desktop ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td><td>${p.whatsappCliente || '-'}</td><td>${p.precioVenta ? '$' + p.precioVenta : '-'}</td>
-                <td style="position:relative; white-space:nowrap;">
-                    <div style="display:flex; gap:0.25rem; align-items:center; flex-wrap:wrap;">
-                        ${p.whatsappProveedor ? `<button class="btn-desktop btn-icono" title="WA Proveedor" onclick="event.stopPropagation();window.open('https://wa.me/${p.whatsappProveedor.replace(/\D/g,'')}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}
-                        ${p.whatsappCliente ? `<button class="btn-desktop btn-icono" title="WA Cliente" onclick="event.stopPropagation();window.open('https://wa.me/${p.whatsappCliente.replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, false))}','_blank')"><i class="fab fa-whatsapp"></i></button>` : ''}
-                        <button class="btn-desktop btn-icono" title="Copiar datos" onclick="event.stopPropagation();copiarPerfil('${p.id}')"><i class="fas fa-copy"></i></button>
-                        ${!kioscoMode ? `<button class="btn-desktop btn-icono" title="Editar" onclick="event.stopPropagation();editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>` : ''}
-                        <button class="btn-desktop btn-icono success" title="Renovar" onclick="event.stopPropagation();renovarPerfil('${p.id}')"><i class="fas fa-sync-alt"></i></button>
-                        <button class="btn-desktop btn-icono" title="Marcar libre" onclick="event.stopPropagation();marcarLibre('${p.id}')"><i class="fas fa-circle"></i></button>
-                        <div style="position:relative; display:inline-block;">
-                            <button class="btn-desktop btn-icono" title="Más acciones" onclick="event.stopPropagation();toggleMenu('menu-${p.id}')" style="padding:0.3rem 0.5rem;">⋯</button>
-                            <div id="menu-${p.id}" class="menu-contextual" style="display:none;">
-                                ${!kioscoMode ? `<button class="menu-item" onclick="event.stopPropagation();cambiarPass('${p.id}')"><i class="fas fa-key"></i> Cambiar contraseña</button>` : ''}
-                                ${!kioscoMode ? `<button class="menu-item" onclick="event.stopPropagation();duplicarPerfil('${p.id}')"><i class="fas fa-clone"></i> Duplicar</button>` : ''}
-                                ${p.estado === 'libre' ? `<button class="menu-item" onclick="event.stopPropagation();mostrarVentaModal('${p.id}')"><i class="fas fa-tag"></i> Vender</button>` : ''}
-                                <button class="menu-item" onclick="event.stopPropagation();mostrarReasignarModal('${p.id}')"><i class="fas fa-calendar-alt"></i> Reasignar</button>
-                                ${!kioscoMode ? `<button class="menu-item danger" onclick="event.stopPropagation();eliminarPerfil('${p.id}')"><i class="fas fa-trash-alt"></i> Eliminar</button>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>`;
-        }).join('');
-    }
-
-    function aplicarModoKioscoVisual() {
-        const exportarBtn = document.getElementById("btnExportar");
-        const exportarCsvBtn = document.getElementById("btnExportarCSV");
-        const importarBtn = document.getElementById("btnImportar");
-        const borrarBtn = document.getElementById("btnBorrarTodo");
-        if (exportarBtn) exportarBtn.style.display = kioscoMode ? "none" : "";
-        if (exportarCsvBtn) exportarCsvBtn.style.display = kioscoMode ? "none" : "";
-        if (importarBtn) importarBtn.style.display = kioscoMode ? "none" : "";
-        if (borrarBtn) borrarBtn.style.display = kioscoMode ? "none" : "";
-        renderTablaPerfiles(paginaActual);
-    }
+    function aplicarModoKioscoVisual() { const eb = document.getElementById("btnExportar"), ec = document.getElementById("btnExportarCSV"), ib = document.getElementById("btnImportar"), bb = document.getElementById("btnBorrarTodo"); if (eb) eb.style.display = kioscoMode ? "none" : ""; if (ec) ec.style.display = kioscoMode ? "none" : ""; if (ib) ib.style.display = kioscoMode ? "none" : ""; if (bb) bb.style.display = kioscoMode ? "none" : ""; renderTablaPerfiles(paginaActual); }
 
     window.copiarPerfil = function(id) { const p = perfiles.find(p => p.id === id); if (p) copiarTexto(plantillaProveedor(p)); };
 
-    function renderHistorialTabla() {
-        const fp = document.getElementById("historialFiltroPlataforma").value, bq = document.getElementById("historialBuscar").value.toLowerCase(), fi = document.getElementById("historialFechaInicio").value, ff = document.getElementById("historialFechaFin").value;
-        let ventas = perfiles.filter(p => p.fechaVenta);
-        if (fp) ventas = ventas.filter(p => p.plataforma === fp);
-        if (bq) ventas = ventas.filter(p => p.perfilNombre.toLowerCase().includes(bq) || (p.whatsappCliente && p.whatsappCliente.toLowerCase().includes(bq)));
-        if (fi) ventas = ventas.filter(p => p.fechaVenta.split('T')[0] >= fi);
-        if (ff) ventas = ventas.filter(p => p.fechaVenta.split('T')[0] <= ff);
-        ventas.sort((a,b) => new Date(b.fechaVenta) - new Date(a.fechaVenta));
-        document.getElementById("historialLista").innerHTML = ventas.map(p => `
-            <tr><td>${new Date(p.fechaVenta).toLocaleDateString()}</td><td>${escapeHtml(p.plataforma)}</td><td>${escapeHtml(p.perfilNombre)}</td><td>${p.whatsappCliente || '-'}</td><td>$${p.precioVenta || 0}</td>
-                <td><button class="btn-desktop" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}','_blank')"><i class="fab fa-whatsapp"></i> Reenviar</button></td>
-            </tr>
-        `).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;">No hay ventas registradas</td></tr>';
-    }
+    function renderHistorialTabla() { const fp = document.getElementById("historialFiltroPlataforma").value, bq = document.getElementById("historialBuscar").value.toLowerCase(), fi = document.getElementById("historialFechaInicio").value, ff = document.getElementById("historialFechaFin").value; let ventas = perfiles.filter(p => p.fechaVenta); if (fp) ventas = ventas.filter(p => p.plataforma === fp); if (bq) ventas = ventas.filter(p => p.perfilNombre.toLowerCase().includes(bq) || (p.whatsappCliente && p.whatsappCliente.toLowerCase().includes(bq))); if (fi) ventas = ventas.filter(p => p.fechaVenta.split('T')[0] >= fi); if (ff) ventas = ventas.filter(p => p.fechaVenta.split('T')[0] <= ff); ventas.sort((a,b) => new Date(b.fechaVenta) - new Date(a.fechaVenta)); document.getElementById("historialLista").innerHTML = ventas.map(p => `<tr><td>${new Date(p.fechaVenta).toLocaleDateString()}</td><td>${escapeHtml(p.plataforma)}</td><td>${escapeHtml(p.perfilNombre)}</td><td>${p.whatsappCliente || '-'}</td><td>$${p.precioVenta || 0}</td><td><button class="btn-desktop" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}','_blank')"><i class="fab fa-whatsapp"></i> Reenviar</button></td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;">No hay ventas registradas</td></tr>'; }
 
-    function renderResumenes() {
-        const st = {}, pv = {};
-        perfiles.forEach(p => { const pl = p.plataforma || "Otros"; if (!st[pl]) st[pl] = { total:0, activo:0, proximo:0, vencido:0, libre:0, vendido:0 }; st[pl].total++; st[pl][p.estado]++; const pr = p.proveedor || "Sin proveedor"; if (!pv[pr]) pv[pr] = { total:0, activo:0, proximo:0, vencido:0, libre:0, vendido:0 }; pv[pr].total++; pv[pr][p.estado]++; });
-        document.getElementById("resumenStreaming").innerHTML = Object.keys(st).sort().map(k => `<div style="margin-bottom:0.3rem;"><strong>${escapeHtml(k)}</strong>: ${st[k].total} total | ✅${st[k].activo||0} ⚠️${st[k].proximo||0} ❌${st[k].vencido||0} 🆓${st[k].libre||0} 💰${st[k].vendido||0}</div>`).join('');
-        document.getElementById("resumenProveedores").innerHTML = Object.keys(pv).sort().map(k => `<div style="margin-bottom:0.3rem;"><strong>${escapeHtml(k)}</strong>: ${pv[k].total} total | ✅${pv[k].activo||0} ⚠️${pv[k].proximo||0} ❌${pv[k].vencido||0} 🆓${pv[k].libre||0} 💰${pv[k].vendido||0}</div>`).join('');
-    }
+    function renderResumenes() { const st = {}, pv = {}; perfiles.forEach(p => { const pl = p.plataforma || "Otros"; if (!st[pl]) st[pl] = { total:0, activo:0, proximo:0, vencido:0, libre:0, vendido:0 }; st[pl].total++; st[pl][p.estado]++; const pr = p.proveedor || "Sin proveedor"; if (!pv[pr]) pv[pr] = { total:0, activo:0, proximo:0, vencido:0, libre:0, vendido:0 }; pv[pr].total++; pv[pr][p.estado]++; }); document.getElementById("resumenStreaming").innerHTML = Object.keys(st).sort().map(k => `<div style="margin-bottom:0.3rem;"><strong>${escapeHtml(k)}</strong>: ${st[k].total} total | ✅${st[k].activo||0} ⚠️${st[k].proximo||0} ❌${st[k].vencido||0} 🆓${st[k].libre||0} 💰${st[k].vendido||0}</div>`).join(''); document.getElementById("resumenProveedores").innerHTML = Object.keys(pv).sort().map(k => `<div style="margin-bottom:0.3rem;"><strong>${escapeHtml(k)}</strong>: ${pv[k].total} total | ✅${pv[k].activo||0} ⚠️${pv[k].proximo||0} ❌${pv[k].vencido||0} 🆓${pv[k].libre||0} 💰${pv[k].vendido||0}</div>`).join(''); }
 
-    function mostrarAvisoVencimientos() {
-        if (!notificationsEnabled) return;
-        const hoy = new Date(); hoy.setHours(0,0,0,0); let v = [], p = [];
-        perfiles.forEach(x => { if (!x.fechaVencimiento || x.estado === "libre" || x.estado === "vendido") return; const f = parseFecha(x.fechaVencimiento); if (!f) return; f.setHours(0,0,0,0); const d = Math.round((f - hoy) / 86400000); if (d < 0) v.push(x); else if (d <= DIAS_PROXIMO) p.push(x); });
-        if (v.length > 0 || p.length > 0) {
-            let html = "";
-            if (v.length > 0) { html += '<span style="color:#ef4444;">🔴 VENCIDOS:</span><br>'; v.forEach(x => { html += "❌ " + escapeHtml(x.plataforma) + " - " + escapeHtml(x.perfilNombre) + "<br>"; }); }
-            if (p.length > 0) { html += '<br><span style="color:#f59e0b;">🟡 PRÓXIMOS:</span><br>'; p.forEach(x => { html += "⚠️ " + escapeHtml(x.plataforma) + " - " + escapeHtml(x.perfilNombre); if (x.whatsappCliente) html += ' <button class="btn-desktop success" onclick="avisarClienteVencimiento(\'' + x.id + '\')"><i class="fab fa-whatsapp"></i> Avisar</button>'; html += "<br>"; }); }
-            document.getElementById("vencimientoModalMensaje").innerHTML = html;
-            document.getElementById("vencimientoModal").classList.add("active");
-        }
-    }
+    function mostrarAvisoVencimientos() { if (!notificationsEnabled) return; const hoy = new Date(); hoy.setHours(0,0,0,0); let v = [], p = []; perfiles.forEach(x => { if (!x.fechaVencimiento || x.estado === "libre" || x.estado === "vendido") return; const f = parseFecha(x.fechaVencimiento); if (!f) return; f.setHours(0,0,0,0); const d = Math.round((f - hoy) / 86400000); if (d < 0) v.push(x); else if (d <= DIAS_PROXIMO) p.push(x); }); if (v.length > 0 || p.length > 0) { let html = ""; if (v.length > 0) { html += '<span style="color:#ef4444;">🔴 VENCIDOS:</span><br>'; v.forEach(x => { html += "❌ " + escapeHtml(x.plataforma) + " - " + escapeHtml(x.perfilNombre) + "<br>"; }); } if (p.length > 0) { html += '<br><span style="color:#f59e0b;">🟡 PRÓXIMOS:</span><br>'; p.forEach(x => { html += "⚠️ " + escapeHtml(x.plataforma) + " - " + escapeHtml(x.perfilNombre); if (x.whatsappCliente) html += ' <button class="btn-desktop success" onclick="avisarClienteVencimiento(\'' + x.id + '\')"><i class="fab fa-whatsapp"></i> Avisar</button>'; html += "<br>"; }); } document.getElementById("vencimientoModalMensaje").innerHTML = html; document.getElementById("vencimientoModal").classList.add("active"); } }
 
-    window.avisarClienteVencimiento = function(id) {
-        const p = perfiles.find(p => p.id === id);
-        if (p && p.whatsappCliente) {
-            const fv = p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : "próximamente";
-            window.open("https://wa.me/" + p.whatsappCliente.replace(/\D/g,'') + "?text=" + encodeURIComponent("🔔 *AVISO DE VENCIMIENTO* 🔔\n\nHola,\n\nTu cuenta de *" + p.plataforma + "* (Perfil: " + p.perfilNombre + ") está próxima a vencer.\n\n📅 *Vence el:* " + fv + "\n\nContactanos para renovarla.\n\n¡Gracias! 🙏"), '_blank');
-        }
-    };
+    window.avisarClienteVencimiento = function(id) { const p = perfiles.find(p => p.id === id); if (p && p.whatsappCliente) { window.open("https://wa.me/" + p.whatsappCliente.replace(/\D/g,'') + "?text=" + encodeURIComponent("🔔 *AVISO DE VENCIMIENTO* 🔔\n\nHola,\nTu cuenta de *" + p.plataforma + "* (Perfil: " + p.perfilNombre + ") está próxima a vencer.\n\n📅 *Vence el:* " + (p.fechaVencimiento ? formatearFecha(p.fechaVencimiento) : "próximamente") + "\n\nContactanos para renovarla.\n\n¡Gracias! 🙏"), '_blank'); } };
+    window.mostrarVentaModal = function(id) { const p = perfiles.find(p => p.id === id); if (!p) return; pendingVentaId = id; document.getElementById("ventaPerfilInfo").innerHTML = '<strong>' + escapeHtml(p.plataforma) + ' - ' + escapeHtml(p.perfilNombre) + '</strong>'; document.getElementById("ventaPlataforma").value = p.plataforma || "Netflix"; document.getElementById("ventaCuentaId").value = p.cuentaId || ""; document.getElementById("ventaPerfilNombre").value = p.perfilNombre || ""; document.getElementById("ventaMail").value = p.mail || ""; document.getElementById("ventaPassword").value = p.password || ""; document.getElementById("ventaPin").value = p.pin || ""; document.getElementById("ventaFechaVencimiento").value = p.fechaVencimiento || ""; document.getElementById("ventaProveedor").value = p.proveedor || ""; document.getElementById("ventaPrecio").value = p.precio || ""; document.getElementById("ventaCliente").value = ""; document.getElementById("ventaObservaciones").value = p.observaciones || ""; document.getElementById("ventaModal").classList.add("active"); validarPrecioVenta(); document.getElementById("ventaConfirmar").disabled = false; };
+    window.mostrarReasignarModal = function(id) { const p = perfiles.find(p => p.id === id); if (!p) return; pendingReasignarId = id; document.getElementById("reasignarPerfilInfo").innerText = p.plataforma + " - " + p.perfilNombre; document.getElementById("reasignarFecha").value = p.fechaVencimiento || ""; document.getElementById("reasignarModal").classList.add("active"); };
 
-    window.mostrarVentaModal = function(id) {
-        const p = perfiles.find(p => p.id === id); if (!p) return; pendingVentaId = id;
-        document.getElementById("ventaPerfilInfo").innerHTML = '<strong>' + escapeHtml(p.plataforma) + ' - ' + escapeHtml(p.perfilNombre) + '</strong>';
-        document.getElementById("ventaPlataforma").value = p.plataforma || "Netflix"; document.getElementById("ventaCuentaId").value = p.cuentaId || ""; document.getElementById("ventaPerfilNombre").value = p.perfilNombre || ""; document.getElementById("ventaMail").value = p.mail || ""; document.getElementById("ventaPassword").value = p.password || ""; document.getElementById("ventaPin").value = p.pin || ""; document.getElementById("ventaFechaVencimiento").value = p.fechaVencimiento || ""; document.getElementById("ventaProveedor").value = p.proveedor || ""; document.getElementById("ventaPrecio").value = p.precio || ""; document.getElementById("ventaCliente").value = ""; document.getElementById("ventaObservaciones").value = p.observaciones || "";
-        document.getElementById("ventaModal").classList.add("active");
-        validarPrecioVenta();
-        document.getElementById("ventaConfirmar").disabled = false;
-    };
+    function validarPrecioVenta() { const pv = parseFloat(document.getElementById("ventaPrecio").value); const btn = document.getElementById("ventaConfirmar"); if (isNaN(pv) || pv <= 0) { btn.disabled = true; btn.title = "El precio debe ser un número positivo"; } else { btn.disabled = false; btn.title = ""; } }
 
-    window.mostrarReasignarModal = function(id) {
-        const p = perfiles.find(p => p.id === id); if (!p) return; pendingReasignarId = id;
-        document.getElementById("reasignarPerfilInfo").innerText = p.plataforma + " - " + p.perfilNombre; document.getElementById("reasignarFecha").value = p.fechaVencimiento || "";
-        document.getElementById("reasignarModal").classList.add("active");
-    };
+    function limpiarFormularioIndividual() { ["platIndividual","cuentaIdIndividual","nombrePerfilIndividual","pinIndividual","mailIndividual","passIndividual","fechaIndividual","precioIndividual","proveedorIndividual","whatsappIndividual","obsIndividual"].forEach(id => document.getElementById(id).value = ""); document.getElementById("otraPlatIndividualDiv").style.display = "none"; }
 
-    function validarPrecioVenta() {
-        const precioVal = parseFloat(document.getElementById("ventaPrecio").value);
-        const btn = document.getElementById("ventaConfirmar");
-        if (isNaN(precioVal) || precioVal <= 0) {
-            btn.disabled = true;
-            btn.title = "El precio debe ser un número positivo";
-        } else {
-            btn.disabled = false;
-            btn.title = "";
-        }
-    }
+    window.editarPerfil = function(id) { const p = perfiles.find(p => p.id === id); if (!p) return; editandoId = p.id; const conocidas = ["Netflix","Netflix indiv","Disney","HBO Max","Prime video","Paramount","Crunchyrool","Spoty","YouTube"]; if (!conocidas.includes(p.plataforma)) { document.getElementById("platIndividual").value = "Otros"; document.getElementById("otraPlatIndividualDiv").style.display = "block"; document.getElementById("otraPlatIndividual").value = p.plataforma; } else { document.getElementById("platIndividual").value = p.plataforma; document.getElementById("otraPlatIndividualDiv").style.display = "none"; } document.getElementById("cuentaIdIndividual").value = p.cuentaId || ""; document.getElementById("nombrePerfilIndividual").value = p.perfilNombre || ""; document.getElementById("pinIndividual").value = p.pin || ""; document.getElementById("mailIndividual").value = p.mail || ""; document.getElementById("passIndividual").value = p.password || ""; document.getElementById("fechaIndividual").value = p.fechaVencimiento || ""; document.getElementById("precioIndividual").value = p.precio || ""; document.getElementById("proveedorIndividual").value = p.proveedor || ""; document.getElementById("whatsappIndividual").value = p.whatsappProveedor || ""; document.getElementById("obsIndividual").value = p.observaciones || ""; document.querySelectorAll(".carga-tab-desktop").forEach(b => b.classList.remove("active")); document.querySelector(".carga-tab-desktop[data-mod='individual']").classList.add("active"); document.getElementById("modo-completa").style.display = "none"; document.getElementById("modo-individual").style.display = "block"; document.getElementById("modo-masiva").style.display = "none"; document.getElementById("btnGuardarIndividual").textContent = "Guardar cambios"; document.getElementById("btnGuardarIndividual").onclick = async () => { await guardarEdicion(id); }; cambiarPagina("carga"); toast("Editando perfil..."); };
 
-    function limpiarFormularioIndividual() {
-        ["platIndividual","cuentaIdIndividual","nombrePerfilIndividual","pinIndividual","mailIndividual","passIndividual","fechaIndividual","precioIndividual","proveedorIndividual","whatsappIndividual","obsIndividual"].forEach(id => document.getElementById(id).value = "");
-        document.getElementById("otraPlatIndividualDiv").style.display = "none";
-    }
+    async function guardarEdicion(id) { if (kioscoMode) { toast("Modo kiosco: no se puede editar"); return; } let pl = document.getElementById("platIndividual").value; if (pl === "Otros") { pl = document.getElementById("otraPlatIndividual").value.trim(); if (!pl) { toast("Escribí la plataforma"); return; } } const idx = perfiles.findIndex(p => p.id === id); if (idx !== -1) { perfiles[idx] = { ...perfiles[idx], plataforma: pl, cuentaId: document.getElementById("cuentaIdIndividual").value.trim(), perfilNombre: document.getElementById("nombrePerfilIndividual").value.trim(), mail: document.getElementById("mailIndividual").value.trim(), password: document.getElementById("passIndividual").value.trim(), pin: document.getElementById("pinIndividual").value || null, fechaVencimiento: document.getElementById("fechaIndividual").value || null, proveedor: document.getElementById("proveedorIndividual").value.trim(), whatsappProveedor: document.getElementById("whatsappIndividual").value.trim(), observaciones: document.getElementById("obsIndividual").value, precio: document.getElementById("precioIndividual").value ? Number(document.getElementById("precioIndividual").value) : null, estado: document.getElementById("fechaIndividual").value ? obtenerEstado(document.getElementById("fechaIndividual").value) : "libre" }; await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast("Cambios guardados"); editandoId = null; document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil"; document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual; limpiarFormularioIndividual(); } }
 
-    window.editarPerfil = function(id) {
-        const p = perfiles.find(p => p.id === id); if (!p) return; editandoId = p.id;
-        const conocidas = ["Netflix","Netflix indiv","Disney","HBO Max","Prime video","Paramount","Crunchyrool","Spoty","YouTube"];
-        if (!conocidas.includes(p.plataforma)) { document.getElementById("platIndividual").value = "Otros"; document.getElementById("otraPlatIndividualDiv").style.display = "block"; document.getElementById("otraPlatIndividual").value = p.plataforma; }
-        else { document.getElementById("platIndividual").value = p.plataforma; document.getElementById("otraPlatIndividualDiv").style.display = "none"; }
-        document.getElementById("cuentaIdIndividual").value = p.cuentaId || ""; document.getElementById("nombrePerfilIndividual").value = p.perfilNombre || ""; document.getElementById("pinIndividual").value = p.pin || ""; document.getElementById("mailIndividual").value = p.mail || ""; document.getElementById("passIndividual").value = p.password || ""; document.getElementById("fechaIndividual").value = p.fechaVencimiento || ""; document.getElementById("precioIndividual").value = p.precio || ""; document.getElementById("proveedorIndividual").value = p.proveedor || ""; document.getElementById("whatsappIndividual").value = p.whatsappProveedor || ""; document.getElementById("obsIndividual").value = p.observaciones || "";
-        document.querySelectorAll(".carga-tab-desktop").forEach(b => b.classList.remove("active"));
-        document.querySelector(".carga-tab-desktop[data-mod='individual']").classList.add("active");
-        document.getElementById("modo-completa").style.display = "none"; document.getElementById("modo-individual").style.display = "block"; document.getElementById("modo-masiva").style.display = "none";
-        document.getElementById("btnGuardarIndividual").textContent = "Guardar cambios";
-        document.getElementById("btnGuardarIndividual").onclick = async function() { await guardarEdicion(id); };
-        cambiarPagina("carga"); toast("Editando perfil...");
-    };
+    async function guardarCuentaCompleta() { let pl = document.getElementById("platCompleta").value; if (pl === "Otros") { pl = document.getElementById("otraPlatCompleta").value.trim(); if (!pl) { toast("Escribí la plataforma"); return; } } const cid = document.getElementById("cuentaIdCompleta").value.trim(), mail = document.getElementById("mailCompleta").value.trim(), pass = document.getElementById("passCompleta").value.trim(), prov = document.getElementById("proveedorCompleta").value.trim(), wa = document.getElementById("whatsappCompleta").value.trim(), fecha = document.getElementById("fechaCompleta").value || null, precio = document.getElementById("precioCompleta").value, obs = document.getElementById("obsCompleta").value; if (!pl || !cid || !mail || !pass || !prov) { toast("Completá todos los campos"); return; } perfiles.push(...generarDesdeCuenta({ plataforma: pl, mail, password: pass, fechaVencimiento: fecha, proveedor: prov, whatsappProveedor: wa, observaciones: obs, precio: precio ? Number(precio) : null, pin: "" }, null, cid)); await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast(pl + " guardada"); ["cuentaIdCompleta","mailCompleta","passCompleta","fechaCompleta","precioCompleta","proveedorCompleta","whatsappCompleta","obsCompleta"].forEach(id => document.getElementById(id).value = ""); }
 
-    async function guardarEdicion(id) {
-        if (kioscoMode) { toast("Modo kiosco: no se puede editar"); return; }
-        let plataforma = document.getElementById("platIndividual").value;
-        if (plataforma === "Otros") { plataforma = document.getElementById("otraPlatIndividual").value.trim(); if (!plataforma) { toast("Escribí la plataforma"); return; } }
-        const idx = perfiles.findIndex(p => p.id === id);
-        if (idx !== -1) {
-            perfiles[idx] = { ...perfiles[idx], plataforma, cuentaId: document.getElementById("cuentaIdIndividual").value.trim(), perfilNombre: document.getElementById("nombrePerfilIndividual").value.trim(), mail: document.getElementById("mailIndividual").value.trim(), password: document.getElementById("passIndividual").value.trim(), pin: document.getElementById("pinIndividual").value || null, fechaVencimiento: document.getElementById("fechaIndividual").value || null, proveedor: document.getElementById("proveedorIndividual").value.trim(), whatsappProveedor: document.getElementById("whatsappIndividual").value.trim(), observaciones: document.getElementById("obsIndividual").value, precio: document.getElementById("precioIndividual").value ? Number(document.getElementById("precioIndividual").value) : null, estado: document.getElementById("fechaIndividual").value ? obtenerEstado(document.getElementById("fechaIndividual").value) : "libre" };
-            await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast("Cambios guardados"); editandoId = null;
-            document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil"; document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual;
-            limpiarFormularioIndividual();
-        }
-    }
-
-    async function guardarCuentaCompleta() {
-        let pl = document.getElementById("platCompleta").value;
-        if (pl === "Otros") { pl = document.getElementById("otraPlatCompleta").value.trim(); if (!pl) { toast("Escribí la plataforma"); return; } }
-        const cid = document.getElementById("cuentaIdCompleta").value.trim(), mail = document.getElementById("mailCompleta").value.trim(), pass = document.getElementById("passCompleta").value.trim(), prov = document.getElementById("proveedorCompleta").value.trim(), wa = document.getElementById("whatsappCompleta").value.trim(), fecha = document.getElementById("fechaCompleta").value || null, precio = document.getElementById("precioCompleta").value, obs = document.getElementById("obsCompleta").value;
-        if (!pl || !cid || !mail || !pass || !prov) { toast("Completá todos los campos"); return; }
-        perfiles.push(...generarDesdeCuenta({ plataforma: pl, mail, password: pass, fechaVencimiento: fecha, proveedor: prov, whatsappProveedor: wa, observaciones: obs, precio: precio ? Number(precio) : null, pin: "" }, null, cid));
-        await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast(pl + " guardada");
-        ["cuentaIdCompleta","mailCompleta","passCompleta","fechaCompleta","precioCompleta","proveedorCompleta","whatsappCompleta","obsCompleta"].forEach(id => document.getElementById(id).value = "");
-    }
-
-    async function guardarPerfilIndividual() {
-        let pl = document.getElementById("platIndividual").value;
-        if (pl === "Otros") { pl = document.getElementById("otraPlatIndividual").value.trim(); if (!pl) { toast("Escribí la plataforma"); return; } }
-        const cid = document.getElementById("cuentaIdIndividual").value.trim(), nom = document.getElementById("nombrePerfilIndividual").value.trim(), mail = document.getElementById("mailIndividual").value.trim(), pass = document.getElementById("passIndividual").value.trim(), prov = document.getElementById("proveedorIndividual").value.trim(), wa = document.getElementById("whatsappIndividual").value.trim(), fecha = document.getElementById("fechaIndividual").value || null, precio = document.getElementById("precioIndividual").value, pin = document.getElementById("pinIndividual").value, obs = document.getElementById("obsIndividual").value;
-        if (!pl || !cid || !nom || !mail || !pass || !prov) { toast("Completá todos los campos"); return; }
-        perfiles.push(...generarDesdeCuenta({ plataforma: pl, mail, password: pass, fechaVencimiento: fecha, proveedor: prov, whatsappProveedor: wa, observaciones: obs, precio: precio ? Number(precio) : null, pin: pin || "" }, nom, cid));
-        await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast("Perfil individual guardado");
-        limpiarFormularioIndividual();
-    }
-
-    async function previsualizarCargaMasiva() {
-        const texto = document.getElementById("batchTexto").value.trim();
-        if (!texto) { document.getElementById("batchResultados").style.display = "none"; return; }
-        const bloques = texto.split(/\n\s*\n|--/).filter(b => b.trim());
-        const resultados = [];
-        bloques.forEach(bloque => {
-            const lineas = bloque.split('\n').filter(l => l.trim());
-            const datos = {};
-            lineas.forEach(l => {
-                const match = l.match(/^([^:]+):\s*(.+)$/);
-                if (match) { const clave = match[1].toLowerCase().trim(); const valor = match[2].trim(); if (clave.includes('mail') || clave.includes('correo')) datos.mail = valor; else if (clave.includes('pass') || clave.includes('contraseña')) datos.password = valor; else if (clave.includes('perfil') || clave.includes('usuario')) datos.perfil = valor; else if (clave.includes('prov') || clave.includes('vend')) datos.proveedor = valor; }
-            });
-            if (datos.mail || datos.password) resultados.push(datos);
-        });
-        const div = document.getElementById("batchResultados");
-        div.style.display = "block";
-        div.innerHTML = resultados.length ? "<strong>Vista previa (" + resultados.length + " cuentas):</strong><br>" + resultados.map((r,i) => (i+1) + ". " + (r.perfil||'Sin perfil') + " | " + (r.mail||'Sin mail') + " | " + (r.proveedor||'Sin proveedor')).join("<br>") : "No se detectaron cuentas válidas.";
-    }
-
-    async function cargarMasiva() {
-        let plataformaSeleccionada = document.getElementById("platMasiva").value;
-        if (plataformaSeleccionada === "Otros") {
-            plataformaSeleccionada = document.getElementById("otraPlatMasiva").value.trim();
-            if (!plataformaSeleccionada) { toast("Escribí el nombre de la plataforma"); return; }
-        } else if (!plataformaSeleccionada) {
-            toast("Seleccioná una plataforma para la carga masiva"); return;
-        }
-        const texto = document.getElementById("batchTexto").value.trim();
-        if (!texto) { toast("Pegá los datos de las cuentas"); return; }
-        const bloques = texto.split(/\n\s*\n|--/).filter(b => b.trim());
-        let agregados = 0;
-        for (const bloque of bloques) {
-            const lineas = bloque.split('\n').filter(l => l.trim());
-            const datos = {};
-            lineas.forEach(l => {
-                const match = l.match(/^([^:]+):\s*(.+)$/);
-                if (match) { const clave = match[1].toLowerCase().trim(); const valor = match[2].trim(); if (clave.includes('mail') || clave.includes('correo')) datos.mail = valor; else if (clave.includes('pass') || clave.includes('contraseña')) datos.password = valor; else if (clave.includes('perfil') || clave.includes('usuario')) datos.perfil = valor; else if (clave.includes('prov') || clave.includes('vend')) datos.proveedor = valor; }
-            });
-            if (datos.mail && datos.password) {
-                const cuenta = {
-                    plataforma: plataformaSeleccionada,
-                    mail: datos.mail,
-                    password: datos.password,
-                    perfilNombre: datos.perfil || "Principal",
-                    proveedor: datos.proveedor || "",
-                    whatsappProveedor: "",
-                    observaciones: "",
-                    fechaVencimiento: null,
-                    precio: null,
-                    pin: ""
-                };
-                const nuevos = generarDesdeCuenta(cuenta, datos.perfil || null, null);
-                perfiles.push(...nuevos);
-                agregados += nuevos.length;
-            }
-        }
-        if (agregados > 0) {
-            await persistirPerfiles();
-            reconstruirPhones();
-            actualizarTodo();
-            document.getElementById("batchTexto").value = "";
-            document.getElementById("batchResultados").style.display = "none";
-            toast("Carga masiva: " + agregados + " perfiles agregados");
-        } else {
-            toast("No se encontraron cuentas válidas");
-        }
-    }
+    async function guardarPerfilIndividual() { let pl = document.getElementById("platIndividual").value; if (pl === "Otros") { pl = document.getElementById("otraPlatIndividual").value.trim(); if (!pl) { toast("Escribí la plataforma"); return; } } const cid = document.getElementById("cuentaIdIndividual").value.trim(), nom = document.getElementById("nombrePerfilIndividual").value.trim(), mail = document.getElementById("mailIndividual").value.trim(), pass = document.getElementById("passIndividual").value.trim(), prov = document.getElementById("proveedorIndividual").value.trim(), wa = document.getElementById("whatsappIndividual").value.trim(), fecha = document.getElementById("fechaIndividual").value || null, precio = document.getElementById("precioIndividual").value, pin = document.getElementById("pinIndividual").value, obs = document.getElementById("obsIndividual").value; if (!pl || !cid || !nom || !mail || !pass || !prov) { toast("Completá todos los campos"); return; } perfiles.push(...generarDesdeCuenta({ plataforma: pl, mail, password: pass, fechaVencimiento: fecha, proveedor: prov, whatsappProveedor: wa, observaciones: obs, precio: precio ? Number(precio) : null, pin: pin || "" }, nom, cid)); await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); toast("Perfil individual guardado"); limpiarFormularioIndividual(); }
 
     function actualizarTodo() { actualizarDashboard(); renderCombos(); renderTablaPerfiles(paginaActual); renderHistorialTabla(); renderResumenes(); if (notificationsEnabled) mostrarAvisoVencimientos(); aplicarModoKioscoVisual(); }
 
-    async function validarToken(token, uid) {
-        token = token.trim().toUpperCase(); if (!token) return { valido: false, estado: "invalido", mensaje: "Ingresá un token." };
-        if (!TOKENS_VALIDOS.has(token)) return { valido: false, estado: "invalido", mensaje: "Token no válido." };
-        try {
-            const tokenRef = doc(db, "tokens_usados", token);
-            const resultado = await runTransaction(db, async (t) => {
-                const snap = await t.get(tokenRef);
-                if (snap.exists()) { const d = snap.data(); if (d.usadoPor !== uid) return { valido: false, estado: "invalido", mensaje: "Token ya usado." }; const exp = new Date(d.fechaExpiracion); if (exp > new Date()) return { valido: true, estado: "activo", fechaExpiracion: d.fechaExpiracion.split('T')[0], mensaje: "Activo" }; return { valido: false, estado: "expirado", mensaje: "Expirado." }; }
-                const ahora = new Date(); const expiracion = new Date(ahora); expiracion.setDate(expiracion.getDate() + 30);
-                t.set(tokenRef, { token, usadoPor: uid, fechaActivacion: ahora.toISOString(), fechaExpiracion: expiracion.toISOString(), usado: true });
-                t.set(doc(db, "usuarios", uid, "suscripcion", "estado"), { estado: "token", fechaExpiracionToken: expiracion.toISOString() }, { merge: true });
-                return { valido: true, estado: "activo", fechaExpiracion: expiracion.toISOString().split('T')[0], mensaje: "Activado 30 días." };
-            });
-            if (resultado.valido) { appDesbloqueada = true; planEstado = "token"; diasPruebaRestantes = 0; actualizarBadgePlan(); localStorage.setItem("streamflow_token", token); localStorage.setItem("streamflow_token_expiracion", resultado.fechaExpiracion); }
-            return resultado;
-        } catch(e) { return { valido: false, estado: "pendiente", mensaje: "Error de conexión." }; }
-    }
+    async function validarToken(token, uid) { token = token.trim().toUpperCase(); if (!token) return { valido: false, estado: "invalido", mensaje: "Ingresá un token." }; if (!TOKENS_VALIDOS.has(token)) return { valido: false, estado: "invalido", mensaje: "Token no válido." }; try { const tokenRef = doc(db, "tokens_usados", token); const resultado = await runTransaction(db, async (t) => { const snap = await t.get(tokenRef); if (snap.exists()) { const d = snap.data(); if (d.usadoPor !== uid) return { valido: false, estado: "invalido", mensaje: "Token ya usado." }; const exp = new Date(d.fechaExpiracion); if (exp > new Date()) return { valido: true, estado: "activo", fechaExpiracion: d.fechaExpiracion.split('T')[0], mensaje: "Activo" }; return { valido: false, estado: "expirado", mensaje: "Expirado." }; } const ahora = new Date(); const expiracion = new Date(ahora); expiracion.setDate(expiracion.getDate() + 30); t.set(tokenRef, { token, usadoPor: uid, fechaActivacion: ahora.toISOString(), fechaExpiracion: expiracion.toISOString(), usado: true }); t.set(doc(db, "usuarios", uid, "suscripcion", "estado"), { estado: "token", fechaExpiracionToken: expiracion.toISOString() }, { merge: true }); return { valido: true, estado: "activo", fechaExpiracion: expiracion.toISOString().split('T')[0], mensaje: "Activado 30 días." }; }); if (resultado.valido) { appDesbloqueada = true; planEstado = "token"; diasPruebaRestantes = 0; actualizarBadgePlan(); localStorage.setItem("streamflow_token", token); localStorage.setItem("streamflow_token_expiracion", resultado.fechaExpiracion); } return resultado; } catch(e) { return { valido: false, estado: "pendiente", mensaje: "Error de conexión." }; } }
 
-    async function ejecutarValidacionToken() {
-        const token = document.getElementById("tokenAcceso").value.trim().toUpperCase();
-        if (!token) { toast("Ingresá un token"); return; }
-        if (!currentUser) { toast("Iniciá sesión primero"); return; }
-        const btn = document.getElementById("btnValidarToken"); btn.disabled = true;
-        const resultado = await validarToken(token, currentUser.uid);
-        if (resultado.valido) { document.getElementById("tokenAcceso").value = ""; toast("Token válido. 30 días activos."); }
-        else { toast(resultado.mensaje || "Token inválido"); }
-        btn.disabled = false;
-    }
+    async function ejecutarValidacionToken() { const token = document.getElementById("tokenAcceso").value.trim().toUpperCase(); if (!token) { toast("Ingresá un token"); return; } if (!currentUser) { toast("Iniciá sesión primero"); return; } const btn = document.getElementById("btnValidarToken"); btn.disabled = true; const resultado = await validarToken(token, currentUser.uid); if (resultado.valido) { document.getElementById("tokenAcceso").value = ""; toast("Token válido. 30 días activos."); } else { toast(resultado.mensaje || "Token inválido"); } btn.disabled = false; }
 
-    function cambiarPagina(page) {
-        paginaActual = 1;
-        const titulos = { dashboard: "Dashboard", carga: "Cargar Cuentas", perfiles: "Perfiles", historial: "Historial", stats: "Estadísticas", ajustes: "Ajustes" };
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-        document.getElementById("page-" + page).classList.add("active");
-        document.querySelector(".nav-item[data-page='" + page + "']").classList.add("active");
-        document.getElementById("pageTitle").innerText = titulos[page] || page;
-        if (page === "dashboard") { actualizarDashboard(); renderCombos(); }
-        if (page === "perfiles") renderTablaPerfiles(paginaActual);
-        if (page === "historial") renderHistorialTabla();
-        if (page === "stats") renderResumenes();
-        if (page !== "carga") { editandoId = null; document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil"; document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual; limpiarFormularioIndividual(); }
-    }
+    function cambiarPagina(page) { paginaActual = 1; const titulos = { dashboard: "Dashboard", carga: "Cargar Cuentas", perfiles: "Perfiles", historial: "Historial", stats: "Estadísticas", ajustes: "Ajustes" }; document.querySelectorAll(".page").forEach(p => p.classList.remove("active")); document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active")); document.getElementById("page-" + page).classList.add("active"); document.querySelector(".nav-item[data-page='" + page + "']").classList.add("active"); document.getElementById("pageTitle").innerText = titulos[page] || page; if (page === "dashboard") { actualizarDashboard(); renderCombos(); } if (page === "perfiles") renderTablaPerfiles(paginaActual); if (page === "historial") renderHistorialTabla(); if (page === "stats") renderResumenes(); if (page !== "carga") { editandoId = null; document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil"; document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual; limpiarFormularioIndividual(); } }
 
-    // Funciones globales para modales y ticket
     function abrirModal(id) { document.getElementById(id).classList.add("active"); }
     function cerrarModal(id) { document.getElementById(id).classList.remove("active"); }
-    function enviarTicket(e) {
-        e.preventDefault();
-        const nombre = document.getElementById("ticketNombre").value.trim();
-        const email = document.getElementById("ticketEmail").value.trim();
-        const asunto = document.getElementById("ticketAsunto").value;
-        const mensaje = document.getElementById("ticketMensaje").value.trim();
-        window.location.href = `mailto:soportesfpro@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(`Nombre: ${nombre}\nCorreo: ${email}\n\nMensaje:\n${mensaje}`)}`;
-        cerrarModal('modalTicket');
-    }
-    // Exponerlas globalmente
+    function enviarTicket(e) { e.preventDefault(); const nombre = document.getElementById("ticketNombre").value.trim(); const email = document.getElementById("ticketEmail").value.trim(); const asunto = document.getElementById("ticketAsunto").value; const mensaje = document.getElementById("ticketMensaje").value.trim(); window.location.href = `mailto:soportesfpro@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(`Nombre: ${nombre}\nCorreo: ${email}\n\nMensaje:\n${mensaje}`)}`; cerrarModal('modalTicket'); }
     window.abrirModal = abrirModal;
     window.cerrarModal = cerrarModal;
     window.enviarTicket = enviarTicket;
 
-    // Funciones del menú contextual
-    window.toggleMenu = function(menuId) {
-        const menu = document.getElementById(menuId);
-        if (!menu) return;
-        document.querySelectorAll('.menu-contextual').forEach(m => {
-            if (m.id !== menuId) m.style.display = 'none';
-        });
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    };
+    window.toggleMenu = function(menuId) { const menu = document.getElementById(menuId); if (!menu) return; document.querySelectorAll('.menu-contextual').forEach(m => { if (m.id !== menuId) m.style.display = 'none'; }); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; };
+    document.addEventListener('click', function(e) { if (!e.target.closest('.menu-contextual') && !e.target.closest('[onclick*="toggleMenu"]')) { document.querySelectorAll('.menu-contextual').forEach(m => m.style.display = 'none'); } });
 
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.menu-contextual') && !e.target.closest('[onclick*="toggleMenu"]')) {
-            document.querySelectorAll('.menu-contextual').forEach(m => m.style.display = 'none');
-        }
-    });
+    // Funciones de exportación
+    async function exportarJSON() { if (!confirm("¿Querés incluir las contraseñas en la exportación? (Seleccioná Cancelar para omitirlas)")) { const copia = perfiles.map(p => ({...p, password: '***', mail: '***'})); const blob = new Blob([JSON.stringify(copia, null, 2)], { type: "application/json" }); const a = document.createElement("a"); a.download = "streamflow_" + new Date().toISOString().split('T')[0] + "_sinpass.json"; a.href = URL.createObjectURL(blob); a.click(); toast("Exportado JSON sin contraseñas"); } else { const blob = new Blob([JSON.stringify(perfiles, null, 2)], { type: "application/json" }); const a = document.createElement("a"); a.download = "streamflow_" + new Date().toISOString().split('T')[0] + ".json"; a.href = URL.createObjectURL(blob); a.click(); toast("Exportado JSON"); } }
+    async function exportarCSV() { const incluir = confirm("¿Querés incluir las contraseñas en la exportación CSV? (Cancelar para omitirlas)"); const cabecera = ["Plataforma","Cuenta","Perfil","Correo","Vence","Estado","Cliente WA","Precio"]; let csv = cabecera.join(",") + "\n"; perfiles.forEach(p => { const fila = [ p.plataforma, p.cuentaId||'', p.perfilNombre||'', incluir ? (p.mail||'') : '***', p.fechaVencimiento||'', estadoTexto(p.estado), p.whatsappCliente||'', p.precioVenta||'' ].map(v => csvEscape(v)); csv += fila.join(",") + "\n"; }); const blob = new Blob([csv], { type: "text/csv" }); const a = document.createElement("a"); a.download = "streamflow_" + new Date().toISOString().split('T')[0] + (incluir ? "" : "_sinpass") + ".csv"; a.href = URL.createObjectURL(blob); a.click(); toast("Exportado CSV"); }
 
-    async function exportarJSON() {
-        if (!confirm("¿Querés incluir las contraseñas en la exportación? (Seleccioná Cancelar para omitirlas)")) {
-            const copia = perfiles.map(p => ({...p, password: '***', mail: '***'}));
-            const blob = new Blob([JSON.stringify(copia, null, 2)], { type: "application/json" });
-            const a = document.createElement("a"); a.download = "streamflow_" + new Date().toISOString().split('T')[0] + "_sinpass.json"; a.href = URL.createObjectURL(blob); a.click(); toast("Exportado JSON sin contraseñas");
-        } else {
-            const blob = new Blob([JSON.stringify(perfiles, null, 2)], { type: "application/json" });
-            const a = document.createElement("a"); a.download = "streamflow_" + new Date().toISOString().split('T')[0] + ".json"; a.href = URL.createObjectURL(blob); a.click(); toast("Exportado JSON");
-        }
-    }
-
-    async function exportarCSV() {
-        const incluir = confirm("¿Querés incluir las contraseñas en la exportación CSV? (Cancelar para omitirlas)");
-        const cabecera = ["Plataforma","Cuenta","Perfil","Correo","Vence","Estado","Cliente WA","Precio"];
-        let csv = cabecera.join(",") + "\n";
-        perfiles.forEach(p => {
-            const fila = [
-                p.plataforma, p.cuentaId||'', p.perfilNombre||'',
-                incluir ? (p.mail||'') : '***',
-                p.fechaVencimiento||'', estadoTexto(p.estado), p.whatsappCliente||'', p.precioVenta||''
-            ].map(v => csvEscape(v));
-            csv += fila.join(",") + "\n";
-        });
-        const blob = new Blob([csv], { type: "text/csv" });
-        const a = document.createElement("a");
-        a.download = "streamflow_" + new Date().toISOString().split('T')[0] + (incluir ? "" : "_sinpass") + ".csv";
-        a.href = URL.createObjectURL(blob);
-        a.click();
-        toast("Exportado CSV");
-    }
-
-    /* ---------- Event Listeners ---------- */
+    /* Event listeners */
     document.querySelectorAll(".nav-item").forEach(item => item.addEventListener("click", function() { cambiarPagina(this.dataset.page); }));
     document.getElementById("btnGuardarCompleta").addEventListener("click", guardarCuentaCompleta);
     document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual;
     document.getElementById("btnCancelarEdicion").addEventListener("click", () => { editandoId = null; document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil"; document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual; limpiarFormularioIndividual(); cambiarPagina("dashboard"); toast("Edición cancelada"); });
     document.getElementById("showRegister").addEventListener("click", () => { document.getElementById("loginPanel").style.display = "none"; document.getElementById("registerPanel").style.display = "block"; });
     document.getElementById("showLogin").addEventListener("click", () => { document.getElementById("registerPanel").style.display = "none"; document.getElementById("loginPanel").style.display = "block"; });
-    document.getElementById("btnLoginSubmit").addEventListener("click", async function() {
-        const email = document.getElementById("loginEmail").value, password = document.getElementById("loginPassword").value;
-        if (!email || !password) { document.getElementById("authError").innerText = "Completa todos los campos"; return; }
-        const btn = this; btn.disabled = true; btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #0a0e17;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:0.4rem;"></span> Ingresando...';
-        try { await signInWithEmailAndPassword(auth, email, password); } catch(e) { document.getElementById("authError").innerText = e.message; btn.disabled = false; btn.innerHTML = 'Iniciar sesión'; }
-    });
-    document.getElementById("btnRegisterSubmit").addEventListener("click", async () => {
-        const email = document.getElementById("regEmail").value, password = document.getElementById("regPassword").value, confirm = document.getElementById("regPasswordConfirm").value;
-        if (password !== confirm) { document.getElementById("authError").innerText = "Las contraseñas no coinciden"; return; }
-        try { await createUserWithEmailAndPassword(auth, email, password); } catch(e) { document.getElementById("authError").innerText = e.message; }
-    });
+    document.getElementById("btnLoginSubmit").addEventListener("click", async function() { const email = document.getElementById("loginEmail").value, password = document.getElementById("loginPassword").value; if (!email || !password) { document.getElementById("authError").innerText = "Completa todos los campos"; return; } const btn = this; btn.disabled = true; btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #0a0e17;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:0.4rem;"></span> Ingresando...'; try { await signInWithEmailAndPassword(auth, email, password); } catch(e) { document.getElementById("authError").innerText = e.message; btn.disabled = false; btn.innerHTML = 'Iniciar sesión'; } });
+    document.getElementById("btnRegisterSubmit").addEventListener("click", async () => { const email = document.getElementById("regEmail").value, password = document.getElementById("regPassword").value, confirm = document.getElementById("regPasswordConfirm").value; if (password !== confirm) { document.getElementById("authError").innerText = "Las contraseñas no coinciden"; return; } try { await createUserWithEmailAndPassword(auth, email, password); } catch(e) { document.getElementById("authError").innerText = e.message; } });
     document.getElementById("googleLoginBtn").addEventListener("click", async () => { try { await signInWithPopup(auth, googleProvider); } catch(e) { document.getElementById("authError").innerText = e.message; } });
-    document.getElementById("logoutBtn").addEventListener("click", async () => { if (!confirm("¿Cerrar sesión?")) return; localStorage.removeItem("streamflow_token"); localStorage.removeItem("streamflow_token_expiracion"); localStorage.removeItem("streamflow_offline_session"); await signOut(auth); });
+    
+    // LOGOUT: ahora en el dropdown del perfil
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => { e.stopPropagation(); if (!confirm("¿Cerrar sesión?")) return; localStorage.removeItem("streamflow_token"); localStorage.removeItem("streamflow_token_expiracion"); localStorage.removeItem("streamflow_offline_session"); await signOut(auth); });
+    
+    // TOGGLE del dropdown de perfil
+    document.getElementById("userProfileBtn").addEventListener("click", function(e) { e.stopPropagation(); document.getElementById("userDropdown").classList.toggle("active"); });
+    document.addEventListener("click", function(e) { if (!e.target.closest("#userProfileBtn")) document.getElementById("userDropdown").classList.remove("active"); });
+    
     document.getElementById("btnValidarToken").addEventListener("click", ejecutarValidacionToken);
-    document.getElementById("btnComprarToken").addEventListener("click", () => {
-        const userEmail = auth.currentUser ? auth.currentUser.email : "";
-        window.open("https://wa.me/5492291530515?text=" + encodeURIComponent("Hola, quiero comprar un token para StreamFlow Pro. Mi correo es " + (userEmail || "usuario@ejemplo.com")), '_blank');
-    });
-    document.getElementById("ventaConfirmar").addEventListener("click", async function() {
-        const btn = this;
-        btn.disabled = true;
-        btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #0a0e17;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:0.4rem;"></span> Vendiendo...';
-        try {
-            const dv = { plataforma: document.getElementById("ventaPlataforma").value, cuentaId: document.getElementById("ventaCuentaId").value.trim(), perfilNombre: document.getElementById("ventaPerfilNombre").value.trim(), mail: document.getElementById("ventaMail").value.trim(), password: document.getElementById("ventaPassword").value.trim(), pin: document.getElementById("ventaPin").value.trim(), fechaVencimiento: document.getElementById("ventaFechaVencimiento").value, proveedor: document.getElementById("ventaProveedor").value.trim(), precio: document.getElementById("ventaPrecio").value, cliente: document.getElementById("ventaCliente").value.trim(), observaciones: document.getElementById("ventaObservaciones").value.trim() };
-            if (!dv.perfilNombre || !dv.mail || !dv.password) { toast("Completá los campos obligatorios"); return; }
-            await venderPerfil(pendingVentaId, dv);
-            document.getElementById("ventaModal").classList.remove("active");
-            pendingVentaId = null;
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = 'Confirmar venta';
-        }
-    });
+    document.getElementById("btnComprarToken").addEventListener("click", () => { const userEmail = auth.currentUser ? auth.currentUser.email : ""; window.open("https://wa.me/5492291530515?text=" + encodeURIComponent("Hola, quiero comprar un token para StreamFlow Pro. Mi correo es " + (userEmail || "usuario@ejemplo.com")), '_blank'); });
+    document.getElementById("ventaConfirmar").addEventListener("click", async function() { const btn = this; btn.disabled = true; btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #0a0e17;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:0.4rem;"></span> Vendiendo...'; try { const dv = { plataforma: document.getElementById("ventaPlataforma").value, cuentaId: document.getElementById("ventaCuentaId").value.trim(), perfilNombre: document.getElementById("ventaPerfilNombre").value.trim(), mail: document.getElementById("ventaMail").value.trim(), password: document.getElementById("ventaPassword").value.trim(), pin: document.getElementById("ventaPin").value.trim(), fechaVencimiento: document.getElementById("ventaFechaVencimiento").value, proveedor: document.getElementById("ventaProveedor").value.trim(), precio: document.getElementById("ventaPrecio").value, cliente: document.getElementById("ventaCliente").value.trim(), observaciones: document.getElementById("ventaObservaciones").value.trim() }; if (!dv.perfilNombre || !dv.mail || !dv.password) { toast("Completá los campos obligatorios"); return; } await venderPerfil(pendingVentaId, dv); document.getElementById("ventaModal").classList.remove("active"); pendingVentaId = null; } finally { btn.disabled = false; btn.innerHTML = 'Confirmar venta'; } });
     document.getElementById("ventaCancelar").addEventListener("click", () => document.getElementById("ventaModal").classList.remove("active"));
     document.getElementById("reasignarConfirmar").addEventListener("click", async () => { const nf = document.getElementById("reasignarFecha").value; if (!nf) { toast("Seleccioná una fecha"); return; } await reasignarPerfil(pendingReasignarId, nf); document.getElementById("reasignarModal").classList.remove("active"); pendingReasignarId = null; });
     document.getElementById("reasignarCancelar").addEventListener("click", () => document.getElementById("reasignarModal").classList.remove("active"));
@@ -1271,11 +748,7 @@
     document.getElementById("btnOrdenar").addEventListener("click", () => { perfiles.sort((a,b) => { if (!a.fechaVencimiento) return 1; if (!b.fechaVencimiento) return -1; return ordenAsc ? parseFecha(a.fechaVencimiento) - parseFecha(b.fechaVencimiento) : parseFecha(b.fechaVencimiento) - parseFecha(a.fechaVencimiento); }); ordenAsc = !ordenAsc; persistirPerfiles(); renderTablaPerfiles(paginaActual); });
     document.getElementById("btnLimpiarFiltros").addEventListener("click", () => { ["filtroPlataforma","filtroEstado","buscarTexto","filtroProveedor","fechaDesde","fechaHasta"].forEach(id => document.getElementById(id).value = ""); renderTablaPerfiles(1); });
     document.getElementById("btnPaginaAnterior").addEventListener("click", () => { if (paginaActual > 1) { paginaActual--; renderTablaPerfiles(paginaActual); document.getElementById("contentArea").scrollTop = 0; } });
-    document.getElementById("btnPaginaSiguiente").addEventListener("click", () => {
-        const totalFiltrados = getFilteredPerfiles().length;
-        const totalPaginas = Math.ceil(totalFiltrados / registrosPorPagina);
-        if (paginaActual < totalPaginas) { paginaActual++; renderTablaPerfiles(paginaActual); document.getElementById("contentArea").scrollTop = 0; }
-    });
+    document.getElementById("btnPaginaSiguiente").addEventListener("click", () => { const tf = getFilteredPerfiles().length; const tp = Math.ceil(tf / registrosPorPagina); if (paginaActual < tp) { paginaActual++; renderTablaPerfiles(paginaActual); document.getElementById("contentArea").scrollTop = 0; } });
     document.getElementById("btnResetVentas").addEventListener("click", async () => { if (confirm("¿Reiniciar todas las ventas?")) { perfiles.forEach(p => { p.fechaVenta = null; p.precioVenta = null; p.whatsappCliente = ""; if(p.estado === "vendido") p.estado = "libre"; }); await persistirPerfiles(); actualizarTodo(); toast("Ventas reiniciadas"); } });
     document.getElementById("btnExportar").addEventListener("click", exportarJSON);
     document.getElementById("btnExportarCSV").addEventListener("click", exportarCSV);
@@ -1288,31 +761,7 @@
     document.getElementById("historialFechaFin").addEventListener("change", renderHistorialTabla);
     document.getElementById("btnExportConfig").addEventListener("click", () => { const config = { diasProximo: DIAS_PROXIMO, autoSync: autoSyncEnabled, notifications: notificationsEnabled, kiosco: kioscoMode, fontSize: document.getElementById("fontSizeConfig").value, tema: document.body.classList.contains("light-mode") ? "light" : "dark" }; const blob = new Blob([JSON.stringify(config)], { type: "application/json" }); const a = document.createElement("a"); a.download = "config_streamflow.json"; a.href = URL.createObjectURL(blob); a.click(); toast("Configuración exportada"); });
     document.getElementById("btnImportConfig").addEventListener("click", () => document.getElementById("archivoConfig").click());
-    document.getElementById("archivoConfig").addEventListener("change", function(e) {
-        if (e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                try {
-                    const config = JSON.parse(ev.target.result);
-                    if (typeof config.diasProximo === 'number') DIAS_PROXIMO = config.diasProximo;
-                    if (typeof config.autoSync === 'boolean') autoSyncEnabled = config.autoSync;
-                    if (typeof config.notifications === 'boolean') notificationsEnabled = config.notifications;
-                    if (typeof config.kiosco === 'boolean') kioscoMode = config.kiosco;
-                    if (config.fontSize && ['small','medium','large'].includes(config.fontSize)) document.getElementById("fontSizeConfig").value = config.fontSize;
-                    document.getElementById("diasProximoConfig").value = DIAS_PROXIMO;
-                    document.getElementById("autoSyncToggle").checked = autoSyncEnabled;
-                    document.getElementById("notificationsToggle").checked = notificationsEnabled;
-                    document.getElementById("kioscoToggle").checked = kioscoMode;
-                    if (config.tema === "light") { document.body.classList.add("light-mode"); document.getElementById("themeToggle").checked = true; }
-                    else if (config.tema === "dark") { document.body.classList.remove("light-mode"); document.getElementById("themeToggle").checked = false; }
-                    guardarConfigLocal();
-                    aplicarModoKioscoVisual();
-                    toast("Configuración importada");
-                } catch(err) { toast("Archivo inválido"); }
-            };
-            reader.readAsText(e.target.files[0]); e.target.value = "";
-        }
-    });
+    document.getElementById("archivoConfig").addEventListener("change", function(e) { if (e.target.files[0]) { const reader = new FileReader(); reader.onload = function(ev) { try { const c = JSON.parse(ev.target.result); if (typeof c.diasProximo === 'number') DIAS_PROXIMO = c.diasProximo; if (typeof c.autoSync === 'boolean') autoSyncEnabled = c.autoSync; if (typeof c.notifications === 'boolean') notificationsEnabled = c.notifications; if (typeof c.kiosco === 'boolean') kioscoMode = c.kiosco; if (c.fontSize && ['small','medium','large'].includes(c.fontSize)) document.getElementById("fontSizeConfig").value = c.fontSize; document.getElementById("diasProximoConfig").value = DIAS_PROXIMO; document.getElementById("autoSyncToggle").checked = autoSyncEnabled; document.getElementById("notificationsToggle").checked = notificationsEnabled; document.getElementById("kioscoToggle").checked = kioscoMode; if (c.tema === "light") { document.body.classList.add("light-mode"); document.getElementById("themeToggle").checked = true; } else if (c.tema === "dark") { document.body.classList.remove("light-mode"); document.getElementById("themeToggle").checked = false; } guardarConfigLocal(); aplicarModoKioscoVisual(); toast("Configuración importada"); } catch(err) { toast("Archivo inválido"); } }; reader.readAsText(e.target.files[0]); e.target.value = ""; } });
     document.getElementById("btnResetConfig").addEventListener("click", () => { DIAS_PROXIMO = 3; autoSyncEnabled = true; notificationsEnabled = true; kioscoMode = false; document.body.classList.remove("light-mode"); document.getElementById("diasProximoConfig").value = 3; document.getElementById("autoSyncToggle").checked = true; document.getElementById("notificationsToggle").checked = true; document.getElementById("kioscoToggle").checked = false; document.getElementById("themeToggle").checked = false; document.getElementById("fontSizeConfig").value = "medium"; guardarConfigLocal(); aplicarModoKioscoVisual(); toast("Configuración restablecida"); actualizarTodo(); });
     document.getElementById("diasProximoConfig").addEventListener("change", function(e) { DIAS_PROXIMO = parseInt(e.target.value) || 3; guardarConfigLocal(); actualizarTodo(); });
     document.getElementById("autoSyncToggle").addEventListener("change", function(e) { autoSyncEnabled = e.target.checked; guardarConfigLocal(); });
@@ -1320,37 +769,27 @@
     document.getElementById("kioscoToggle").addEventListener("change", function(e) { kioscoMode = e.target.checked; guardarConfigLocal(); aplicarModoKioscoVisual(); });
     document.getElementById("themeToggle").addEventListener("change", function(e) { if (e.target.checked) { document.body.classList.add("light-mode"); } else { document.body.classList.remove("light-mode"); } guardarConfigLocal(); });
     document.getElementById("fontSizeConfig").addEventListener("change", function(e) { document.documentElement.style.fontSize = e.target.value === "small" ? "13px" : e.target.value === "large" ? "17px" : "14px"; guardarConfigLocal(); });
-    document.querySelectorAll(".carga-tab-desktop").forEach(btn => {
-        btn.addEventListener("click", function() {
-            document.querySelectorAll(".carga-tab-desktop").forEach(b => b.classList.remove("active")); this.classList.add("active");
-            const mod = this.dataset.mod;
-            document.getElementById("modo-completa").style.display = mod === "completa" ? "block" : "none";
-            document.getElementById("modo-individual").style.display = mod === "individual" ? "block" : "none";
-            document.getElementById("modo-masiva").style.display = mod === "masiva" ? "block" : "none";
-        });
-    });
+    document.querySelectorAll(".carga-tab-desktop").forEach(btn => { btn.addEventListener("click", function() { document.querySelectorAll(".carga-tab-desktop").forEach(b => b.classList.remove("active")); this.classList.add("active"); const mod = this.dataset.mod; document.getElementById("modo-completa").style.display = mod === "completa" ? "block" : "none"; document.getElementById("modo-individual").style.display = mod === "individual" ? "block" : "none"; document.getElementById("modo-masiva").style.display = mod === "masiva" ? "block" : "none"; }); });
     document.getElementById("platCompleta").addEventListener("change", function(e) { document.getElementById("otraPlatCompletaDiv").style.display = e.target.value === "Otros" ? "block" : "none"; });
     document.getElementById("platIndividual").addEventListener("change", function(e) { document.getElementById("otraPlatIndividualDiv").style.display = e.target.value === "Otros" ? "block" : "none"; });
     document.getElementById("platMasiva").addEventListener("change", function(e) { document.getElementById("otraPlatMasivaDiv").style.display = e.target.value === "Otros" ? "block" : "none"; });
     document.getElementById("btnPrevisualizar").addEventListener("click", previsualizarCargaMasiva);
+    async function previsualizarCargaMasiva() { const texto = document.getElementById("batchTexto").value.trim(); if (!texto) { document.getElementById("batchResultados").style.display = "none"; return; } const bloques = texto.split(/\n\s*\n|--/).filter(b => b.trim()); const resultados = []; bloques.forEach(bloque => { const lineas = bloque.split('\n').filter(l => l.trim()); const datos = {}; lineas.forEach(l => { const match = l.match(/^([^:]+):\s*(.+)$/); if (match) { const clave = match[1].toLowerCase().trim(); const valor = match[2].trim(); if (clave.includes('mail') || clave.includes('correo')) datos.mail = valor; else if (clave.includes('pass') || clave.includes('contraseña')) datos.password = valor; else if (clave.includes('perfil') || clave.includes('usuario')) datos.perfil = valor; else if (clave.includes('prov') || clave.includes('vend')) datos.proveedor = valor; } }); if (datos.mail || datos.password) resultados.push(datos); }); const div = document.getElementById("batchResultados"); div.style.display = "block"; div.innerHTML = resultados.length ? "<strong>Vista previa (" + resultados.length + " cuentas):</strong><br>" + resultados.map((r,i) => (i+1) + ". " + (r.perfil||'Sin perfil') + " | " + (r.mail||'Sin mail') + " | " + (r.proveedor||'Sin proveedor')).join("<br>") : "No se detectaron cuentas válidas."; }
     document.getElementById("btnCargarMasivo").addEventListener("click", cargarMasiva);
+    async function cargarMasiva() { let ps = document.getElementById("platMasiva").value; if (ps === "Otros") { ps = document.getElementById("otraPlatMasiva").value.trim(); if (!ps) { toast("Escribí el nombre de la plataforma"); return; } } else if (!ps) { toast("Seleccioná una plataforma"); return; } const texto = document.getElementById("batchTexto").value.trim(); if (!texto) { toast("Pegá los datos de las cuentas"); return; } const bloques = texto.split(/\n\s*\n|--/).filter(b => b.trim()); let agregados = 0; for (const bloque of bloques) { const lineas = bloque.split('\n').filter(l => l.trim()); const datos = {}; lineas.forEach(l => { const match = l.match(/^([^:]+):\s*(.+)$/); if (match) { const clave = match[1].toLowerCase().trim(); const valor = match[2].trim(); if (clave.includes('mail') || clave.includes('correo')) datos.mail = valor; else if (clave.includes('pass') || clave.includes('contraseña')) datos.password = valor; else if (clave.includes('perfil') || clave.includes('usuario')) datos.perfil = valor; else if (clave.includes('prov') || clave.includes('vend')) datos.proveedor = valor; } }); if (datos.mail && datos.password) { const cuenta = { plataforma: ps, mail: datos.mail, password: datos.password, perfilNombre: datos.perfil || "Principal", proveedor: datos.proveedor || "", whatsappProveedor: "", observaciones: "", fechaVencimiento: null, precio: null, pin: "" }; const nuevos = generarDesdeCuenta(cuenta, datos.perfil || null, null); perfiles.push(...nuevos); agregados += nuevos.length; } } if (agregados > 0) { await persistirPerfiles(); reconstruirPhones(); actualizarTodo(); document.getElementById("batchTexto").value = ""; document.getElementById("batchResultados").style.display = "none"; toast("Carga masiva: " + agregados + " perfiles agregados"); } else { toast("No se encontraron cuentas válidas"); } }
     document.getElementById("ventaPrecio").addEventListener("input", validarPrecioVenta);
-    document.addEventListener("keydown", function(e) {
-        if (e.ctrlKey) {
-            const secciones = { d:"dashboard", n:"carga", p:"perfiles", h:"historial", s:"stats", a:"ajustes" };
-            if (secciones[e.key]) { e.preventDefault(); cambiarPagina(secciones[e.key]); toast("Sección: " + secciones[e.key].charAt(0).toUpperCase() + secciones[e.key].slice(1)); }
-            else if (e.key === 'f') { e.preventDefault(); cambiarPagina("perfiles"); setTimeout(() => { const inp = document.getElementById("buscarTexto"); if (inp) { inp.focus(); inp.select(); } }, 200); toast("Búsqueda en perfiles"); }
-        }
-    });
+    document.addEventListener("keydown", function(e) { if (e.ctrlKey) { const s = { d:"dashboard", n:"carga", p:"perfiles", h:"historial", s:"stats", a:"ajustes" }; if (s[e.key]) { e.preventDefault(); cambiarPagina(s[e.key]); toast("Sección: " + s[e.key].charAt(0).toUpperCase() + s[e.key].slice(1)); } else if (e.key === 'f') { e.preventDefault(); cambiarPagina("perfiles"); setTimeout(() => { const inp = document.getElementById("buscarTexto"); if (inp) { inp.focus(); inp.select(); } }, 200); toast("Búsqueda en perfiles"); } } });
 
     onAuthStateChanged(auth, async function(user) {
         if (user) {
             currentUser = user; localStorage.setItem('streamflow_offline_session', JSON.stringify({ uid: user.uid, lastLogin: Date.now() }));
             document.getElementById("loginWrapper").style.display = "none"; document.getElementById("appContainer").style.display = "flex";
+            actualizarPerfilUI();
             cargarConfigLocal(); iniciarListenerFirestore(user.uid); await verificarSuscripcion(user.uid); actualizarBadgePlan(); actualizarTodo();
         } else if (puedeEntrarOffline()) {
             const sesion = JSON.parse(localStorage.getItem('streamflow_offline_session')); currentUser = { uid: sesion.uid, isOffline: true };
             document.getElementById("loginWrapper").style.display = "none"; document.getElementById("appContainer").style.display = "flex";
+            document.getElementById("userEmailDisplay").textContent = "Offline"; document.getElementById("userAvatar").innerHTML = "O"; document.getElementById("dropdownEmail").textContent = "Modo sin conexión"; document.getElementById("dropdownProvider").textContent = "Datos locales";
             cargarConfigLocal(); cargarPerfilesLocal(); actualizarTodo(); aplicarBloqueoAppOffline(); toast("Sin conexión. Datos locales.");
         } else {
             currentUser = null; document.getElementById("loginWrapper").style.display = "flex"; document.getElementById("appContainer").style.display = "none";
@@ -1361,4 +800,4 @@
     window.addEventListener("offline", () => toast("⚠️ Sin conexión"));
 </script>
 </body>
-</html>
+  </html>
