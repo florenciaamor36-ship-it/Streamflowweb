@@ -1152,6 +1152,7 @@
         if (page !== "carga") { editandoId = null; document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil"; document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual; limpiarFormularioIndividual(); }
     }
 
+    // Funciones globales para modales y ticket
     function abrirModal(id) { document.getElementById(id).classList.add("active"); }
     function cerrarModal(id) { document.getElementById(id).classList.remove("active"); }
     function enviarTicket(e) {
@@ -1163,6 +1164,10 @@
         window.location.href = `mailto:soportesfpro@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(`Nombre: ${nombre}\nCorreo: ${email}\n\nMensaje:\n${mensaje}`)}`;
         cerrarModal('modalTicket');
     }
+    // Exponerlas globalmente
+    window.abrirModal = abrirModal;
+    window.cerrarModal = cerrarModal;
+    window.enviarTicket = enviarTicket;
 
     // Funciones del menú contextual
     window.toggleMenu = function(menuId) {
@@ -1356,4 +1361,4 @@
     window.addEventListener("offline", () => toast("⚠️ Sin conexión"));
 </script>
 </body>
-              </html>
+</html>
