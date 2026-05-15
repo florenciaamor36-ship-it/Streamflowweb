@@ -10,56 +10,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0a0c10;
-      background-image: 
-        url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGQ9Ik0wIDBoNDB2NDBIMHoiLz48cGF0aCBkPSJNMjAgMjBhMTAgMTAgMCAwIDEgMjAgMCAxMCAxMCAwIDAgMS0yMCAweiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjAyIi8+PC9zdmc+'),
-        radial-gradient(circle at 25% 40%, rgba(245, 175, 25, 0.08) 0%, rgba(241, 39, 17, 0.03) 50%, transparent 80%);
-      background-blend-mode: overlay;
+      background: #0a0c10;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245,175,25,0.08) 0%, rgba(241,39,17,0.03) 50%, transparent 80%);
       color: #f1f5f9;
       min-height: 100vh;
       overflow-x: hidden;
     }
-    
     body.light {
-      background-color: #e8ecf1;
-      background-image: 
-        url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGQ9Ik0wIDBoNDB2NDBIMHoiLz48cGF0aCBkPSJNMjAgMjBhMTAgMTAgMCAwIDEgMjAgMCAxMCAxMCAwIDAgMS0yMCAweiIgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAyIi8+PC9zdmc+'),
-        radial-gradient(circle at 25% 40%, rgba(245, 175, 25, 0.08) 0%, rgba(241, 39, 17, 0.03) 50%, transparent 80%);
+      background: #e8ecf1;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245,175,25,0.06) 0%, rgba(241,39,17,0.02) 50%, transparent 80%);
       color: #1e293b;
     }
-    
     body.font-small { font-size: 12px; }
     body.font-medium { font-size: 14px; }
     body.font-large { font-size: 16px; }
-    
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.9) translateY(20px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    
-    @keyframes shine {
-      0% { left: -100%; }
-      100% { left: 200%; }
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-    
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes modalPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
     .sidebar {
       position: fixed;
       left: 0;
@@ -71,636 +40,179 @@
       z-index: 100;
       box-shadow: 4px 0 20px rgba(0,0,0,0.4);
     }
-    
-    body.light .sidebar {
-      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-    }
-    
-    .sidebar-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(245,175,25,0.2);
-      text-align: center;
-      animation: fadeSlide 0.5s ease;
-    }
-    
+    body.light .sidebar { background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); }
+    .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(245,175,25,0.2); text-align: center; }
     .sidebar-logo {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(145deg, #ff7e5f, #feb47b);
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 0.8rem auto;
-      box-shadow: 0 0 15px rgba(255,126,95,0.4);
-      transition: all 0.3s ease;
+      width: 60px; height: 60px; background: linear-gradient(145deg, #ff7e5f, #feb47b); border-radius: 15px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 0.8rem auto;
+      box-shadow: 0 0 15px rgba(255,126,95,0.4); transition: all 0.3s ease;
     }
-    
-    .sidebar-logo:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(255,126,95,0.6);
-    }
-    
+    .sidebar-logo:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,126,95,0.6); }
     .sidebar-logo i { font-size: 1.8rem; color: #fff; }
     .sidebar-header h2 { font-size: 1.1rem; background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .sidebar-header p { font-size: 0.6rem; color: #64748b; }
-    
     .sidebar-nav { padding: 1rem 0; }
-    
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.7rem 1.5rem;
-      margin: 0.2rem 0;
-      color: #94a3b8;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-left: 3px solid transparent;
-      position: relative;
-      overflow: hidden;
+      display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.5rem;
+      margin: 0.2rem 0; color: #94a3b8; font-weight: 500; cursor: pointer;
+      transition: all 0.3s ease; border-left: 3px solid transparent;
+      position: relative; overflow: hidden;
     }
-    
     .nav-item::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
       background: linear-gradient(90deg, transparent, rgba(245,175,25,0.2), transparent);
       transition: left 0.5s ease;
     }
-    
     .nav-item:hover::after { left: 100%; }
     .nav-item i { width: 24px; font-size: 1.1rem; }
     .nav-item:hover { background: rgba(245,175,25,0.1); color: #f5af19; transform: translateX(5px); }
     .nav-item.active {
       background: linear-gradient(90deg, rgba(245,175,25,0.15), transparent);
-      color: #f5af19;
-      border-left-color: #f5af19;
+      color: #f5af19; border-left-color: #f5af19;
     }
     .nav-item .shortcut { margin-left: auto; font-size: 0.6rem; background: rgba(255,255,255,0.05); padding: 0.15rem 0.4rem; border-radius: 4px; }
-    
-    .sidebar-footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem;
-      border-top: 1px solid rgba(245,175,25,0.1);
-      text-align: center;
-    }
-    
+    .sidebar-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; border-top: 1px solid rgba(245,175,25,0.1); text-align: center; }
     .plan-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
+      display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.8rem;
+      border-radius: 20px; font-size: 0.7rem; font-weight: 700;
       background: linear-gradient(135deg, rgba(245,175,25,0.2), rgba(241,39,17,0.1));
-      color: #f5af19;
-      margin-bottom: 0.5rem;
-      box-shadow: 0 0 8px rgba(245,175,25,0.15);
-      transition: all 0.3s ease;
+      color: #f5af19; margin-bottom: 0.5rem; box-shadow: 0 0 8px rgba(245,175,25,0.15);
     }
-    
-    .plan-badge:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(245,175,25,0.3);
-    }
-    
     .main-container { margin-left: 260px; padding: 1rem; }
-    
     .topbar {
-      background: rgba(13, 17, 23, 0.8);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 0.8rem 1.5rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid rgba(245,175,25,0.15);
-      animation: fadeSlide 0.5s ease;
+      background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(12px); border-radius: 16px;
+      padding: 0.8rem 1.5rem; margin-bottom: 1.5rem; display: flex;
+      justify-content: space-between; align-items: center; border: 1px solid rgba(245,175,25,0.15);
     }
-    
     body.light .topbar { background: rgba(255,255,255,0.9); }
-    
-    .topbar-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    
+    .topbar-title { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .topbar-actions { display: flex; align-items: center; gap: 1rem; }
-    
-    .sync-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
+    .sync-status { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
     .sync-status.synced { background: rgba(16,185,129,0.2); color: #10b981; }
     .sync-status.syncing { background: rgba(245,158,11,0.2); color: #f59e0b; animation: pulse 1s infinite; }
     .sync-status.error { background: rgba(239,68,68,0.2); color: #ef4444; }
-    
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.3rem 0.8rem;
-      background: rgba(255,255,255,0.05);
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+    .user-profile { display: flex; align-items: center; gap: 0.6rem; padding: 0.3rem 0.8rem; background: rgba(255,255,255,0.05); border-radius: 30px; cursor: pointer; transition: all 0.3s ease; }
     .user-profile:hover { background: rgba(245,175,25,0.1); transform: scale(1.02); }
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      transition: all 0.3s ease;
-    }
-    .user-profile:hover .user-avatar { transform: rotate(10deg); }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    
+    .user-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #f5af19, #f12711); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
     .stat-card {
-      background: rgba(13, 17, 23, 0.8);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(245,175,25,0.15);
-      border-radius: 20px;
-      padding: 1.2rem;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      position: relative;
-      overflow: hidden;
+      background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(245,175,25,0.15);
+      border-radius: 20px; padding: 1.2rem; transition: all 0.3s ease; position: relative; overflow: hidden;
     }
-    
     .stat-card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 200%;
-      height: 200%;
+      content: ''; position: absolute; top: -50%; left: -60%; width: 200%; height: 200%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-      transform: rotate(30deg);
-      transition: left 0.6s ease;
-      pointer-events: none;
+      transform: rotate(30deg); transition: left 0.6s ease; pointer-events: none;
     }
-    
     .stat-card:hover::after { left: 120%; }
-    .stat-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-      border-color: rgba(245,175,25,0.4);
-    }
-    
+    .stat-card:hover { transform: translateY(-6px); border-color: rgba(245,175,25,0.4); }
     body.light .stat-card { background: rgba(255,255,255,0.9); }
-    
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+    .stat-number { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .stat-label { font-size: 0.7rem; color: #94a3b8; margin-top: 0.3rem; }
-    
-    .card {
-      background: rgba(13, 17, 23, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(245,175,25,0.1);
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin-bottom: 1rem;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-      border-color: rgba(245,175,25,0.3);
-    }
-    
+    .card { background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(245,175,25,0.1); border-radius: 20px; padding: 1.2rem; margin-bottom: 1rem; transition: all 0.3s ease; }
+    .card:hover { transform: translateY(-3px); border-color: rgba(245,175,25,0.3); }
     body.light .card { background: rgba(255,255,255,0.85); }
-    
-    .card-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
+    .card-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
     .table-wrapper { overflow-x: auto; }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
-    .data-table th {
-      text-align: left;
-      padding: 0.8rem 0.5rem;
-      color: #94a3b8;
-      font-weight: 600;
-      border-bottom: 2px solid rgba(245,175,25,0.2);
-    }
-    .data-table td {
-      padding: 0.7rem 0.5rem;
-      border-bottom: 1px solid rgba(245,175,25,0.05);
-      transition: all 0.2s ease;
-    }
-    .data-table tbody tr {
-      transition: all 0.2s ease;
-    }
-    .data-table tbody tr:hover td {
-      background: rgba(245,175,25,0.08);
-      transform: scale(1.01);
-    }
-    .data-table tbody tr:nth-child(even) {
-      background: rgba(0,0,0,0.1);
-    }
-    
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
-    }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .data-table th { text-align: left; padding: 0.8rem 0.5rem; color: #94a3b8; border-bottom: 2px solid rgba(245,175,25,0.2); }
+    .data-table td { padding: 0.7rem 0.5rem; border-bottom: 1px solid rgba(245,175,25,0.05); }
+    .data-table tbody tr:hover td { background: rgba(245,175,25,0.08); }
+    .data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.1); }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem; font-weight: 600; transition: all 0.2s ease; }
     .badge:hover { transform: scale(1.05); }
-    .badge-success { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1)); color: #34d399; }
-    .badge-warning { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1)); color: #fbbf24; }
-    .badge-danger { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1)); color: #f87171; }
-    .badge-info { background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.1)); color: #60a5fa; }
-    .badge-purple { background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); color: #a78bfa; }
-    
+    .badge-success { background: rgba(16,185,129,0.2); color: #34d399; }
+    .badge-warning { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .badge-danger { background: rgba(239,68,68,0.2); color: #f87171; }
+    .badge-info { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .badge-purple { background: rgba(139,92,246,0.2); color: #a78bfa; }
     .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 12px;
-      border: none;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(145deg, #1e293b, #0f172a);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.1) inset;
-      position: relative;
-      overflow: hidden;
+      padding: 0.5rem 1rem; border-radius: 12px; border: none; font-size: 0.75rem;
+      font-weight: 600; cursor: pointer; background: linear-gradient(145deg, #1e293b, #0f172a);
+      color: #fff; display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: all 0.1s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.1) inset;
+      position: relative; overflow: hidden;
     }
-    
     .btn::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 200%;
-      height: 200%;
+      content: ''; position: absolute; top: -50%; left: -60%; width: 200%; height: 200%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-      transform: rotate(30deg);
-      transition: left 0.5s ease;
-      pointer-events: none;
+      transform: rotate(30deg); transition: left 0.5s ease; pointer-events: none;
     }
-    
     .btn:hover::after { left: 120%; }
-    .btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.1) inset;
-    }
-    .btn:hover {
-      transform: translateY(-1px);
-      background: linear-gradient(145deg, #2d3a4a, #1a2535);
-    }
-    
+    .btn:active { transform: translateY(2px); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .btn:hover { transform: translateY(-1px); background: #2d3a4a; }
     .btn-primary { background: linear-gradient(145deg, #f5af19, #e09510); color: #0a0c10; }
     .btn-primary:hover { background: linear-gradient(145deg, #ffc94d, #f5af19); }
     .btn-success { background: linear-gradient(145deg, #10b981, #059669); }
     .btn-danger { background: linear-gradient(145deg, #ef4444, #dc2626); }
     .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.65rem; border-radius: 8px; }
-    
-    .filters-bar {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-      align-items: center;
-    }
-    .filters-bar input, .filters-bar select {
-      padding: 0.5rem 0.8rem;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(245,175,25,0.2);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 0.75rem;
-      transition: all 0.2s ease;
-    }
-    .filters-bar input:focus, .filters-bar select:focus {
-      outline: none;
-      border-color: #f5af19;
-      box-shadow: 0 0 10px rgba(245,175,25,0.3);
-    }
-    body.light .filters-bar input, body.light .filters-bar select {
-      background: #fff;
-      color: #1e293b;
-      border-color: #cbd5e1;
-    }
-    
-    .pagination-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    .filters-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+    .filters-bar input, .filters-bar select { padding: 0.5rem 0.8rem; background: #1a1f2e; border: 1px solid rgba(245,175,25,0.2); border-radius: 12px; color: #fff; font-size: 0.75rem; transition: all 0.2s ease; }
+    body.light .filters-bar input, body.light .filters-bar select { background: #fff; color: #1e293b; border-color: #cbd5e1; }
+    .filters-bar input:focus, .filters-bar select:focus { outline: none; border-color: #f5af19; box-shadow: 0 0 10px rgba(245,175,25,0.3); }
+    .pagination-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 1rem; flex-wrap: wrap; }
     .pagination-info { font-size: 0.7rem; color: #94a3b8; }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
     .modal.active { display: flex; }
-    
-    .modal-content {
-      background: linear-gradient(145deg, #1a1f2e, #111827);
-      border: 1px solid rgba(245,175,25,0.2);
-      border-radius: 24px;
-      padding: 1.5rem;
-      min-width: 500px;
-      max-width: 700px;
-      max-height: 80vh;
-      overflow-y: auto;
-      animation: modalPop 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    }
+    .modal-content { background: linear-gradient(145deg, #1a1f2e, #111827); border: 1px solid rgba(245,175,25,0.2); border-radius: 24px; padding: 1.5rem; min-width: 500px; max-width: 700px; max-height: 80vh; overflow-y: auto; animation: modalPop 0.3s ease; }
     body.light .modal-content { background: #fff; }
-    .modal-content h3 {
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 1rem;
-    }
+    .modal-content h3 { background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 1rem; }
     .modal-buttons { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; }
     .venta-field-group { margin-bottom: 0.5rem; }
     .venta-field-group label { display: block; font-size: 0.6rem; font-weight: 600; color: #f5af19; margin-bottom: 3px; }
-    
     .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(145deg, #1e293b, #0f172a);
-      color: #f5af19;
-      padding: 0.6rem 1.2rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      z-index: 2000;
-      border: 1px solid rgba(245,175,25,0.4);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      animation: toastIn 0.3s ease forwards;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #1e293b; color: #f5af19; padding: 0.6rem 1.2rem; border-radius: 40px;
+      font-size: 0.75rem; z-index: 2000; border: 1px solid rgba(245,175,25,0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3); animation: toastIn 0.3s ease forwards;
     }
-    
+    @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
     .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh;
       background: radial-gradient(ellipse at 30% 20%, rgba(245,175,25,0.08), transparent 60%),
                   radial-gradient(ellipse at 70% 60%, rgba(241,39,17,0.05), transparent 50%),
                   #0a0c10;
     }
-    .login-card {
-      background: rgba(13, 17, 23, 0.95);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(245,175,25,0.2);
-      border-radius: 28px;
-      padding: 2rem;
-      width: 420px;
-      animation: fadeSlide 0.5s ease;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+    .login-card { background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(245,175,25,0.2); border-radius: 28px; padding: 2rem; width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     .login-card h2 { text-align: center; margin-bottom: 1.5rem; background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 1.8rem; }
-    .login-card input {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(245,175,25,0.2);
-      border-radius: 14px;
-      color: #fff;
-      transition: all 0.2s ease;
-    }
-    .login-card input:focus {
-      outline: none;
-      border-color: #f5af19;
-      box-shadow: 0 0 10px rgba(245,175,25,0.3);
-    }
-    body.light .login-card input { background: #f1f5f9; color: #1e293b; }
-    .login-card button {
-      width: 100%;
-      padding: 0.8rem;
-      background: linear-gradient(145deg, #f5af19, #e09510);
-      border: none;
-      border-radius: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .login-card button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(245,175,25,0.4);
-    }
-    
-    .manual-section {
-      background: rgba(0,0,0,0.25);
-      border-radius: 1rem;
-      margin-bottom: 0.8rem;
-      border: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      transition: all 0.2s ease;
-    }
-    .manual-section-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.7rem 1rem;
-      background: rgba(0,0,0,0.3);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.75rem;
-      transition: all 0.2s ease;
-    }
-    .manual-section-header:hover { background: rgba(245,175,25,0.1); }
-    .manual-section-header i { color: #f5af19; width: 20px; transition: transform 0.2s ease; }
-    .manual-section-body {
-      padding: 0.8rem 1rem;
-      font-size: 0.7rem;
-      line-height: 1.6;
-      display: none;
-    }
-    .manual-section-body.open { display: block; animation: fadeSlide 0.3s ease; }
+    .login-card input { width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: #1a1f2e; border: 1px solid rgba(245,175,25,0.2); border-radius: 14px; color: #fff; transition: all 0.2s ease; }
+    body.light .login-card input { background: #fff; color: #1e293b; border-color: #cbd5e1; }
+    .login-card input:focus { outline: none; border-color: #f5af19; box-shadow: 0 0 10px rgba(245,175,25,0.3); }
+    .login-card button { width: 100%; padding: 0.8rem; background: linear-gradient(145deg, #f5af19, #e09510); border: none; border-radius: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+    .login-card button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(245,175,25,0.4); }
+    .manual-section { background: rgba(0,0,0,0.25); border-radius: 1rem; margin-bottom: 0.8rem; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; }
+    .manual-section-header { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1rem; background: rgba(0,0,0,0.3); cursor: pointer; font-weight: 700; font-size: 0.75rem; }
+    .manual-section-header i { color: #f5af19; width: 20px; }
+    .manual-section-body { padding: 0.8rem 1rem; font-size: 0.7rem; line-height: 1.6; display: none; }
+    .manual-section-body.open { display: block; }
     .manual-step { display: flex; gap: 0.7rem; margin-bottom: 0.8rem; }
-    .step-number {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(145deg, #f5af19, #f12711);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-    .tip {
-      background: rgba(245,175,25,0.12);
-      padding: 0.6rem;
-      border-radius: 0.9rem;
-      font-size: 0.6rem;
-      border-left: 3px solid #f5af19;
-      margin-top: 0.7rem;
-    }
+    .step-number { width: 28px; height: 28px; background: linear-gradient(145deg, #f5af19, #f12711); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem; flex-shrink: 0; }
+    .tip { background: rgba(245,175,25,0.12); padding: 0.6rem; border-radius: 0.9rem; font-size: 0.6rem; border-left: 3px solid #f5af19; margin-top: 0.7rem; }
     .quick-nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
-    .quick-link {
-      background: rgba(0,0,0,0.4);
-      padding: 0.25rem 0.8rem;
-      border-radius: 1.5rem;
-      font-size: 0.6rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .quick-link:hover { background: rgba(245,175,25,0.2); transform: scale(1.05); }
-    
+    .quick-link { background: rgba(0,0,0,0.4); padding: 0.25rem 0.8rem; border-radius: 1.5rem; font-size: 0.6rem; cursor: pointer; }
+    .quick-link:hover { background: rgba(245,175,25,0.2); }
     .acerca-container { text-align: center; padding: 1rem; }
-    .acerca-logo {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(145deg, #ff7e5f, #feb47b);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem auto;
-      box-shadow: 0 0 20px rgba(255,126,95,0.4);
-      transition: all 0.3s ease;
-    }
-    .acerca-logo:hover {
-      transform: scale(1.05) rotate(5deg);
-      box-shadow: 0 0 30px rgba(255,126,95,0.6);
-    }
+    .acerca-logo { width: 70px; height: 70px; background: linear-gradient(145deg, #ff7e5f, #feb47b); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 0 20px rgba(255,126,95,0.4); }
     .acerca-logo i { font-size: 2rem; color: #fff; }
-    .acerca-container h3 {
-      font-size: 1.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+    .acerca-container h3 { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #f5af19, #f12711); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .acerca-version { font-size: 0.7rem; color: #f5af19; margin-bottom: 1rem; }
     .acerca-info { font-size: 0.7rem; line-height: 1.6; opacity: 0.85; margin-bottom: 1rem; }
     .acerca-legal { font-size: 0.55rem; opacity: 0.6; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem; }
-    
-    .carga-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      background: rgba(0,0,0,0.25);
-      padding: 0.3rem;
-      border-radius: 2rem;
-    }
+    .carga-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; background: rgba(0,0,0,0.25); padding: 0.3rem; border-radius: 2rem; }
     .carga-tab {
-      flex: 1;
-      padding: 0.5rem;
-      background: transparent;
-      border: none;
-      border-radius: 1.5rem;
-      color: rgba(255,255,255,0.6);
-      cursor: pointer;
-      font-size: 0.7rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      flex: 1; padding: 0.5rem; background: transparent; border: none; border-radius: 1.5rem;
+      color: rgba(255,255,255,0.6); cursor: pointer; font-size: 0.7rem; font-weight: 600; transition: all 0.2s ease;
     }
-    .carga-tab.active {
-      background: linear-gradient(145deg, #f5af19, #f12711);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(245,175,25,0.3);
-    }
-    .carga-tab:hover:not(.active) {
-      background: rgba(245,175,25,0.1);
-      color: #f5af19;
-    }
-    
+    .carga-tab.active { background: linear-gradient(145deg, #f5af19, #f12711); color: #fff; box-shadow: 0 2px 8px rgba(245,175,25,0.3); }
+    .carga-tab:hover:not(.active) { background: rgba(245,175,25,0.1); color: #f5af19; }
     .page { display: none; }
     .page.active { display: block; animation: fadeSlide 0.3s ease; }
-    
+    .config-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(245,175,25,0.1); }
     .keyboard-hint {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.6rem;
-      color: #64748b;
-      z-index: 99;
-      transition: all 0.2s ease;
+      position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px); padding: 0.3rem 0.8rem; border-radius: 20px;
+      font-size: 0.6rem; color: #64748b; z-index: 99;
     }
-    .keyboard-hint:hover {
-      background: rgba(245,175,25,0.2);
-      color: #f5af19;
-    }
-    
     @media (max-width: 768px) {
       .sidebar { width: 70px; }
       .sidebar-header h2, .sidebar-header p, .nav-item span, .sidebar-footer .plan-badge span { display: none; }
@@ -787,7 +299,6 @@
           <button class="carga-tab" data-mod="individual">🎭 Individual</button>
           <button class="carga-tab" data-mod="masiva">📋 Masiva</button>
         </div>
-        
         <div id="modo-completa">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
             <div><label>Plataforma</label><select id="platCompleta"><option value="">Seleccionar...</option><option value="Netflix">Netflix (5)</option><option value="Netflix indiv">Netflix indiv (1)</option><option value="Disney">Disney (7)</option><option value="HBO Max">HBO Max (5)</option><option value="Paramount">Paramount (5)</option><option value="Crunchyrool">Crunchyrool (1)</option><option value="Prime video">Prime video (6)</option><option value="Spoty">Spoty (1)</option><option value="YouTube">YouTube (1)</option><option value="Otros">Otros</option></select></div>
@@ -801,7 +312,6 @@
           <div style="margin-top:0.8rem;"><label>Observaciones</label><textarea id="obsCompleta" rows="2"></textarea></div>
           <button class="btn btn-primary" id="btnGuardarCompleta" style="width:100%;margin-top:1rem;"><i class="fas fa-save"></i> Guardar cuenta</button>
         </div>
-        
         <div id="modo-individual" style="display:none;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
             <div><label>Plataforma</label><select id="platIndividual"><option value="">Seleccionar...</option><option value="Netflix">Netflix</option><option value="Netflix indiv">Netflix indiv</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Paramount">Paramount</option><option value="Crunchyrool">Crunchyrool</option><option value="Prime video">Prime video</option><option value="Spoty">Spoty</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div>
@@ -819,10 +329,9 @@
             <button class="btn" id="btnCancelarEdicion"><i class="fas fa-times"></i> Cancelar</button>
           </div>
         </div>
-        
         <div id="modo-masiva" style="display:none;">
           <div class="tip">Separa cada cuenta con línea en blanco o "---". Ejemplo:<br>Mail: correo@mail.com | Contraseña: pass | Perfil: Juan | Proveedor: María</div>
-          <textarea id="batchTexto" rows="8" placeholder="Mail: usuario@mail.com\nContraseña: pass123\nPerfil: Juan\nProveedor: María"></textarea>
+          <textarea id="batchTexto" rows="8" placeholder="Mail: usuario@mail.com\nContraseña: pass123\nPerfil: Juan\nProveedor: María" style="background:#1a1f2e; border:1px solid #2a2f3e; border-radius:12px; color:#fff; padding:0.8rem; width:100%;"></textarea>
           <div style="display:flex;gap:0.8rem;margin-top:1rem;">
             <button class="btn" id="btnPrevisualizar"><i class="fas fa-eye"></i> Previsualizar</button>
             <button class="btn btn-primary" id="btnCargarMasivo"><i class="fas fa-upload"></i> Cargar todo</button>
@@ -849,16 +358,12 @@
           <input type="file" id="archivoImportar" accept=".json" style="display:none;">
           <button class="btn btn-danger" id="btnBorrarTodo"><i class="fas fa-trash"></i> Borrar todo</button>
         </div>
-        
         <div class="table-wrapper">
           <table class="data-table" id="tablaPerfiles">
-            <thead>
-              <tr><th>Plataforma</th><th>Cuenta</th><th>Perfil</th><th>Correo</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr>
-            </thead>
+            <thead><tr><th>Plataforma</th><th>Cuenta</th><th>Perfil</th><th>Correo</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr></thead>
             <tbody id="tablaPerfilesBody"></tbody>
           </table>
         </div>
-        
         <div class="pagination-bar">
           <div class="pagination-info" id="paginationInfo"></div>
           <div style="display:flex;gap:0.5rem;">
@@ -877,7 +382,7 @@
           <input type="text" id="historialBuscar" placeholder="Buscar...">
           <input type="date" id="historialFechaInicio"><input type="date" id="historialFechaFin">
         </div>
-        <div class="table-wrapper"><table class="data-table" id="tablaHistorial"><thead><tr><th>Fecha</th><th>Plataforma</th><th>Perfil</th><th>Cliente</th><th>Precio</th><th></th></tr></thead><tbody id="historialLista"></tbody></td></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Fecha</th><th>Plataforma</th><th>Perfil</th><th>Cliente</th><th>Precio</th><th></th></tr></thead><tbody id="historialLista"></tbody></table></div>
       </div>
     </div>
 
@@ -892,7 +397,7 @@
       <div class="card">
         <button id="btnVolverDeAyuda" class="btn" style="margin-bottom:1rem;"><i class="fas fa-arrow-left"></i> Volver a Ajustes</button>
         <div class="card-title"><i class="fas fa-book-open"></i> Manual de Usuario Completo</div>
-        <div class="manual-search"><input type="text" id="manualSearch" placeholder="Buscar en el manual..."></div>
+        <div class="manual-search"><input type="text" id="manualSearch" placeholder="Buscar en el manual..." style="background:#1a1f2e; border:1px solid #2a2f3e; border-radius:12px; color:#fff; padding:0.6rem; width:100%;"></div>
         <div class="quick-nav" id="manualQuickNav">
           <span class="quick-link" data-section="intro">Inicio</span>
           <span class="quick-link" data-section="carga">Cargar</span>
@@ -904,14 +409,14 @@
           <span class="quick-link" data-section="config">Config</span>
           <span class="quick-link" data-section="token">Token</span>
         </div>
-        <div class="manual-section" id="manual-intro"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 1. Introducción</div><div class="manual-section-body"><p><strong>StreamFlow Pro</strong> es tu centro de control para administrar cuentas de streaming.</p><div class="manual-step"><div class="step-number">1</div><div class="step-text">Registrate con email y contraseña, o usá Google.</div></div><div class="tip">La app funciona 100% offline. Los cambios se guardan localmente y se sincronizan con Firebase.</div></div></div>
+        <div class="manual-section" id="manual-intro"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 1. Introducción</div><div class="manual-section-body"><p><strong>StreamFlow Pro</strong> es tu centro de control para administrar cuentas de streaming.</p><div class="manual-step"><div class="step-number">1</div><div class="step-text">Registrate con email y contraseña, o usá Google.</div></div><div class="tip">La app funciona offline. Los cambios se sincronizan con Firebase.</div></div></div>
         <div class="manual-section" id="manual-carga"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 2. Cargar Cuentas</div><div class="manual-section-body"><p>Hay tres modos: Cuenta Completa, Individual y Masiva.</p></div></div>
         <div class="manual-section" id="manual-gestion"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 3. Gestión de Perfiles</div><div class="manual-section-body"><p>Botones: WhatsApp, Copiar, Editar, Renovar, Libre, Duplicar, Vender, Reasignar, Eliminar.</p></div></div>
         <div class="manual-section" id="manual-ventas"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 4. Ventas</div><div class="manual-section-body"><p>Buscá un perfil Libre y hacé clic en Vender.</p></div></div>
         <div class="manual-section" id="manual-dashboard"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 5. Dashboard</div><div class="manual-section-body"><p>Muestra totales, disponibles, próximos y ventas del día.</p></div></div>
         <div class="manual-section" id="manual-filtros"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 6. Filtros</div><div class="manual-section-body"><p>Filtrá por plataforma, estado, proveedor o fechas.</p></div></div>
         <div class="manual-section" id="manual-backup"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 7. Backup</div><div class="manual-section-body"><p>Exportá tus datos en JSON o CSV.</p></div></div>
-        <div class="manual-section" id="manual-config"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 8. Configuración</div><div class="manual-section-body"><p>Tema claro, sincronización automática, modo kiosco, tamaño de letra.</p></div></div>
+        <div class="manual-section" id="manual-config"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 8. Configuración</div><div class="manual-section-body"><p>Tema claro, sincronización, modo kiosco, tamaño de letra.</p></div></div>
         <div class="manual-section" id="manual-token"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 9. Token</div><div class="manual-section-body"><p>Período de prueba 3 días. Token de suscripción por 30 días.</p></div></div>
       </div>
     </div>
@@ -919,32 +424,29 @@
     <div id="page-ajustes" class="page">
       <div class="card">
         <div class="card-title"><i class="fas fa-shield-alt"></i> Token de Acceso</div>
-        <div style="display:flex;gap:0.5rem;"><input type="password" id="tokenAcceso" placeholder="SF-XXXX-XXXX-XXXX"><button class="btn btn-primary" id="btnValidarToken">Validar</button></div>
+        <div style="display:flex;gap:0.5rem;"><input type="password" id="tokenAcceso" placeholder="SF-XXXX-XXXX-XXXX" style="flex:1;"><button class="btn btn-primary" id="btnValidarToken">Validar</button></div>
         <div id="tokenEstado" style="margin-top:0.5rem;"></div>
         <button class="btn btn-success" id="btnComprarToken" style="margin-top:0.5rem;width:100%;"><i class="fab fa-whatsapp"></i> Comprar Token por WhatsApp</button>
-        
         <div class="card-title" style="margin-top:1rem;"><i class="fas fa-sliders-h"></i> Configuración</div>
-        <label><input type="checkbox" id="themeToggle"> Tema claro</label><br>
-        <label><input type="checkbox" id="autoSyncToggle" checked> Sincronización automática</label><br>
-        <label><input type="checkbox" id="notificationsToggle" checked> Notificaciones de vencimiento</label><br>
-        <label><input type="checkbox" id="kioscoToggle"> Modo kiosco</label><br>
-        <label>Días para "Próximo": <input type="number" id="diasProximo" min="1" max="10" value="3" style="width:60px;"></label><br>
-        <label>Tamaño de letra: 
+        <div class="config-row"><span>Tema claro</span><input type="checkbox" id="themeToggle"></div>
+        <div class="config-row"><span>Sincronización automática</span><input type="checkbox" id="autoSyncToggle" checked></div>
+        <div class="config-row"><span>Notificaciones de vencimiento</span><input type="checkbox" id="notificationsToggle" checked></div>
+        <div class="config-row"><span>Modo kiosco</span><input type="checkbox" id="kioscoToggle"></div>
+        <div class="config-row"><span>Días para "Próximo"</span><input type="number" id="diasProximo" min="1" max="10" value="3" style="width:80px;"></div>
+        <div class="config-row"><span>Tamaño de letra</span>
           <select id="fontSizeSelect">
             <option value="small">Pequeño</option>
             <option value="medium" selected>Mediano</option>
             <option value="large">Grande</option>
           </select>
-        </label>
-        
+        </div>
         <div style="display:flex;gap:0.5rem;margin-top:1rem;">
           <button class="btn" id="btnExportConfig"><i class="fas fa-download"></i> Exportar config</button>
           <button class="btn" id="btnImportConfig"><i class="fas fa-upload"></i> Importar config</button>
           <button class="btn" id="btnResetConfig"><i class="fas fa-undo-alt"></i> Resetear</button>
         </div>
         <input type="file" id="archivoConfig" accept=".json" style="display:none;">
-        
-        <hr>
+        <hr style="margin:1rem 0;">
         <button class="btn" id="btnAbrirManual"><i class="fas fa-book"></i> Ver Manual Completo</button>
         <button class="btn" id="btnAcercaDe"><i class="fas fa-info-circle"></i> Acerca de esta app</button>
       </div>
@@ -956,7 +458,6 @@
   <div class="modal-content">
     <h3>Vender perfil</h3>
     <div id="ventaPerfilInfo" style="margin-bottom:0.5rem;"></div>
-    <div class="venta-field-group"><label>Plataforma</label><select id="ventaPlataforma"><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Prime video">Prime video</option></select></div>
     <div class="venta-field-group"><label>Precio</label><input type="number" id="ventaPrecio" step="1" min="1"></div>
     <div class="venta-field-group"><label>WhatsApp del cliente</label><input type="tel" id="ventaCliente" placeholder="Ej: 5491112345678"></div>
     <div class="modal-buttons"><button class="btn btn-primary" id="ventaConfirmar">Vender</button><button class="btn" id="ventaCancelar">Cancelar</button></div>
@@ -1174,11 +675,9 @@
     if (paginaActual > totalPaginas) paginaActual = totalPaginas || 1;
     const inicio = (paginaActual - 1) * registrosPorPagina;
     const paginaDatos = datos.slice(inicio, inicio + registrosPorPagina);
-    
     document.getElementById("paginationInfo").textContent = `Mostrando ${paginaDatos.length} de ${total} perfiles (Pág. ${paginaActual} de ${totalPaginas || 1})`;
     document.getElementById("btnPaginaAnterior").disabled = paginaActual <= 1;
     document.getElementById("btnPaginaSiguiente").disabled = paginaActual >= totalPaginas;
-    
     tbody.innerHTML = paginaDatos.map(p => `
       <tr ondblclick="editarPerfilCompleto('${p.id}')">
         <td><span class="badge ${estadoClase(p.estado)}">${escapeHtml(p.plataforma)}</span></td>
@@ -1198,20 +697,11 @@
           ${!kioscoMode ? `<button class="btn btn-sm" onclick="duplicarPerfil('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>` : ''}
           ${!kioscoMode ? `<button class="btn btn-sm btn-danger" onclick="eliminarPerfil('${p.id}')" title="Eliminar"><i class="fas fa-trash"></i></button>` : ''}
         </td>
-      </tr>
-    `).join('');
+      </tr>    `).join('');
   }
 
-  window.togglePassword = function(id) {
-    const p = perfiles.find(p => p.id === id);
-    if (p) toast(`Contraseña: ${p.password}`);
-  };
-
-  window.copiarPerfil = function(id) {
-    const p = perfiles.find(p => p.id === id);
-    if (p) copiarTexto(plantillaProveedor(p));
-  };
-
+  window.togglePassword = function(id) { const p = perfiles.find(p => p.id === id); if (p) toast(`Contraseña: ${p.password}`); };
+  window.copiarPerfil = function(id) { const p = perfiles.find(p => p.id === id); if (p) copiarTexto(plantillaProveedor(p)); };
   window.renovarPerfil = async function(id) {
     const idx = perfiles.findIndex(p => p.id === id);
     if (idx === -1) return;
@@ -1223,7 +713,6 @@
     renderAll();
     toast("Renovado hasta " + formatDate(perfiles[idx].fechaVencimiento));
   };
-
   window.marcarLibre = async function(id) {
     const idx = perfiles.findIndex(p => p.id === id);
     if (idx === -1) return;
@@ -1238,7 +727,6 @@
       toast("Marcado libre");
     }
   };
-
   window.eliminarPerfil = async function(id) {
     if (kioscoMode) { toast("Modo kiosco activado"); return; }
     if (!confirm("¿Eliminar este perfil?")) return;
@@ -1247,7 +735,6 @@
     renderAll();
     toast("Perfil eliminado");
   };
-
   window.duplicarPerfil = async function(id) {
     const orig = perfiles.find(p => p.id === id);
     if (!orig) return;
@@ -1260,7 +747,6 @@
       toast("Duplicado: " + nombre);
     }
   };
-
   window.mostrarVentaModal = function(id) {
     if (kioscoMode) { toast("Modo kiosco activado"); return; }
     const p = perfiles.find(p => p.id === id);
@@ -1269,7 +755,6 @@
     document.getElementById("ventaPerfilInfo").innerHTML = `<strong>${p.plataforma} - ${p.perfilNombre}</strong>`;
     document.getElementById("ventaModal").classList.add("active");
   };
-
   window.mostrarReasignarModal = function(id) {
     const p = perfiles.find(p => p.id === id);
     if (!p) return;
@@ -1278,7 +763,6 @@
     document.getElementById("reasignarFecha").value = p.fechaVencimiento || "";
     document.getElementById("reasignarModal").classList.add("active");
   };
-
   window.editarPerfilCompleto = function(id) {
     if (kioscoMode) { toast("Modo kiosco activado"); return; }
     const p = perfiles.find(p => p.id === id);
@@ -1305,7 +789,6 @@
     changePage("carga");
     toast("Editando perfil...");
   };
-
   async function guardarEdicion(id) {
     let plataforma = document.getElementById("platIndividual").value;
     if (plataforma === "Otros") plataforma = document.getElementById("otraPlatIndividual").value;
@@ -1335,12 +818,10 @@
       limpiarFormularioIndividual();
     }
   }
-
   function limpiarFormularioIndividual() {
     ["platIndividual", "cuentaIdIndividual", "nombrePerfilIndividual", "pinIndividual", "mailIndividual", "passIndividual", "fechaIndividual", "precioIndividual", "proveedorIndividual", "whatsappIndividual", "obsIndividual"].forEach(id => document.getElementById(id).value = "");
     document.getElementById("otraPlatIndividualDiv").style.display = "none";
   }
-
   async function confirmarVenta() {
     const precio = document.getElementById("ventaPrecio").value;
     const cliente = document.getElementById("ventaCliente").value.trim();
@@ -1367,7 +848,6 @@
     document.getElementById("ventaCliente").value = "";
     toast("Venta registrada");
   }
-
   async function guardarCuentaCompleta() {
     let plataforma = document.getElementById("platCompleta").value;
     if (plataforma === "Otros") plataforma = document.getElementById("otraPlatCompleta").value;
@@ -1395,7 +875,6 @@
     toast(`${plataforma} guardada (${cantidad} perfiles)`);
     ["cuentaIdCompleta","mailCompleta","passCompleta","fechaCompleta","precioCompleta","proveedorCompleta","whatsappCompleta","obsCompleta"].forEach(id => document.getElementById(id).value = "");
   }
-
   async function guardarPerfilIndividual() {
     let plataforma = document.getElementById("platIndividual").value;
     if (plataforma === "Otros") plataforma = document.getElementById("otraPlatIndividual").value;
@@ -1417,7 +896,6 @@
     toast("Perfil individual guardado");
     limpiarFormularioIndividual();
   }
-
   async function cargarMasiva() {
     const texto = document.getElementById("batchTexto").value;
     const lineas = texto.split("\n").filter(l => l.trim());
@@ -1442,7 +920,6 @@
       document.getElementById("batchTexto").value = "";
     } else toast("No se encontraron cuentas");
   }
-
   function previsualizarMasiva() {
     const texto = document.getElementById("batchTexto").value;
     const lineas = texto.split("\n").filter(l => l.trim());
@@ -1454,7 +931,6 @@
     div.style.display = "block";
     div.innerHTML = items.length ? `<strong>Vista previa:</strong><br>${items.join("<br>")}` : "No se detectaron cuentas";
   }
-
   function renderDashboard() {
     document.getElementById("totalPerfiles").textContent = perfiles.length;
     document.getElementById("libresHoy").textContent = perfiles.filter(p => p.estado === "libre").length;
@@ -1468,19 +944,19 @@
     document.getElementById("tendencias").innerHTML = mas ? `🔥 ${mas[0]} con ${mas[1]} ventas` : "Sin ventas aún";
     document.getElementById("combos").innerHTML = "<div>🎯 Combo del día: Netflix + Disney + HBO Max</div>";
   }
-
   function renderHistorial() {
     const ventas = perfiles.filter(p => p.fechaVenta).sort((a,b) => new Date(b.fechaVenta) - new Date(a.fechaVenta));
     document.getElementById("historialLista").innerHTML = ventas.map(p => `
       <tr>
         <td>${new Date(p.fechaVenta).toLocaleDateString()}</td>
-        <td>${escapeHtml(p.plataforma)}</td><td>${escapeHtml(p.perfilNombre)}</td>
-        <td>${p.whatsappCliente || '-'}</td><td>$${p.precioVenta || 0}</td>
+        <td>${escapeHtml(p.plataforma)}</td>
+        <td>${escapeHtml(p.perfilNombre)}</td>
+        <td>${p.whatsappCliente || '-'}</td>
+        <td>$${p.precioVenta || 0}</td>
         <td><button class="btn btn-sm" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}')"><i class="fab fa-whatsapp"></i></button></td>
       </tr>
-    `).join('') || '<tr><td colspan="5">No hay ventas</td></tr>';
+    `).join('') || '<tr><td colspan="6">No hay ventas</td></tr>';
   }
-
   function renderStats() {
     const porPlataforma = {};
     const porProveedor = {};
@@ -1497,7 +973,6 @@
     document.getElementById("resumenStreaming").innerHTML = Object.entries(porPlataforma).map(([k,v]) => `<div><strong>${escapeHtml(k)}</strong>: ${v.total} perfiles (${v.vendidos} vendidos)</div>`).join('');
     document.getElementById("resumenProveedores").innerHTML = Object.entries(porProveedor).map(([k,v]) => `<div><strong>${escapeHtml(k)}</strong>: ${v.total} perfiles (${v.vendidos} vendidos)</div>`).join('');
   }
-
   function mostrarAvisoVencimientos() {
     if (!notificationsEnabled) return;
     const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -1510,7 +985,6 @@
       toast(msg);
     }
   }
-
   async function exportarJSON() {
     const blob = new Blob([JSON.stringify(perfiles, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
@@ -1519,7 +993,6 @@
     a.click();
     toast("Exportado JSON");
   }
-
   async function exportarCSV() {
     let csv = "Plataforma,Cuenta,Perfil,Correo,Vence,Estado,Proveedor,WhatsApp\n";
     perfiles.forEach(p => {
@@ -1532,7 +1005,6 @@
     a.click();
     toast("Exportado CSV");
   }
-
   async function importarJSON(file) {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -1548,7 +1020,6 @@
     };
     reader.readAsText(file);
   }
-
   async function resetVentas() {
     if (confirm("¿Reiniciar todas las ventas?")) {
       perfiles.forEach(p => {
@@ -1562,7 +1033,6 @@
       toast("Ventas reiniciadas");
     }
   }
-
   function guardarConfigLocal() {
     const config = {
       tema: document.body.classList.contains("light") ? "light" : "dark",
@@ -1574,7 +1044,6 @@
     };
     localStorage.setItem("streamflow_config", JSON.stringify(config));
   }
-
   function cargarConfigLocal() {
     const config = localStorage.getItem("streamflow_config");
     if (config) {
@@ -1597,7 +1066,6 @@
       } catch(e) {}
     }
   }
-
   function exportarConfig() {
     const config = {
       tema: document.body.classList.contains("light") ? "light" : "dark",
@@ -1614,7 +1082,6 @@
     a.click();
     toast("Configuración exportada");
   }
-
   function importarConfig(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -1641,7 +1108,6 @@
     };
     reader.readAsText(file);
   }
-
   function resetearConfig() {
     if (confirm("¿Restablecer configuración a valores de fábrica?")) {
       document.body.classList.remove("light", "font-small", "font-medium", "font-large");
@@ -1661,15 +1127,7 @@
       renderAll();
     }
   }
-
-  function renderAll() { 
-    renderDashboard(); 
-    renderTabla(); 
-    renderHistorial(); 
-    renderStats(); 
-    if (notificationsEnabled) mostrarAvisoVencimientos(); 
-  }
-
+  function renderAll() { renderDashboard(); renderTabla(); renderHistorial(); renderStats(); if (notificationsEnabled) mostrarAvisoVencimientos(); }
   function changePage(page) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.getElementById(`page-${page}`).classList.add("active");
@@ -1680,10 +1138,7 @@
     if (page === "stats") renderStats();
   }
 
-  document.querySelectorAll(".nav-item").forEach(item => {
-    item.addEventListener("click", () => changePage(item.dataset.page));
-  });
-  
+  document.querySelectorAll(".nav-item").forEach(item => { item.addEventListener("click", () => changePage(item.dataset.page)); });
   document.getElementById("btnGuardarCompleta")?.addEventListener("click", guardarCuentaCompleta);
   document.getElementById("btnGuardarIndividual")?.addEventListener("click", guardarPerfilIndividual);
   document.getElementById("btnCancelarEdicion")?.addEventListener("click", () => {
@@ -1745,9 +1200,7 @@
   document.getElementById("btnAbrirManual")?.addEventListener("click", () => changePage("ayuda"));
   document.getElementById("btnVolverDeAyuda")?.addEventListener("click", () => changePage("ajustes"));
   document.getElementById("btnValidarToken")?.addEventListener("click", () => toast("Contactá a La Clave Argentina para obtener un token"));
-  document.getElementById("btnComprarToken")?.addEventListener("click", () => {
-    window.open("https://wa.me/5492291530515?text=" + encodeURIComponent("Hola, quiero comprar un token para StreamFlow Pro. Mi correo es " + (currentUser?.email || "usuario@ejemplo.com")), '_blank');
-  });
+  document.getElementById("btnComprarToken")?.addEventListener("click", () => { window.open("https://wa.me/5492291530515?text=" + encodeURIComponent("Hola, quiero comprar un token para StreamFlow Pro. Mi correo es " + (currentUser?.email || "usuario@ejemplo.com")), '_blank'); });
   document.getElementById("themeToggle")?.addEventListener("change", (e) => { if (e.target.checked) document.body.classList.add("light"); else document.body.classList.remove("light"); guardarConfigLocal(); });
   document.getElementById("autoSyncToggle")?.addEventListener("change", (e) => { autoSync = e.target.checked; guardarConfigLocal(); });
   document.getElementById("notificationsToggle")?.addEventListener("change", (e) => { notificationsEnabled = e.target.checked; guardarConfigLocal(); });
@@ -1772,12 +1225,9 @@
       await sendPasswordResetEmail(auth, email);
       document.getElementById("resetMessage").innerHTML = "✅ Correo enviado. Revisá tu bandeja.";
       setTimeout(() => document.getElementById("resetPasswordModal").classList.remove("active"), 2000);
-    } catch(e) {
-      document.getElementById("resetMessage").innerHTML = "❌ Error: " + e.message;
-    }
+    } catch(e) { document.getElementById("resetMessage").innerHTML = "❌ Error: " + e.message; }
   });
   document.getElementById("btnResetCancel")?.addEventListener("click", () => document.getElementById("resetPasswordModal").classList.remove("active"));
-  
   document.querySelectorAll(".carga-tab").forEach(btn => {
     btn.addEventListener("click", function() {
       document.querySelectorAll(".carga-tab").forEach(b => b.classList.remove("active"));
@@ -1800,29 +1250,20 @@
   document.getElementById("historialBuscar")?.addEventListener("input", renderHistorial);
   document.getElementById("historialFechaInicio")?.addEventListener("change", renderHistorial);
   document.getElementById("historialFechaFin")?.addEventListener("change", renderHistorial);
-
   document.querySelectorAll(".manual-section-header").forEach(header => {
     header.addEventListener("click", function() {
       const body = this.nextElementSibling;
       body.classList.toggle("open");
       const icon = this.querySelector("i");
-      if (body.classList.contains("open")) {
-        icon.classList.remove("fa-chevron-right");
-        icon.classList.add("fa-chevron-down");
-      } else {
-        icon.classList.remove("fa-chevron-down");
-        icon.classList.add("fa-chevron-right");
-      }
+      if (body.classList.contains("open")) { icon.classList.remove("fa-chevron-right"); icon.classList.add("fa-chevron-down"); }
+      else { icon.classList.remove("fa-chevron-down"); icon.classList.add("fa-chevron-right"); }
     });
   });
   document.getElementById("manualSearch")?.addEventListener("input", function() {
     const query = this.value.toLowerCase();
     document.querySelectorAll(".manual-section").forEach(section => {
-      if (query === "" || section.textContent.toLowerCase().includes(query)) {
-        section.style.display = "block";
-      } else {
-        section.style.display = "none";
-      }
+      if (query === "" || section.textContent.toLowerCase().includes(query)) { section.style.display = "block"; }
+      else { section.style.display = "none"; }
     });
   });
   document.querySelectorAll("#manualQuickNav .quick-link").forEach(link => {
@@ -1839,7 +1280,6 @@
       }
     });
   });
-
   document.getElementById("btnLogin")?.addEventListener("click", async () => {
     try { await signInWithEmailAndPassword(auth, document.getElementById("loginEmail").value, document.getElementById("loginPassword").value); }
     catch(e) { document.getElementById("authError").innerText = e.message; }
@@ -1853,15 +1293,8 @@
     catch(e) { document.getElementById("authError").innerText = e.message; }
   });
   document.getElementById("logoutBtn")?.addEventListener("click", async () => { await signOut(auth); });
-  document.getElementById("showRegister")?.addEventListener("click", () => {
-    document.getElementById("loginPanel").style.display = "none";
-    document.getElementById("registerPanel").style.display = "block";
-  });
-  document.getElementById("showLogin")?.addEventListener("click", () => {
-    document.getElementById("registerPanel").style.display = "none";
-    document.getElementById("loginPanel").style.display = "block";
-  });
-
+  document.getElementById("showRegister")?.addEventListener("click", () => { document.getElementById("loginPanel").style.display = "none"; document.getElementById("registerPanel").style.display = "block"; });
+  document.getElementById("showLogin")?.addEventListener("click", () => { document.getElementById("registerPanel").style.display = "none"; document.getElementById("loginPanel").style.display = "block"; });
   document.addEventListener("keydown", (e) => {
     if (e.ctrlKey) {
       switch(e.key) {
@@ -1875,9 +1308,7 @@
       }
     }
   });
-
   cargarConfigLocal();
-  
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
@@ -1899,4 +1330,4 @@
   });
 </script>
 </body>
-</html>
+  </html>
