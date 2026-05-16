@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0f0c29">
   <link rel="icon" type="image/png" href="icono.png">
-  <title>StreamFlow Pro | Gestión Profesional</title>
+  <title>StreamFlow Pro | Gestión Profesional de Streaming</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -17,14 +17,15 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0f0c29 0%, #1a1a3e 50%, #0f0c29 100%);
+      background: linear-gradient(135deg, #0a0c10 0%, #0f1117 100%);
       color: #e2e8f0;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     /* Modo claro */
     body.light {
-      background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
       color: #0f172a;
     }
 
@@ -33,18 +34,11 @@
       border-right-color: #e2e8f0;
     }
 
-    body.light .card {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: #e2e8f0;
-    }
-
-    body.light .stat-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: #e2e8f0;
-    }
-
-    body.light .topbar {
-      background: rgba(255, 255, 255, 0.9);
+    body.light .card,
+    body.light .stat-card,
+    body.light .topbar,
+    body.light .modal-content {
+      background: rgba(255, 255, 255, 0.95);
       border-color: #e2e8f0;
     }
 
@@ -62,17 +56,15 @@
       color: #f5af19;
     }
 
-    body.light input, body.light select, body.light textarea {
+    body.light input,
+    body.light select,
+    body.light textarea {
       background: #ffffff;
       border-color: #cbd5e1;
       color: #0f172a;
     }
 
-    body.light .modal-content {
-      background: #ffffff;
-    }
-
-    /* Sidebar */
+    /* Sidebar PC */
     .sidebar {
       position: fixed;
       left: 0;
@@ -82,25 +74,24 @@
       background: linear-gradient(180deg, #0f0c29 0%, #1a1a3e 100%);
       border-right: 1px solid rgba(245, 175, 25, 0.15);
       z-index: 100;
-      transition: all 0.3s ease;
     }
 
     .sidebar-header {
-      padding: 1.8rem 1.5rem;
+      padding: 2rem 1.5rem;
       text-align: center;
       border-bottom: 1px solid rgba(245, 175, 25, 0.15);
     }
 
     .logo-icon {
-      width: 65px;
-      height: 65px;
+      width: 70px;
+      height: 70px;
       background: linear-gradient(135deg, #f5af19, #f12711);
       border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 1rem auto;
-      box-shadow: 0 8px 20px rgba(245, 175, 25, 0.3);
+      box-shadow: 0 8px 25px rgba(245, 175, 25, 0.3);
     }
 
     .logo-icon i {
@@ -114,17 +105,17 @@
       background: linear-gradient(135deg, #f5af19, #f12711);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.2rem;
     }
 
     .sidebar-header p {
       font-size: 0.65rem;
       color: #94a3b8;
       letter-spacing: 1px;
+      margin-top: 0.2rem;
     }
 
     .sidebar-nav {
-      padding: 1.5rem 0;
+      padding: 1rem 0;
     }
 
     .nav-item {
@@ -135,8 +126,9 @@
       margin: 0.2rem 0;
       color: #94a3b8;
       font-weight: 500;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       border-left: 3px solid transparent;
     }
 
@@ -188,17 +180,17 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Main Container */
+    /* Main Container - PC (sin márgenes móviles) */
     .main-container {
       margin-left: 280px;
-      padding: 1rem;
+      padding: 1.5rem;
     }
 
     /* Topbar */
     .topbar {
       background: rgba(15, 25, 35, 0.6);
       backdrop-filter: blur(12px);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 0.8rem 1.5rem;
       margin-bottom: 1.5rem;
       display: flex;
@@ -260,7 +252,7 @@
       background: rgba(255, 255, 255, 0.05);
       border-radius: 30px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     .user-profile:hover {
@@ -279,7 +271,7 @@
       font-size: 0.8rem;
     }
 
-    /* Stats Grid */
+    /* Stats Grid PC */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -293,13 +285,12 @@
       border: 1px solid rgba(245, 175, 25, 0.1);
       border-radius: 20px;
       padding: 1.2rem;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     .stat-card:hover {
       transform: translateY(-3px);
       border-color: rgba(245, 175, 25, 0.3);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
 
     .stat-number {
@@ -316,19 +307,14 @@
       margin-top: 0.3rem;
     }
 
-    /* Cards */
+    /* Cards PC */
     .card {
       background: rgba(15, 25, 35, 0.6);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(245, 175, 25, 0.1);
       border-radius: 20px;
       padding: 1.2rem;
-      margin-bottom: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .card:hover {
-      border-color: rgba(245, 175, 25, 0.2);
+      margin-bottom: 1.5rem;
     }
 
     .card-title {
@@ -345,7 +331,7 @@
       gap: 0.5rem;
     }
 
-    /* Tabla */
+    /* Tabla PC (más espaciada) */
     .table-wrapper {
       overflow-x: auto;
     }
@@ -358,14 +344,14 @@
 
     .data-table th {
       text-align: left;
-      padding: 0.8rem 0.5rem;
+      padding: 1rem 0.8rem;
       color: #94a3b8;
       font-weight: 600;
       border-bottom: 1px solid rgba(245, 175, 25, 0.2);
     }
 
     .data-table td {
-      padding: 0.7rem 0.5rem;
+      padding: 0.8rem;
       border-bottom: 1px solid rgba(245, 175, 25, 0.05);
     }
 
@@ -411,7 +397,7 @@
       color: #a78bfa;
     }
 
-    /* Botones */
+    /* Botones PC */
     .btn {
       padding: 0.5rem 1rem;
       border-radius: 12px;
@@ -435,12 +421,11 @@
     .btn-primary {
       background: linear-gradient(135deg, #f5af19, #f12711);
       color: white;
-      box-shadow: 0 4px 10px rgba(245, 175, 25, 0.3);
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(245, 175, 25, 0.4);
+      box-shadow: 0 4px 12px rgba(245, 175, 25, 0.3);
     }
 
     .btn-success {
@@ -458,8 +443,10 @@
       font-size: 0.65rem;
     }
 
-    /* Inputs */
-    input, select, textarea {
+    /* Inputs PC */
+    input,
+    select,
+    textarea {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(245, 175, 25, 0.2);
       border-radius: 12px;
@@ -470,7 +457,9 @@
       transition: all 0.2s ease;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
       outline: none;
       border-color: #f5af19;
       box-shadow: 0 0 0 2px rgba(245, 175, 25, 0.2);
@@ -493,7 +482,8 @@
       align-items: center;
     }
 
-    .filters-bar input, .filters-bar select {
+    .filters-bar input,
+    .filters-bar select {
       flex: 1;
       min-width: 100px;
     }
@@ -504,8 +494,6 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 1rem;
-      gap: 1rem;
-      flex-wrap: wrap;
     }
 
     .pagination-info {
@@ -513,7 +501,7 @@
       color: #94a3b8;
     }
 
-    /* Modales */
+    /* Modales PC */
     .modal {
       display: none;
       position: fixed;
@@ -537,15 +525,10 @@
       border: 1px solid rgba(245, 175, 25, 0.2);
       border-radius: 24px;
       padding: 1.5rem;
-      min-width: 450px;
-      max-width: 600px;
+      min-width: 500px;
+      max-width: 700px;
       max-height: 80vh;
       overflow-y: auto;
-      animation: modalPop 0.3s ease;
-    }
-
-    body.light .modal-content {
-      background: white;
     }
 
     @keyframes modalPop {
@@ -575,7 +558,6 @@
       margin-top: 1.5rem;
     }
 
-    /* Ventana de venta */
     .venta-field-group {
       margin-bottom: 0.8rem;
     }
@@ -593,7 +575,6 @@
       font-size: 0.75rem;
       z-index: 2000;
       border: 1px solid rgba(245, 175, 25, 0.4);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
       animation: toastIn 0.3s ease forwards;
     }
 
@@ -608,7 +589,7 @@
       }
     }
 
-    /* Login */
+    /* Login PC */
     .login-container {
       display: flex;
       justify-content: center;
@@ -620,17 +601,12 @@
     }
 
     .login-card {
-      background: rgba(15, 25, 35, 0.9);
+      background: rgba(15, 25, 35, 0.95);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(245, 175, 25, 0.2);
       border-radius: 28px;
       padding: 2rem;
-      width: 400px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    body.light .login-card {
-      background: rgba(255, 255, 255, 0.95);
+      width: 450px;
     }
 
     .login-card h2 {
@@ -650,6 +626,7 @@
     .login-card button {
       width: 100%;
       margin-top: 0.5rem;
+      justify-content: center;
     }
 
     /* Tabs de carga */
@@ -678,7 +655,6 @@
     .carga-tab.active {
       background: linear-gradient(135deg, #f5af19, #f12711);
       color: white;
-      box-shadow: 0 2px 8px rgba(245, 175, 25, 0.3);
     }
 
     /* Manual de usuario */
@@ -757,7 +733,6 @@
       border-radius: 50px;
       font-size: 0.6rem;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
     .quick-link:hover {
@@ -779,7 +754,6 @@
       align-items: center;
       justify-content: center;
       margin: 0 auto 1rem auto;
-      box-shadow: 0 8px 20px rgba(255, 126, 95, 0.4);
     }
 
     .acerca-logo i {
@@ -793,7 +767,6 @@
       background: linear-gradient(135deg, #f5af19, #f12711);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.3rem;
     }
 
     .acerca-version {
@@ -833,18 +806,6 @@
 
     .page.active {
       display: block;
-      animation: fadeSlide 0.3s ease;
-    }
-
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     /* Keyboard hint */
@@ -860,26 +821,6 @@
       color: #64748b;
       z-index: 99;
     }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 70px;
-      }
-      .sidebar-header h2, .sidebar-header p, .nav-item span, .sidebar-footer .plan-badge span {
-        display: none;
-      }
-      .nav-item {
-        justify-content: center;
-        padding: 0.7rem;
-      }
-      .main-container {
-        margin-left: 70px;
-      }
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
   </style>
 </head>
 <body>
@@ -890,19 +831,19 @@
     <div id="loginPanel">
       <input type="email" id="loginEmail" placeholder="Email">
       <input type="password" id="loginPassword" placeholder="Contraseña">
-      <button class="btn btn-primary" id="btnLogin" style="width:100%; justify-content:center;">Iniciar sesión</button>
+      <button class="btn btn-primary" id="btnLogin">Iniciar sesión</button>
       <p style="text-align:center; margin-top:0.8rem; font-size:0.7rem;"><span id="forgotPasswordBtn" style="color:#f5af19; cursor:pointer;">¿Olvidaste tu contraseña?</span></p>
       <p style="text-align:center; margin-top:0.5rem; font-size:0.7rem;">¿No tienes cuenta? <span id="showRegister" style="color:#f5af19; cursor:pointer;">Regístrate</span></p>
       <div style="position: relative; margin: 0.5rem 0; text-align: center;">
         <span style="background: #1e293b; padding: 0 0.8rem; font-size: 0.7rem; color: #64748b;">O continúa con</span>
       </div>
-      <button id="btnGoogle" class="btn" style="width:100%; justify-content:center; background: white; color: #1e293b;"><i class="fab fa-google" style="color: #4285f4;"></i> Google</button>
+      <button id="btnGoogle" class="btn" style="background: white; color: #1e293b; justify-content: center;"><i class="fab fa-google" style="color: #4285f4;"></i> Google</button>
     </div>
     <div id="registerPanel" style="display:none;">
       <input type="email" id="regEmail" placeholder="Email">
       <input type="password" id="regPassword" placeholder="Contraseña">
       <input type="password" id="regPasswordConfirm" placeholder="Confirmar contraseña">
-      <button class="btn btn-primary" id="btnRegister" style="width:100%; justify-content:center;">Registrarse</button>
+      <button class="btn btn-primary" id="btnRegister">Registrarse</button>
       <p style="text-align:center; margin-top:1rem; font-size:0.7rem;"><span id="showLogin" style="color:#f5af19; cursor:pointer;">Volver a inicio</span></p>
     </div>
     <div id="authError" style="color:#ef4444; text-align:center; margin-top:1rem; font-size:0.7rem;"></div>
@@ -927,7 +868,7 @@
     </div>
     <div class="sidebar-footer">
       <div class="plan-badge" id="planBadge"><i class="fas fa-gift"></i> DEMO</div>
-      <button class="btn btn-sm" id="logoutBtn" style="width:100%;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+      <button class="btn btn-sm" id="logoutBtn" style="width:100%; justify-content:center;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
     </div>
   </div>
 
@@ -964,7 +905,7 @@
           <button class="carga-tab" data-mod="individual">🎭 Perfil Individual</button>
           <button class="carga-tab" data-mod="masiva">📋 Carga Masiva</button>
         </div>
-        
+
         <div id="modo-completa">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
             <div><label>Plataforma</label><select id="platCompleta"><option value="">Seleccionar...</option><option value="Netflix">Netflix (5)</option><option value="Netflix indiv">Netflix indiv (1)</option><option value="Disney">Disney (7)</option><option value="HBO Max">HBO Max (5)</option><option value="Paramount">Paramount (5)</option><option value="Crunchyrool">Crunchyrool (1)</option><option value="Prime video">Prime video (6)</option><option value="Spoty">Spoty (1)</option><option value="YouTube">YouTube (1)</option><option value="Otros">Otros</option></select></div>
@@ -978,7 +919,7 @@
           <div style="margin-top:0.8rem;"><label>Observaciones</label><textarea id="obsCompleta" rows="2"></textarea></div>
           <button class="btn btn-primary" id="btnGuardarCompleta" style="width:100%; margin-top:1rem; justify-content:center;"><i class="fas fa-save"></i> Guardar cuenta</button>
         </div>
-        
+
         <div id="modo-individual" style="display:none;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
             <div><label>Plataforma</label><select id="platIndividual"><option value="">Seleccionar...</option><option value="Netflix">Netflix</option><option value="Netflix indiv">Netflix indiv</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Paramount">Paramount</option><option value="Crunchyrool">Crunchyrool</option><option value="Prime video">Prime video</option><option value="Spoty">Spoty</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div>
@@ -996,7 +937,7 @@
             <button class="btn" id="btnCancelarEdicion" style="flex:1; justify-content:center;"><i class="fas fa-times"></i> Cancelar</button>
           </div>
         </div>
-        
+
         <div id="modo-masiva" style="display:none;">
           <div class="tip">Separa cada cuenta con línea en blanco o "---". Ejemplo:<br>Mail: correo@mail.com | Contraseña: pass | Perfil: Juan | Proveedor: María</div>
           <textarea id="batchTexto" rows="8" placeholder="Mail: usuario@mail.com\nContraseña: pass123\nPerfil: Juan\nProveedor: María"></textarea>
@@ -1037,7 +978,7 @@
         </div>
         <div class="pagination-bar">
           <div class="pagination-info" id="paginationInfo"></div>
-          <div style="display:flex; gap:0.5rem;">
+          <div>
             <button class="btn btn-sm" id="btnPaginaAnterior" disabled><i class="fas fa-chevron-left"></i> Anterior</button>
             <button class="btn btn-sm" id="btnPaginaSiguiente">Siguiente <i class="fas fa-chevron-right"></i></button>
           </div>
@@ -1102,7 +1043,7 @@
         <div style="display:flex; gap:0.5rem;"><input type="password" id="tokenAcceso" placeholder="SF-XXXX-XXXX-XXXX"><button class="btn btn-primary" id="btnValidarToken">Validar</button></div>
         <div id="tokenEstado" style="margin-top:0.5rem; font-size:0.7rem;"></div>
         <button class="btn btn-success" id="btnComprarToken" style="margin-top:0.5rem; width:100%; justify-content:center;"><i class="fab fa-whatsapp"></i> Comprar Token por WhatsApp</button>
-        
+
         <div class="card-title" style="margin-top:1rem;"><i class="fas fa-sliders-h"></i> Configuración</div>
         <div class="config-row"><span>Tema claro</span><input type="checkbox" id="themeToggle"></div>
         <div class="config-row"><span>Sincronización automática</span><input type="checkbox" id="autoSyncToggle" checked></div>
@@ -1122,7 +1063,7 @@
           <button class="btn" id="btnResetConfig"><i class="fas fa-undo-alt"></i> Resetear</button>
         </div>
         <input type="file" id="archivoConfig" accept=".json" style="display:none;">
-        
+
         <hr style="margin:1rem 0; border-color:rgba(245,175,25,0.1);">
         <button class="btn" id="btnAbrirManual" style="width:100%; justify-content:center;"><i class="fas fa-book"></i> Ver Manual Completo</button>
         <button class="btn" id="btnAcercaDe" style="width:100%; margin-top:0.5rem; justify-content:center;"><i class="fas fa-info-circle"></i> Acerca de esta app</button>
@@ -1941,6 +1882,7 @@
     if (page === "stats") renderStats();
   }
 
+  // Event Listeners
   document.querySelectorAll(".nav-item").forEach(item => { item.addEventListener("click", () => changePage(item.dataset.page)); });
   document.getElementById("btnGuardarCompleta")?.addEventListener("click", guardarCuentaCompleta);
   document.getElementById("btnGuardarIndividual")?.addEventListener("click", guardarPerfilIndividual);
