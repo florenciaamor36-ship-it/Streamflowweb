@@ -821,6 +821,116 @@
       color: #64748b;
       z-index: 99;
     }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .main-container {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .topbar {
+        padding: 0.6rem 1rem;
+        flex-direction: column;
+        gap: 0.6rem;
+        align-items: flex-start;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .user-profile {
+        padding: 0.2rem 0.5rem;
+      }
+
+      #userEmail {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+      }
+
+      .stat-card {
+        padding: 0.8rem;
+      }
+
+      .stat-number {
+        font-size: 1.5rem;
+      }
+
+      .card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .login-card {
+        width: 90%;
+        padding: 1.5rem;
+      }
+
+      .modal-content {
+        min-width: 90%;
+        width: 90%;
+        padding: 1rem;
+      }
+
+      .modal-buttons {
+        flex-direction: column-reverse;
+      }
+
+      .modal-buttons .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .nav-item .shortcut {
+        display: none;
+      }
+
+      .carga-tabs {
+        flex-direction: column;
+        border-radius: 12px;
+      }
+
+      .keyboard-hint {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: block !important;
+        background: none;
+        border: none;
+        color: #f5af19;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -874,7 +984,10 @@
 
   <div class="main-container">
     <div class="topbar">
-      <div class="topbar-title" id="pageTitle">Dashboard</div>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+          <div class="topbar-title" id="pageTitle">Dashboard</div>
+        </div>
       <div class="topbar-actions">
         <div class="sync-status synced" id="syncStatus"><i class="fas fa-cloud"></i> Sincronizado</div>
         <div class="user-profile" id="userProfile">
@@ -1228,7 +1341,8 @@
     const snap = await getDoc(userRef);
     if (snap.exists()) {
       const data = snap.data();
-      if (data.perfiles && (data.version || 0) > versionLocal) {
+      // Compatibilidad: Si no hay versión o es 0, cargamos igual si perfiles tiene datos
+      if (data.perfiles && ( (data.version || 0) > versionLocal || (versionLocal === 0 && Array.isArray(data.perfiles) && data.perfiles.length > 0) )) {
         perfiles = data.perfiles;
         versionLocal = data.version || Date.now();
         saveLocal();
@@ -1274,9 +1388,9 @@
     unsubscribeFirestore = onSnapshot(userRef, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
-        if ((data.version || 0) > versionLocal && data.perfiles) {
+        if (data.perfiles && ((data.version || 0) > versionLocal || (versionLocal === 0 && perfiles.length === 0))) {
           perfiles = data.perfiles;
-          versionLocal = data.version;
+          versionLocal = data.version || Date.now();
           saveLocal();
           renderAll();
           document.getElementById("syncStatus").className = "sync-status synced";
@@ -1325,7 +1439,7 @@
         <td>${p.fechaVencimiento ? formatDate(p.fechaVencimiento) : '-'}</td>
         <td><span class="badge ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td>
         <td style="white-space:nowrap;">
-          ${p.whatsappProveedor ? `<button class="btn btn-sm" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/\D/g,'')}')" title="WA Proveedor"><i class="fab fa-whatsapp"></i></button>` : ''}
+          ${p.whatsappProveedor ? `<button class="btn btn-sm" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/[^0-9]/g,'')}')" title="WA Proveedor"><i class="fab fa-whatsapp"></i></button>` : ''}
           <button class="btn btn-sm" onclick="copiarPerfil('${p.id}')" title="Copiar"><i class="fas fa-copy"></i></button>
           ${!kioscoMode ? `<button class="btn btn-sm" onclick="editarPerfilCompleto('${p.id}')" title="Editar"><i class="fas fa-edit"></i></button>` : ''}
           <button class="btn btn-sm btn-success" onclick="renovarPerfil('${p.id}')" title="Renovar"><i class="fas fa-sync-alt"></i></button>
@@ -1480,7 +1594,7 @@
     renderAll();
     if (cliente) {
       const mensaje = plantillaCliente(perfiles[idx], true);
-      window.open(`https://wa.me/${cliente.replace(/\D/g,'')}?text=${encodeURIComponent(mensaje)}`, '_blank');
+      window.open(`https://wa.me/${cliente.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
     document.getElementById("ventaModal").classList.remove("active");
     document.getElementById("ventaPrecio").value = "";
@@ -1606,7 +1720,7 @@
         <td>${escapeHtml(p.perfilNombre)}</td>
         <td>${p.whatsappCliente || '-'}</td>
         <td>$${p.precioVenta || 0}</td>
-        <td><button class="btn btn-sm" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/\D/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}')"><i class="fab fa-whatsapp"></i></button></td>
+        <td><button class="btn btn-sm" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}')"><i class="fab fa-whatsapp"></i></button></td>
       </tr>
     `).join('') || '<tr><td colspan="6">No hay ventas</td></tr>';
   }
@@ -1918,9 +2032,13 @@
     if (page === "perfiles") { paginaActual = 1; renderTabla(); }
     if (page === "historial") renderHistorial();
     if (page === "stats") renderStats();
+    document.querySelector(".sidebar").classList.remove("active");
   }
 
   // Event Listeners
+  document.getElementById("mobileToggle")?.addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("active");
+  });
   document.querySelectorAll(".nav-item").forEach(item => { item.addEventListener("click", () => changePage(item.dataset.page)); });
   document.getElementById("btnGuardarCompleta")?.addEventListener("click", guardarCuentaCompleta);
   document.getElementById("btnGuardarIndividual")?.addEventListener("click", guardarPerfilIndividual);
