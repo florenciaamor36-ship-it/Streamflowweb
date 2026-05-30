@@ -908,7 +908,7 @@
 
         <div id="modo-completa">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <div><label>Plataforma</label><select id="platCompleta"><option value="">Seleccionar...</option><option value="Netflix">Netflix (5)</option><option value="Netflix indiv">Netflix indiv (1)</option><option value="Disney">Disney (7)</option><option value="HBO Max">HBO Max (5)</option><option value="Paramount">Paramount (5)</option><option value="Crunchyrool">Crunchyrool (1)</option><option value="Prime video">Prime video (6)</option><option value="Spoty">Spoty (1)</option><option value="YouTube">YouTube (1)</option><option value="Otros">Otros</option></select></div>
+            <div><label>Plataforma</label><select id="platCompleta"><option value="">Seleccionar...</option><option value="Netflix">Netflix (5)</option><option value="Netflix indiv">Netflix indiv (1)</option><option value="Disney">Disney (7)</option><option value="Max">Max (5)</option><option value="Paramount">Paramount (5)</option><option value="Crunchyroll">Crunchyroll (1)</option><option value="Prime video">Prime video (6)</option><option value="Spotify">Spotify (1)</option><option value="YouTube">YouTube (1)</option><option value="Otros">Otros</option></select></div>
             <div><label>N° Cuenta</label><input type="text" id="cuentaIdCompleta" placeholder="Ej: Cuenta 1"></div>
           </div>
           <div id="otraPlatCompletaDiv" style="display:none; margin-top:0.8rem;"><label>Nombre</label><input type="text" id="otraPlatCompleta" placeholder="Apple TV+"></div>
@@ -922,7 +922,7 @@
 
         <div id="modo-individual" style="display:none;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <div><label>Plataforma</label><select id="platIndividual"><option value="">Seleccionar...</option><option value="Netflix">Netflix</option><option value="Netflix indiv">Netflix indiv</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Paramount">Paramount</option><option value="Crunchyrool">Crunchyrool</option><option value="Prime video">Prime video</option><option value="Spoty">Spoty</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div>
+            <div><label>Plataforma</label><select id="platIndividual"><option value="">Seleccionar...</option><option value="Netflix">Netflix</option><option value="Netflix indiv">Netflix indiv</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Paramount">Paramount</option><option value="Crunchyroll">Crunchyroll</option><option value="Prime video">Prime video</option><option value="Spotify">Spotify</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div>
             <div><label>N° Cuenta</label><input type="text" id="cuentaIdIndividual" placeholder="Ej: Cuenta 1"></div>
           </div>
           <div id="otraPlatIndividualDiv" style="display:none; margin-top:0.8rem;"><label>Nombre</label><input type="text" id="otraPlatIndividual" placeholder="Apple TV+"></div>
@@ -939,8 +939,9 @@
         </div>
 
         <div id="modo-masiva" style="display:none;">
-          <div class="tip">Separa cada cuenta con línea en blanco o "---". Ejemplo:<br>Mail: correo@mail.com | Contraseña: pass | Perfil: Juan | Proveedor: María</div>
-          <textarea id="batchTexto" rows="8" placeholder="Mail: usuario@mail.com\nContraseña: pass123\nPerfil: Juan\nProveedor: María"></textarea>
+          <div style="margin-bottom:0.8rem;"><label>Plataforma para carga masiva</label><select id="platMasiva"><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Paramount">Paramount</option><option value="Crunchyroll">Crunchyroll</option><option value="Prime video">Prime video</option><option value="Spotify">Spotify</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div>
+          <div class="tip">Separa cuentas con una línea en blanco o "---".<br>Usa el formato: <b>Mail: correo | Pass: clave | Perfil: nombre | Proveedor: maria</b> (pueden estar en la misma línea separados por | o en líneas distintas).</div>
+          <textarea id="batchTexto" rows="8" placeholder="Mail: usuario@mail.com | Pass: 1234&#10;Perfil: Juan&#10;Proveedor: Maria&#10;&#10;Mail: otro@mail.com | Pass: abcd"></textarea>
           <div style="display:flex; gap:0.8rem; margin-top:1rem;">
             <button class="btn" id="btnPrevisualizar"><i class="fas fa-eye"></i> Previsualizar</button>
             <button class="btn btn-primary" id="btnCargarMasivo"><i class="fas fa-upload"></i> Cargar todo</button>
@@ -954,7 +955,7 @@
     <div id="page-perfiles" class="page">
       <div class="card">
         <div class="filters-bar">
-          <select id="filtroPlataforma"><option value="">Todas</option><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Prime video">Prime video</option></select>
+          <select id="filtroPlataforma"><option value="">Todas</option><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Prime video">Prime video</option></select>
           <select id="filtroEstado"><option value="">Todos</option><option value="activo">Activos</option><option value="proximo">Próximos</option><option value="vencido">Vencidos</option><option value="libre">Libres</option><option value="vendido">Vendidos</option></select>
           <input type="text" id="buscarTexto" placeholder="Buscar...">
           <input type="text" id="filtroProveedor" placeholder="Proveedor...">
@@ -991,7 +992,7 @@
       <div class="card">
         <div class="card-title"><i class="fas fa-history"></i> Historial de Ventas</div>
         <div class="filters-bar">
-          <select id="historialFiltroPlataforma"><option value="">Todas</option><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="HBO Max">HBO Max</option><option value="Prime video">Prime video</option></select>
+          <select id="historialFiltroPlataforma"><option value="">Todas</option><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Prime video">Prime video</option></select>
           <input type="text" id="historialBuscar" placeholder="Buscar...">
           <input type="date" id="historialFechaInicio"><input type="date" id="historialFechaFin">
         </div>
@@ -1146,7 +1147,8 @@
   const db = getFirestore(app);
   const googleProvider = new GoogleAuthProvider();
 
-  const TOKENS_VALIDOS = new Set(["SF-A7K2-M9P4-X8N1", "SF-B3F8-R6W2-Q5L9", "SF-C9M4-T1Y7-V2H6", "SF-D5R1-K8U3-W7Z0"]);
+  const _0x5f2e = ["U0YtQTdLMi1NOVA0LVg4TjE=", "U0YtQjNGOC1SNlcyLVE1TDk=", "U0YtQzlNNC1UMVk3LVYySDY=", "U0YtRDVSMS1LOFUzLVc3WjA="];
+  const TOKENS_VALIDOS = new Set(_0x5f2e.map(t => atob(t)));
 
   let perfiles = [];
   let currentUser = null;
@@ -1167,6 +1169,21 @@
   let diasPruebaRestantes = 0;
 
   function toast(msg) { let t = document.querySelector(".toast"); if (t) t.remove(); t = document.createElement("div"); t.className = "toast"; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
+  function translateAuthError(code) {
+    const map = {
+      'auth/invalid-email': 'Email inválido.',
+      'auth/user-disabled': 'Usuario deshabilitado.',
+      'auth/user-not-found': 'Usuario no encontrado.',
+      'auth/wrong-password': 'Contraseña incorrecta.',
+      'auth/email-already-in-set': 'El email ya está en uso.',
+      'auth/email-already-in-use': 'El email ya está en uso.',
+      'auth/weak-password': 'La contraseña es muy débil (mínimo 6 caracteres).',
+      'auth/operation-not-allowed': 'Operación no permitida.',
+      'auth/invalid-credential': 'Credenciales inválidas.',
+      'auth/popup-closed-by-user': 'El acceso con Google fue cancelado.'
+    };
+    return map[code] || 'Ocurrió un error en la autenticación.';
+  }
   function escapeHtml(t) { if (!t) return ""; return t.replace(/[&<>]/g, m => m === '&' ? '&amp;' : '<' ? '&lt;' : '&gt;'); }
   function generateId() { return Date.now() + '-' + Math.random().toString(36).substr(2, 9); }
   function formatDate(str) { if (!str) return ""; const p = str.split("-"); return `${p[2]}/${p[1]}/${p[0]}`; }
@@ -1308,7 +1325,7 @@
         <td>${p.fechaVencimiento ? formatDate(p.fechaVencimiento) : '-'}</td>
         <td><span class="badge ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td>
         <td style="white-space:nowrap;">
-          ${p.whatsappProveedor ? `<button class="btn btn-sm" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/\\D/g,'')}')" title="WA Proveedor"><i class="fab fa-whatsapp"></i></button>` : ''}
+          ${p.whatsappProveedor ? `<button class="btn btn-sm" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/\D/g,'')}')" title="WA Proveedor"><i class="fab fa-whatsapp"></i></button>` : ''}
           <button class="btn btn-sm" onclick="copiarPerfil('${p.id}')" title="Copiar"><i class="fas fa-copy"></i></button>
           ${!kioscoMode ? `<button class="btn btn-sm" onclick="editarPerfilCompleto('${p.id}')" title="Editar"><i class="fas fa-edit"></i></button>` : ''}
           <button class="btn btn-sm btn-success" onclick="renovarPerfil('${p.id}')" title="Renovar"><i class="fas fa-sync-alt"></i></button>
@@ -1480,7 +1497,7 @@
     const proveedor = document.getElementById("proveedorCompleta").value;
     const fecha = document.getElementById("fechaCompleta").value || null;
     if (!mail || !password || !proveedor) { toast("Completá todos los campos"); return; }
-    const cantidades = { "Netflix":5, "Netflix indiv":1, "Disney":7, "HBO Max":5, "Paramount":5, "Crunchyrool":1, "Prime video":6, "Spoty":1, "YouTube":1, "Otros":1 };
+    const cantidades = { "Netflix":5, "Netflix indiv":1, "Disney":7, "Max":5, "Paramount":5, "Crunchyroll":1, "Prime video":6, "Spotify":1, "YouTube":1, "Otros":1 };
     const cantidad = cantidades[plataforma] || 1;
     const idCuenta = cuentaId || "CTA_" + Date.now();
     for (let i = 1; i <= cantidad; i++) {
@@ -1518,40 +1535,54 @@
     toast("Perfil individual guardado");
     limpiarFormularioIndividual();
   }
-  async function cargarMasiva() {
-    const texto = document.getElementById("batchTexto").value;
-    const lineas = texto.split("\n").filter(l => l.trim());
-    let agregados = 0;
-    for (let i = 0; i < lineas.length; i += 4) {
-      const mail = lineas[i]?.replace("Mail: ", "");
-      const pass = lineas[i+1]?.replace("Contraseña: ", "");
-      const perfil = lineas[i+2]?.replace("Perfil: ", "");
-      const prov = lineas[i+3]?.replace("Proveedor: ", "");
-      if (mail && pass) {
-        perfiles.push({
-          id: generateId(), plataforma: "Netflix", cuentaId: "MASIVA", mail, password: pass,
-          perfilNombre: perfil || "Principal", proveedor: prov || "", estado: "libre"
+  function parseBatchText(texto) {
+    const bloques = texto.split(/\n\s*\n|---/).filter(b => b.trim());
+    const resultados = [];
+    bloques.forEach(bloque => {
+      const lineas = bloque.split('\n');
+      let data = { mail: '', pass: '', perfil: '', prov: '' };
+      lineas.forEach(linea => {
+        const partes = linea.split('|');
+        partes.forEach(p => {
+          const s = p.trim();
+          const lower = s.toLowerCase();
+          if (lower.startsWith('mail:')) data.mail = s.substring(5).trim();
+          else if (lower.startsWith('contraseña:')) data.pass = s.substring(11).trim();
+          else if (lower.startsWith('pass:')) data.pass = s.substring(5).trim();
+          else if (lower.startsWith('perfil:')) data.perfil = s.substring(7).trim();
+          else if (lower.startsWith('proveedor:')) data.prov = s.substring(10).trim();
         });
-        agregados++;
-      }
-    }
-    if (agregados > 0) {
+      });
+      if (data.mail && data.pass) resultados.push(data);
+    });
+    return resultados;
+  }
+  async function cargarMasiva() {
+    const plataforma = document.getElementById("platMasiva").value;
+    const texto = document.getElementById("batchTexto").value;
+    const items = parseBatchText(texto);
+    if (items.length > 0) {
+      items.forEach(item => {
+        perfiles.push({
+          id: generateId(), plataforma, cuentaId: "MASIVA", mail: item.mail, password: item.pass,
+          perfilNombre: item.perfil || "Principal", proveedor: item.prov || "", estado: "libre"
+        });
+      });
       await saveToFirebase();
       renderAll();
-      toast(`${agregados} perfiles agregados`);
+      toast(`${items.length} perfiles agregados`);
       document.getElementById("batchTexto").value = "";
-    } else toast("No se encontraron cuentas");
+      document.getElementById("batchResultados").style.display = "none";
+    } else toast("No se encontraron cuentas válidas (se requiere Mail y Pass)");
   }
   function previsualizarMasiva() {
     const texto = document.getElementById("batchTexto").value;
-    const lineas = texto.split("\n").filter(l => l.trim());
-    let items = [];
-    for (let i = 0; i < lineas.length; i += 4) {
-      if (lineas[i] && lineas[i+1]) items.push(`${Math.floor(i/4)+1}. ${lineas[i].substring(6)}`);
-    }
+    const items = parseBatchText(texto);
     const div = document.getElementById("batchResultados");
     div.style.display = "block";
-    div.innerHTML = items.length ? `<strong>Vista previa:</strong><br>${items.join("<br>")}` : "No se detectaron cuentas";
+    div.innerHTML = items.length ? `<strong>Vista previa (${items.length}):</strong><br>` +
+      items.map((it, idx) => `${idx+1}. ${escapeHtml(it.mail)} (${escapeHtml(it.perfil || 'Principal')})`).join("<br>") :
+      "No se detectaron cuentas válidas. Asegurate de usar el formato Mail: ... | Pass: ...";
   }
   function renderDashboard() {
     document.getElementById("totalPerfiles").textContent = perfiles.length;
@@ -1564,7 +1595,7 @@
     perfiles.forEach(p => { if (p.fechaVenta) ventasPlata[p.plataforma] = (ventasPlata[p.plataforma] || 0) + 1; });
     const mas = Object.entries(ventasPlata).sort((a,b) => b[1] - a[1])[0];
     document.getElementById("tendencias").innerHTML = mas ? `🔥 ${mas[0]} con ${mas[1]} ventas` : "Sin ventas aún";
-    document.getElementById("combos").innerHTML = "<div>🎯 Combo del día: Netflix + Disney + HBO Max</div>";
+    document.getElementById("combos").innerHTML = "<div>🎯 Combo del día: Netflix + Disney + Max</div>";
   }
   function renderHistorial() {
     const ventas = perfiles.filter(p => p.fechaVenta).sort((a,b) => new Date(b.fechaVenta) - new Date(a.fechaVenta));
@@ -1806,7 +1837,7 @@
       actualizarBadgePlan();
     } catch(e) {
       console.error("Error verificando suscripción:", e);
-      appDesbloqueada = true; planEstado = "demo"; diasPruebaRestantes = 0;
+      appDesbloqueada = false; planEstado = "bloqueado"; diasPruebaRestantes = 0;
       actualizarBadgePlan();
     }
   }
@@ -1873,6 +1904,13 @@
   }
 
   function changePage(page) {
+    if (page === "ajustes" && kioscoMode) {
+      const pin = prompt("Modo Kiosco activo. Ingresá el PIN para acceder a Ajustes:");
+      if (pin !== "1234") {
+        toast("Acceso denegado");
+        return;
+      }
+    }
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.getElementById(`page-${page}`).classList.add("active");
     document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
@@ -1951,7 +1989,28 @@
   document.getElementById("themeToggle")?.addEventListener("change", (e) => { if (e.target.checked) document.body.classList.add("light"); else document.body.classList.remove("light"); guardarConfigLocal(); });
   document.getElementById("autoSyncToggle")?.addEventListener("change", (e) => { autoSync = e.target.checked; guardarConfigLocal(); });
   document.getElementById("notificationsToggle")?.addEventListener("change", (e) => { notificationsEnabled = e.target.checked; guardarConfigLocal(); });
-  document.getElementById("kioscoToggle")?.addEventListener("change", (e) => { kioscoMode = e.target.checked; renderTabla(); guardarConfigLocal(); });
+  document.getElementById("kioscoToggle")?.addEventListener("change", (e) => {
+    if (e.target.checked) {
+      if (confirm("¿Activar Modo Kiosco? Se ocultarán funciones de edición y eliminación.")) {
+        kioscoMode = true;
+        renderTabla();
+        guardarConfigLocal();
+      } else {
+        e.target.checked = false;
+      }
+    } else {
+      const pin = prompt("Ingresá el PIN para desactivar el Modo Kiosco (Por defecto: 1234)");
+      if (pin === "1234") {
+        kioscoMode = false;
+        renderTabla();
+        guardarConfigLocal();
+        toast("Modo Kiosco desactivado");
+      } else {
+        e.target.checked = true;
+        toast("PIN incorrecto");
+      }
+    }
+  });
   document.getElementById("diasProximo")?.addEventListener("change", (e) => { DIAS_PROXIMO = parseInt(e.target.value) || 3; renderAll(); guardarConfigLocal(); });
   document.getElementById("fontSizeSelect")?.addEventListener("change", (e) => {
     document.body.classList.remove("font-small", "font-medium", "font-large");
@@ -2029,15 +2088,15 @@
   });
   document.getElementById("btnLogin")?.addEventListener("click", async () => {
     try { await signInWithEmailAndPassword(auth, document.getElementById("loginEmail").value, document.getElementById("loginPassword").value); }
-    catch(e) { document.getElementById("authError").innerText = e.message; }
+    catch(e) { document.getElementById("authError").innerText = translateAuthError(e.code); }
   });
   document.getElementById("btnRegister")?.addEventListener("click", async () => {
     try { await createUserWithEmailAndPassword(auth, document.getElementById("regEmail").value, document.getElementById("regPassword").value); }
-    catch(e) { document.getElementById("authError").innerText = e.message; }
+    catch(e) { document.getElementById("authError").innerText = translateAuthError(e.code); }
   });
   document.getElementById("btnGoogle")?.addEventListener("click", async () => {
     try { await signInWithPopup(auth, googleProvider); }
-    catch(e) { document.getElementById("authError").innerText = e.message; }
+    catch(e) { document.getElementById("authError").innerText = translateAuthError(e.code); }
   });
   document.getElementById("logoutBtn")?.addEventListener("click", async () => { await signOut(auth); });
   document.getElementById("showRegister")?.addEventListener("click", () => { document.getElementById("loginPanel").style.display = "none"; document.getElementById("registerPanel").style.display = "block"; });
