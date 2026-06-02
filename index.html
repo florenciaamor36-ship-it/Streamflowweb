@@ -1304,6 +1304,23 @@
   </div>
 </div>
 
+<!-- Bloqueo de suscripción -->
+<div id="lockOverlay" style="display:none; position:fixed; inset:0; background:rgba(10,12,16,0.95); backdrop-filter:blur(15px); z-index:9999; flex-direction:column; align-items:center; justify-content:center; padding:2rem; text-align:center;">
+  <div class="card" style="max-width:400px; border-color:var(--secondary);">
+    <div class="logo-icon" style="background:var(--secondary);"><i class="fas fa-lock"></i></div>
+    <h2 style="color:white; margin-bottom:1rem;">Acceso Bloqueado</h2>
+    <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:1.5rem;">Tu periodo de prueba ha finalizado o tu suscripción ha expirado. Por favor, ingresa un token válido para continuar.</p>
+    <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+      <input type="password" id="lockTokenInput" placeholder="SF-XXXX-XXXX-XXXX">
+      <button class="btn btn-primary" id="btnLockValidate">Validar</button>
+    </div>
+    <button class="btn btn-success" id="btnLockBuy" style="width:100%; justify-content:center;"><i class="fab fa-whatsapp"></i> Comprar Token</button>
+    <p id="lockError" style="color:var(--secondary); font-size:0.7rem; margin-top:1rem;"></p>
+    <hr style="margin:1.5rem 0; opacity:0.1;">
+    <button class="btn btn-sm" id="lockLogout" style="width:100%; justify-content:center;"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+  </div>
+</div>
+
 <!-- Modales -->
 <div class="modal" id="ventaModal">
   <div class="modal-content">
@@ -2045,6 +2062,9 @@
   }
   function actualizarBadgePlan() {
     const badge = document.getElementById("planBadge");
+    const overlay = document.getElementById("lockOverlay");
+    if (overlay) overlay.style.display = appDesbloqueada ? "none" : "flex";
+
     if (!badge) return;
     if (!appDesbloqueada) {
       badge.innerHTML = '<i class="fas fa-lock"></i> BLOQUEADO';
@@ -2257,10 +2277,30 @@
   document.getElementById("acercaCerrar")?.addEventListener("click", () => document.getElementById("acercaModal").classList.remove("active"));
   document.getElementById("btnAbrirManual")?.addEventListener("click", () => changePage("ayuda"));
   document.getElementById("btnVolverDeAyuda")?.addEventListener("click", () => changePage("ajustes"));
-  document.getElementById("btnValidarToken")?.addEventListener("click", ejecutarValidacionToken);
-  document.getElementById("btnComprarToken")?.addEventListener("click", () => {
+  const validateAction = async (inputId, errorId) => {
+    const token = document.getElementById(inputId).value.trim().toUpperCase();
+    if (!token) { toast("Ingresá un token"); return; }
+    const res = await validarToken(token, currentUser.uid);
+    if (res.valido) {
+      document.getElementById(inputId).value = "";
+      toast("✅ Suscripción activada");
+      if (errorId) document.getElementById(errorId).innerText = "";
+    } else {
+      const msg = res.mensaje || "Token inválido";
+      toast("❌ " + msg);
+      if (errorId) document.getElementById(errorId).innerText = msg;
+    }
+  };
+
+  document.getElementById("btnValidarToken")?.addEventListener("click", () => validateAction("tokenAcceso", "tokenEstado"));
+  document.getElementById("btnLockValidate")?.addEventListener("click", () => validateAction("lockTokenInput", "lockError"));
+
+  const buyTokenAction = () => {
     window.open("https://wa.me/5492291530515?text=" + encodeURIComponent("Hola, quiero comprar un token para StreamFlow Pro. Mi correo es " + (currentUser?.email || "usuario@ejemplo.com")), '_blank');
-  });
+  };
+  document.getElementById("btnComprarToken")?.addEventListener("click", buyTokenAction);
+  document.getElementById("btnLockBuy")?.addEventListener("click", buyTokenAction);
+  document.getElementById("lockLogout")?.addEventListener("click", async () => { await signOut(auth); });
   document.getElementById("themeToggle")?.addEventListener("change", (e) => { if (e.target.checked) document.body.classList.add("light"); else document.body.classList.remove("light"); guardarConfigLocal(); });
   document.getElementById("autoSyncToggle")?.addEventListener("change", (e) => { autoSync = e.target.checked; guardarConfigLocal(); });
   document.getElementById("notificationsToggle")?.addEventListener("change", (e) => { notificationsEnabled = e.target.checked; guardarConfigLocal(); });
