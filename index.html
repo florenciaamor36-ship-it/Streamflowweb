@@ -9,18 +9,36 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #f5af19;
+      --primary-rgb: 245, 175, 25;
+      --secondary: #f12711;
+      --bg-dark: #0a0c10;
+      --bg-card: rgba(30, 41, 59, 0.5);
+      --text-main: #f8fafc;
+      --text-dim: #94a3b8;
+      --border-glow: rgba(245, 175, 25, 0.15);
+      --glass: rgba(15, 23, 42, 0.7);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) transparent;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0a0c10 0%, #0f1117 100%);
-      color: #e2e8f0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(245, 175, 25, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(241, 39, 17, 0.05) 0px, transparent 50%);
+      color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
+      letter-spacing: -0.01em;
     }
 
     /* Modo claro */
@@ -71,9 +89,12 @@
       top: 0;
       width: 280px;
       height: 100vh;
-      background: linear-gradient(180deg, #0f0c29 0%, #1a1a3e 100%);
-      border-right: 1px solid rgba(245, 175, 25, 0.15);
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-right: 1px solid var(--border-glow);
       z-index: 100;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
     }
 
     .sidebar-header {
@@ -137,16 +158,24 @@
       font-size: 1rem;
     }
 
+    .nav-item {
+      position: relative;
+      margin: 0.4rem 1rem;
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+    }
+
     .nav-item:hover {
-      background: rgba(245, 175, 25, 0.1);
-      color: #f5af19;
-      transform: translateX(5px);
+      background: rgba(245, 175, 25, 0.08);
+      color: var(--primary);
+      transform: translateX(4px);
     }
 
     .nav-item.active {
-      background: linear-gradient(90deg, rgba(245, 175, 25, 0.15), transparent);
-      color: #f5af19;
-      border-left-color: #f5af19;
+      background: linear-gradient(90deg, rgba(245, 175, 25, 0.12), transparent);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+      font-weight: 700;
     }
 
     .nav-item .shortcut {
@@ -199,15 +228,17 @@
 
     /* Topbar */
     .topbar {
-      background: rgba(15, 25, 35, 0.6);
+      background: var(--glass);
       backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 0.8rem 1.5rem;
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 1rem 1.5rem;
       margin-bottom: 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border: 1px solid rgba(245, 175, 25, 0.15);
+      border: 1px solid var(--border-glow);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .topbar-title {
@@ -240,19 +271,26 @@
     }
 
     .sync-status.syncing {
-      background: rgba(245, 158, 11, 0.2);
+      background: rgba(245, 158, 11, 0.15);
       color: #f59e0b;
-      animation: pulse 1s infinite;
+      animation: pulse-sync 2s infinite ease-in-out;
     }
 
     .sync-status.error {
-      background: rgba(239, 68, 68, 0.2);
-      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+    @keyframes pulse-sync {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0px); }
     }
 
     .user-profile {
@@ -291,12 +329,12 @@
     }
 
     .stat-card {
-      background: rgba(15, 25, 35, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(245, 175, 25, 0.1);
-      border-radius: 20px;
-      padding: 1.2rem;
-      transition: all 0.2s ease;
+      background: var(--bg-card);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-glow);
+      border-radius: 24px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .stat-card:hover {
@@ -320,12 +358,13 @@
 
     /* Cards PC */
     .card {
-      background: rgba(15, 25, 35, 0.6);
+      background: var(--glass);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(245, 175, 25, 0.1);
-      border-radius: 20px;
-      padding: 1.2rem;
+      border: 1px solid var(--border-glow);
+      border-radius: 24px;
+      padding: 1.5rem;
       margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .card-title {
@@ -532,14 +571,18 @@
     }
 
     .modal-content {
-      background: linear-gradient(145deg, #1a1f2e, #111827);
-      border: 1px solid rgba(245, 175, 25, 0.2);
-      border-radius: 24px;
-      padding: 1.5rem;
+      background: var(--glass);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--border-glow);
+      border-radius: 28px;
+      padding: 2rem;
       min-width: 500px;
       max-width: 700px;
-      max-height: 80vh;
+      max-height: 85vh;
       overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     @keyframes modalPop {
@@ -1024,13 +1067,53 @@
     <!-- Dashboard -->
     <div id="page-dashboard" class="page active">
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-number" id="totalPerfiles">0</div><div class="stat-label">Total Perfiles</div></div>
-        <div class="stat-card"><div class="stat-number" id="libresHoy">0</div><div class="stat-label">Disponibles</div></div>
-        <div class="stat-card"><div class="stat-number" id="vencenHoy">0</div><div class="stat-label">Próximos</div></div>
-        <div class="stat-card"><div class="stat-number" id="ventasHoy">0</div><div class="stat-label">Ventas Hoy</div></div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalPerfiles">0</div>
+          <div class="stat-label">Total Perfiles</div>
+          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
+            <div id="barTotal" style="width:0%; height:100%; background:var(--primary); transition:width 1s;"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="libresHoy">0</div>
+          <div class="stat-label">Disponibles</div>
+          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
+            <div id="barLibres" style="width:0%; height:100%; background:#34d399; transition:width 1s;"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="vencenHoy">0</div>
+          <div class="stat-label">Próximos</div>
+          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
+            <div id="barVencen" style="width:0%; height:100%; background:#fbbf24; transition:width 1s;"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="ventasHoy">0</div>
+          <div class="stat-label">Ventas Hoy</div>
+          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
+            <div id="barVentas" style="width:0%; height:100%; background:#a78bfa; transition:width 1s;"></div>
+          </div>
+        </div>
       </div>
-      <div class="card"><div class="card-title"><i class="fas fa-fire"></i> Tendencias</div><div id="tendencias" style="font-size:0.75rem;"></div></div>
-      <div class="card"><div class="card-title"><i class="fas fa-chart-line"></i> Combos del día</div><div id="combos" style="font-size:0.75rem;"></div></div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-title"><i class="fas fa-bolt"></i> Acciones Rápidas</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
+            <button class="btn" onclick="changePage('carga')" style="justify-content:center; background:rgba(245,175,25,0.1); color:var(--primary); border:1px solid rgba(245,175,25,0.2);"><i class="fas fa-plus"></i> Nueva Carga</button>
+            <button class="btn" id="quickSearchBtn" style="justify-content:center;"><i class="fas fa-search"></i> Buscar Cuenta</button>
+            <button class="btn" onclick="changePage('stats')" style="justify-content:center;"><i class="fas fa-chart-pie"></i> Ver Reportes</button>
+            <button class="btn" onclick="changePage('ajustes')" style="justify-content:center;"><i class="fas fa-cog"></i> Configurar</button>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-title"><i class="fas fa-fire"></i> Tendencias</div>
+          <div id="tendencias" style="font-size:0.8rem; margin-bottom:1rem; min-height: 40px;"></div>
+          <div class="card-title" style="font-size:0.65rem; opacity:0.8; margin-top:0.5rem;"><i class="fas fa-star"></i> Combo sugerido</div>
+          <div id="combos" style="font-size:0.8rem; color:var(--primary); font-weight:600;"></div>
+        </div>
+      </div>
     </div>
 
     <!-- Cargar Cuentas -->
@@ -1107,11 +1190,19 @@
           <button class="btn" id="btnImportar"><i class="fas fa-upload"></i> Importar</button>
           <input type="file" id="archivoImportar" accept=".json" style="display:none;">
           <button class="btn btn-danger" id="btnBorrarTodo"><i class="fas fa-trash"></i> Borrar todo</button>
+          <div id="bulkActions" style="display:none; gap:0.5rem; background:rgba(245,175,25,0.1); padding:0.5rem 1rem; border-radius:12px; border:1px solid var(--primary);">
+            <span style="font-size:0.7rem; font-weight:700; color:var(--primary); align-self:center;">Acciones lote:</span>
+            <button class="btn btn-sm btn-danger" id="btnBulkDelete"><i class="fas fa-trash"></i> Eliminar</button>
+            <button class="btn btn-sm btn-success" id="btnBulkRenew"><i class="fas fa-sync-alt"></i> Renovar</button>
+            <button class="btn btn-sm" id="btnBulkWA" style="background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> Compartir</button>
+          </div>
         </div>
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
-              <tr><th>Plataforma</th><th>Cuenta</th><th>Perfil</th><th>Correo</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr>
+              <tr>
+                <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
+                <th>Plataforma</th><th>Cuenta</th><th>Perfil</th><th>Correo</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr>
             </thead>
             <tbody id="tablaPerfilesBody"></tbody>
           </table>
@@ -1189,6 +1280,7 @@
         <div class="config-row"><span>Sincronización automática</span><input type="checkbox" id="autoSyncToggle" checked></div>
         <div class="config-row"><span>Notificaciones de vencimiento</span><input type="checkbox" id="notificationsToggle" checked></div>
         <div class="config-row"><span>Modo kiosco</span><input type="checkbox" id="kioscoToggle"></div>
+        <div class="config-row"><span>PIN de Seguridad</span><input type="password" id="pinConfig" value="1234" style="width:80px; text-align:center;"></div>
         <div class="config-row"><span>Días para "Próximo"</span><input type="number" id="diasProximo" min="1" max="10" value="3" style="width:80px;"></div>
         <div class="config-row"><span>Tamaño de letra</span>
           <select id="fontSizeSelect">
@@ -1306,6 +1398,7 @@
   let appDesbloqueada = false;
   let planEstado = "demo";
   let diasPruebaRestantes = 0;
+  let pinKiosco = "1234";
 
   function translateAuthError(code) {
     const map = {
@@ -1453,13 +1546,21 @@
     document.getElementById("paginationInfo").textContent = `Mostrando ${paginaDatos.length} de ${total} perfiles (Pág. ${paginaActual} de ${totalPaginas || 1})`;
     document.getElementById("btnPaginaAnterior").disabled = paginaActual <= 1;
     document.getElementById("btnPaginaSiguiente").disabled = paginaActual >= totalPaginas;
+    if (datos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:3rem; opacity:0.6;">
+        <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:1rem; display:block;"></i>
+        No se encontraron perfiles con los filtros actuales.
+      </td></tr>`;
+      return;
+    }
     tbody.innerHTML = paginaDatos.map(p => `
       <tr ondblclick="editarPerfilCompleto('${p.id}')">
-        <td data-label="Plat."><span class="badge ${estadoClase(p.estado)}">${escapeHtml(p.plataforma)}</span></td>
+        <td data-label="Sel."><input type="checkbox" class="row-select" data-id="${p.id}"></td>
+        <td data-label="Plataforma"><span class="badge ${estadoClase(p.estado)}">${escapeHtml(p.plataforma)}</span></td>
         <td data-label="Cuenta">${escapeHtml(p.cuentaId || '-')}</td>
         <td data-label="Perfil">${escapeHtml(p.perfilNombre || '-')} <button class="btn btn-sm" onclick="togglePassword('${p.id}')"><i class="fas fa-eye"></i></button></td>
         <td data-label="Correo">${escapeHtml(p.mail || '-')}</td>
-        <td data-label="Vence">${p.fechaVencimiento ? formatDate(p.fechaVencimiento) : '-'}</td>
+        <td data-label="Vencimiento">${p.fechaVencimiento ? formatDate(p.fechaVencimiento) : '-'}</td>
         <td data-label="Estado"><span class="badge ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td>
         <td data-label="Acciones" style="white-space:nowrap;">
           ${p.whatsappProveedor ? `<button class="btn btn-sm" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/[^0-9]/g,'')}')" title="WA Proveedor"><i class="fab fa-whatsapp"></i></button>` : ''}
@@ -1731,28 +1832,41 @@
     div.innerHTML = items.length ? `<strong>Vista previa:</strong><br>${items.map((it, idx) => `${idx+1}. ${it.mail}`).join("<br>")}` : "No se detectaron cuentas";
   }
   function renderDashboard() {
-    document.getElementById("totalPerfiles").textContent = perfiles.length;
-    document.getElementById("libresHoy").textContent = perfiles.filter(p => p.estado === "libre").length;
-    document.getElementById("vencenHoy").textContent = perfiles.filter(p => p.estado === "proximo").length;
-    document.getElementById("ventasHoy").textContent = perfiles.filter(p => p.fechaVenta && p.fechaVenta.split('T')[0] === new Date().toISOString().split('T')[0]).length;
+    const total = perfiles.length;
+    const libres = perfiles.filter(p => p.estado === "libre").length;
+    const vencen = perfiles.filter(p => p.estado === "proximo").length;
+    const hoyStr = new Date().toISOString().split('T')[0];
+    const ventasHoy = perfiles.filter(p => p.fechaVenta && p.fechaVenta.split('T')[0] === hoyStr).length;
+
+    document.getElementById("totalPerfiles").textContent = total;
+    document.getElementById("libresHoy").textContent = libres;
+    document.getElementById("vencenHoy").textContent = vencen;
+    document.getElementById("ventasHoy").textContent = ventasHoy;
+
+    document.getElementById("barTotal").style.width = total > 0 ? "100%" : "0%";
+    document.getElementById("barLibres").style.width = total > 0 ? (libres / total * 100) + "%" : "0%";
+    document.getElementById("barVencen").style.width = total > 0 ? (vencen / total * 100) + "%" : "0%";
+    document.getElementById("barVentas").style.width = "100%"; // O meta diaria
+
     document.getElementById("totalGanado").textContent = "$" + perfiles.reduce((s,p) => s + (p.precioVenta || 0), 0);
     document.getElementById("cantidadVendidos").textContent = perfiles.filter(p => p.fechaVenta).length;
+
     const ventasPlata = {};
     perfiles.forEach(p => { if (p.fechaVenta) ventasPlata[p.plataforma] = (ventasPlata[p.plataforma] || 0) + 1; });
     const mas = Object.entries(ventasPlata).sort((a,b) => b[1] - a[1])[0];
-    document.getElementById("tendencias").innerHTML = mas ? `🔥 ${mas[0]} con ${mas[1]} ventas` : "Sin ventas aún";
-    document.getElementById("combos").innerHTML = "<div>🎯 Combo del día: Netflix + Disney + Max</div>";
+    document.getElementById("tendencias").innerHTML = mas ? `<strong>${mas[0]}</strong> es tu plataforma estrella con ${mas[1]} ventas.` : "Aún no hay datos de ventas para mostrar tendencias.";
+    document.getElementById("combos").innerHTML = "<div>Netflix + Disney + Max</div>";
   }
   function renderHistorial() {
     const ventas = perfiles.filter(p => p.fechaVenta).sort((a,b) => new Date(b.fechaVenta) - new Date(a.fechaVenta));
     document.getElementById("historialLista").innerHTML = ventas.map(p => `
       <tr>
         <td data-label="Fecha">${new Date(p.fechaVenta).toLocaleDateString()}</td>
-        <td data-label="Plat.">${escapeHtml(p.plataforma)}</td>
+        <td data-label="Plataforma">${escapeHtml(p.plataforma)}</td>
         <td data-label="Perfil">${escapeHtml(p.perfilNombre)}</td>
         <td data-label="Cliente">${p.whatsappCliente || '-'}</td>
         <td data-label="Precio">$${p.precioVenta || 0}</td>
-        <td data-label="WA"><button class="btn btn-sm" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}')"><i class="fab fa-whatsapp"></i></button></td>
+        <td data-label="WhatsApp"><button class="btn btn-sm" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}')"><i class="fab fa-whatsapp"></i></button></td>
       </tr>
     `).join('') || '<tr><td colspan="6">No hay ventas</td></tr>';
   }
@@ -1838,6 +1952,7 @@
       autoSync: autoSync,
       notifications: notificationsEnabled,
       kiosco: kioscoMode,
+      pin: pinKiosco,
       diasProximo: DIAS_PROXIMO,
       fontSize: document.getElementById("fontSizeSelect").value
     };
@@ -1852,10 +1967,12 @@
         autoSync = c.autoSync !== undefined ? c.autoSync : true;
         notificationsEnabled = c.notifications !== undefined ? c.notifications : true;
         kioscoMode = c.kiosco || false;
+        pinKiosco = c.pin || "1234";
         DIAS_PROXIMO = c.diasProximo || 3;
         document.getElementById("autoSyncToggle").checked = autoSync;
         document.getElementById("notificationsToggle").checked = notificationsEnabled;
         document.getElementById("kioscoToggle").checked = kioscoMode;
+        document.getElementById("pinConfig").value = pinKiosco;
         document.getElementById("diasProximo").value = DIAS_PROXIMO;
         if (c.fontSize) {
           document.getElementById("fontSizeSelect").value = c.fontSize;
@@ -2049,20 +2166,26 @@
     if (notificationsEnabled) mostrarAvisoVencimientos();
   }
 
-  function changePage(page) {
+  window.changePage = function(page) {
     if (kioscoMode && page === "ajustes") {
       const pin = prompt("Acceso restringido. Ingresá el PIN:");
-      if (pin !== "1234") { toast("PIN incorrecto"); return; }
+      if (pin !== pinKiosco) { toast("PIN incorrecto"); return; }
     }
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(`page-${page}`).classList.add("active");
+    const targetPage = document.getElementById(`page-${page}`);
+    if (targetPage) targetPage.classList.add("active");
+
     document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-    document.querySelector(`.nav-item[data-page="${page}"]`).classList.add("active");
+    const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (navItem) navItem.classList.add("active");
+
     document.querySelector(".sidebar").classList.remove("active");
+    document.getElementById("pageTitle").textContent = page.charAt(0).toUpperCase() + page.slice(1);
+
     if (page === "perfiles") { paginaActual = 1; renderTabla(); }
     if (page === "historial") renderHistorial();
     if (page === "stats") renderStats();
-  }
+  };
 
   // Event Listeners
   document.getElementById("mobileToggle")?.addEventListener("click", () => {
@@ -2085,6 +2208,11 @@
   document.getElementById("archivoImportar")?.addEventListener("change", (e) => { if (e.target.files[0]) importarJSON(e.target.files[0]); e.target.value = ""; });
   document.getElementById("btnBorrarTodo")?.addEventListener("click", async () => { if (confirm("¿Borrar TODO?")) { perfiles = []; await saveToFirebase(); renderAll(); toast("Todo borrado"); } });
   document.getElementById("btnResetVentas")?.addEventListener("click", resetVentas);
+  document.getElementById("quickSearchBtn")?.addEventListener("click", () => {
+    changePage('perfiles');
+    setTimeout(() => document.getElementById('buscarTexto').focus(), 100);
+  });
+
   document.getElementById("btnLimpiarFiltros")?.addEventListener("click", () => {
     document.getElementById("filtroPlataforma").value = "";
     document.getElementById("filtroEstado").value = "";
@@ -2142,8 +2270,8 @@
       renderTabla();
       guardarConfigLocal();
     } else {
-      const pin = prompt("Ingresá el PIN para desactivar el Modo Kiosco (Por defecto: 1234)");
-      if (pin === "1234") {
+      const pin = prompt("Ingresá el PIN para desactivar el Modo Kiosco:");
+      if (pin === pinKiosco) {
         kioscoMode = false;
         renderTabla();
         guardarConfigLocal();
@@ -2153,6 +2281,7 @@
       }
     }
   });
+  document.getElementById("pinConfig")?.addEventListener("change", (e) => { pinKiosco = e.target.value || "1234"; guardarConfigLocal(); toast("PIN actualizado"); });
   document.getElementById("diasProximo")?.addEventListener("change", (e) => { DIAS_PROXIMO = parseInt(e.target.value) || 3; renderAll(); guardarConfigLocal(); });
   document.getElementById("fontSizeSelect")?.addEventListener("change", (e) => {
     document.body.classList.remove("font-small", "font-medium", "font-large");
@@ -2198,6 +2327,66 @@
   document.getElementById("historialBuscar")?.addEventListener("input", renderHistorial);
   document.getElementById("historialFechaInicio")?.addEventListener("change", renderHistorial);
   document.getElementById("historialFechaFin")?.addEventListener("change", renderHistorial);
+
+  document.getElementById("selectAll")?.addEventListener("change", (e) => {
+    const checked = e.target.checked;
+    document.querySelectorAll(".row-select").forEach(cb => cb.checked = checked);
+    actualizarBulkUI();
+  });
+
+  document.addEventListener("change", (e) => {
+    if (e.target.classList.contains("row-select")) {
+      actualizarBulkUI();
+    }
+  });
+
+  function actualizarBulkUI() {
+    const selected = document.querySelectorAll(".row-select:checked");
+    const container = document.getElementById("bulkActions");
+    container.style.display = selected.length > 0 ? "flex" : "none";
+  }
+
+  document.getElementById("btnBulkDelete")?.addEventListener("click", async () => {
+    const selectedIds = Array.from(document.querySelectorAll(".row-select:checked")).map(cb => cb.dataset.id);
+    if (selectedIds.length === 0) return;
+    if (confirm(`¿Eliminar ${selectedIds.length} perfiles seleccionados?`)) {
+      perfiles = perfiles.filter(p => !selectedIds.includes(p.id));
+      await saveToFirebase();
+      renderAll();
+      actualizarBulkUI();
+      toast("Lote eliminado");
+    }
+  });
+
+  document.getElementById("btnBulkRenew")?.addEventListener("click", async () => {
+    const selectedIds = Array.from(document.querySelectorAll(".row-select:checked")).map(cb => cb.dataset.id);
+    if (selectedIds.length === 0) return;
+    selectedIds.forEach(id => {
+      const idx = perfiles.findIndex(p => p.id === id);
+      if (idx !== -1) {
+        let base = perfiles[idx].fechaVencimiento ? parseDate(perfiles[idx].fechaVencimiento) : new Date();
+        base.setMonth(base.getMonth() + 1);
+        perfiles[idx].fechaVencimiento = base.toISOString().split('T')[0];
+        perfiles[idx].estado = getEstado(perfiles[idx].fechaVencimiento);
+      }
+    });
+    await saveToFirebase();
+    renderAll();
+    actualizarBulkUI();
+    toast("Lote renovado");
+  });
+
+  document.getElementById("btnBulkWA")?.addEventListener("click", () => {
+    const selectedIds = Array.from(document.querySelectorAll(".row-select:checked")).map(cb => cb.dataset.id);
+    if (selectedIds.length === 0) return;
+    let mensaje = "📋 *LOTE DE CUENTAS - StreamFlow Pro*\n\n";
+    selectedIds.forEach(id => {
+      const p = perfiles.find(p => p.id === id);
+      if (p) mensaje += `📺 *${p.plataforma}* - ${p.perfilNombre}\n📧 ${p.mail} | 🔑 ${p.password}\n📅 Vence: ${p.fechaVencimiento || "-"}\n\n`;
+    });
+    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+  });
+
   document.querySelectorAll(".manual-section-header").forEach(header => {
     header.addEventListener("click", function() {
       const body = this.nextElementSibling;
