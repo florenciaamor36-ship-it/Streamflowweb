@@ -1,2511 +1,909 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f0c29">
-  <link rel="icon" type="image/png" href="icono.png">
-  <title>StreamFlow Pro | Gestión Profesional de Streaming</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #f5af19;
-      --primary-rgb: 245, 175, 25;
-      --secondary: #f12711;
-      --bg-dark: #0a0c10;
-      --bg-card: rgba(30, 41, 59, 0.5);
-      --text-main: #f8fafc;
-      --text-dim: #94a3b8;
-      --border-glow: rgba(245, 175, 25, 0.15);
-      --glass: rgba(15, 23, 42, 0.7);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      scrollbar-width: thin;
-      scrollbar-color: var(--primary) transparent;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-dark);
-      background-image:
-        radial-gradient(at 0% 0%, rgba(245, 175, 25, 0.05) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(241, 39, 17, 0.05) 0px, transparent 50%);
-      color: var(--text-main);
-      min-height: 100vh;
-      overflow-x: hidden;
-      letter-spacing: -0.01em;
-    }
-
-    /* Modo claro */
-    body.light {
-      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-      color: #0f172a;
-    }
-
-    body.light .sidebar {
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      border-right-color: #e2e8f0;
-    }
-
-    body.light .card,
-    body.light .stat-card,
-    body.light .topbar,
-    body.light .modal-content {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: #e2e8f0;
-    }
-
-    body.light .nav-item {
-      color: #475569;
-    }
-
-    body.light .nav-item:hover {
-      background: rgba(0, 0, 0, 0.05);
-      color: #f5af19;
-    }
-
-    body.light .nav-item.active {
-      background: linear-gradient(90deg, rgba(245, 175, 25, 0.1), transparent);
-      color: #f5af19;
-    }
-
-    body.light input,
-    body.light select,
-    body.light textarea {
-      background: #ffffff;
-      border-color: #cbd5e1;
-      color: #0f172a;
-    }
-
-    /* Sidebar PC */
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 280px;
-      height: 100vh;
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-right: 1px solid var(--border-glow);
-      z-index: 100;
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .sidebar-header {
-      padding: 2rem 1.5rem;
-      text-align: center;
-      border-bottom: 1px solid rgba(245, 175, 25, 0.15);
-    }
-
-    .logo-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem auto;
-      box-shadow: 0 8px 25px rgba(245, 175, 25, 0.3);
-    }
-
-    .logo-icon i {
-      font-size: 2rem;
-      color: white;
-    }
-
-    .sidebar-header h2 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .sidebar-header p {
-      font-size: 0.65rem;
-      color: #94a3b8;
-      letter-spacing: 1px;
-      margin-top: 0.2rem;
-    }
-
-    .sidebar-nav {
-      padding: 1rem 0;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.7rem 1.5rem;
-      margin: 0.2rem 0;
-      color: #94a3b8;
-      font-weight: 500;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
-    }
-
-    .nav-item i {
-      width: 24px;
-      font-size: 1rem;
-    }
-
-    .nav-item {
-      position: relative;
-      margin: 0.4rem 1rem;
-      border-radius: 12px;
-      padding: 0.8rem 1.2rem;
-    }
-
-    .nav-item:hover {
-      background: rgba(245, 175, 25, 0.08);
-      color: var(--primary);
-      transform: translateX(4px);
-    }
-
-    .nav-item.active {
-      background: linear-gradient(90deg, rgba(245, 175, 25, 0.12), transparent);
-      color: var(--primary);
-      border-left: 4px solid var(--primary);
-      font-weight: 700;
-    }
-
-    .nav-item .shortcut {
-      margin-left: auto;
-      font-size: 0.6rem;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-    }
-
-    .sidebar-footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem;
-      border-top: 1px solid rgba(245, 175, 25, 0.1);
-      text-align: center;
-    }
-
-    .plan-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, rgba(245, 175, 25, 0.2), rgba(241, 39, 17, 0.1));
-      color: #f5af19;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Main Container - PC (sin márgenes móviles) */
-    .main-container {
-      margin-left: 280px;
-      padding: 1.5rem;
-    }
-
-    /* Botón hamburguesa (oculto en PC) */
-    .mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: #f5af19;
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
-
-    /* Topbar */
-    .topbar {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 1rem 1.5rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid var(--border-glow);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .topbar-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .sync-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    .sync-status.synced {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-    }
-
-    .sync-status.syncing {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-      animation: pulse-sync 2s infinite ease-in-out;
-    }
-
-    .sync-status.error {
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-    }
-
-    @keyframes pulse-sync {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(0.98); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
-      100% { transform: translateY(0px); }
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.3rem 0.8rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .user-profile:hover {
-      background: rgba(245, 175, 25, 0.1);
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.8rem;
-    }
-
-    /* Stats Grid PC */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--border-glow);
-      border-radius: 24px;
-      padding: 1.5rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(245, 175, 25, 0.3);
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      color: #94a3b8;
-      margin-top: 0.3rem;
-    }
-
-    /* Cards PC */
-    .card {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-glow);
-      border-radius: 24px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Tabla PC (más espaciada) */
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
-
-    .data-table th {
-      text-align: left;
-      padding: 1rem 0.8rem;
-      color: #94a3b8;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(245, 175, 25, 0.2);
-    }
-
-    .data-table td {
-      padding: 0.8rem;
-      border-bottom: 1px solid rgba(245, 175, 25, 0.05);
-    }
-
-    .data-table tbody tr:hover td {
-      background: rgba(245, 175, 25, 0.05);
-    }
-
-    .data-table tbody tr:nth-child(even) {
-      background: rgba(0, 0, 0, 0.1);
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.65rem;
-      font-weight: 600;
-    }
-
-    .badge-success {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-    }
-
-    .badge-warning {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-    }
-
-    .badge-danger {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-    }
-
-    .badge-info {
-      background: rgba(59, 130, 246, 0.2);
-      color: #60a5fa;
-    }
-
-    .badge-purple {
-      background: rgba(139, 92, 246, 0.2);
-      color: #a78bfa;
-    }
-
-    /* Botones PC */
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 12px;
-      border: none;
-      font-size: 0.7rem;
-      font-weight: 600;
-      cursor: pointer;
-      background: rgba(30, 41, 59, 0.8);
-      color: #e2e8f0;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      background: #334155;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(245, 175, 25, 0.3);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-    }
-
-    .btn-sm {
-      padding: 0.3rem 0.6rem;
-      font-size: 0.65rem;
-    }
-
-    /* Inputs PC */
-    input,
-    select,
-    textarea {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(245, 175, 25, 0.2);
-      border-radius: 12px;
-      padding: 0.6rem 0.8rem;
-      color: #e2e8f0;
-      font-size: 0.75rem;
-      width: 100%;
-      transition: all 0.2s ease;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #f5af19;
-      box-shadow: 0 0 0 2px rgba(245, 175, 25, 0.2);
-    }
-
-    label {
-      display: block;
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: #f5af19;
-      margin-bottom: 0.3rem;
-    }
-
-    /* Filtros Bar */
-    .filters-bar {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-      align-items: center;
-    }
-
-    .filters-bar input,
-    .filters-bar select {
-      flex: 1;
-      min-width: 100px;
-    }
-
-    /* Paginación */
-    .pagination-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
-    }
-
-    .pagination-info {
-      font-size: 0.7rem;
-      color: #94a3b8;
-    }
-
-    /* Modales PC */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: var(--glass);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid var(--border-glow);
-      border-radius: 28px;
-      padding: 2rem;
-      min-width: 500px;
-      max-width: 700px;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes modalPop {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .modal-content h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 0.8rem;
-      justify-content: flex-end;
-      margin-top: 1.5rem;
-    }
-
-    .venta-field-group {
-      margin-bottom: 0.8rem;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1e293b;
-      color: #f5af19;
-      padding: 0.6rem 1.2rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      z-index: 2000;
-      border: 1px solid rgba(245, 175, 25, 0.4);
-      animation: toastIn 0.3s ease forwards;
-    }
-
-    @keyframes toastIn {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-    }
-
-    /* Login PC */
-    .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: radial-gradient(ellipse at 30% 20%, rgba(245, 175, 25, 0.08), transparent 60%),
-                  radial-gradient(ellipse at 70% 60%, rgba(241, 39, 17, 0.05), transparent 50%),
-                  #0a0c10;
-    }
-
-    .login-card {
-      background: rgba(15, 25, 35, 0.95);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(245, 175, 25, 0.2);
-      border-radius: 28px;
-      padding: 2rem;
-      width: 450px;
-    }
-
-    .login-card h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      font-size: 1.8rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .login-card input {
-      margin-bottom: 1rem;
-    }
-
-    .login-card button {
-      width: 100%;
-      margin-top: 0.5rem;
-      justify-content: center;
-    }
-
-    /* Tabs de carga */
-    .carga-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 0.3rem;
-      border-radius: 50px;
-    }
-
-    .carga-tab {
-      flex: 1;
-      padding: 0.5rem;
-      background: transparent;
-      border: none;
-      border-radius: 50px;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 0.7rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .carga-tab.active {
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      color: white;
-    }
-
-    /* Manual de usuario */
-    .manual-section {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      margin-bottom: 0.8rem;
-      overflow: hidden;
-    }
-
-    .manual-section-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.7rem 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.75rem;
-    }
-
-    .manual-section-header i {
-      color: #f5af19;
-      transition: transform 0.2s ease;
-    }
-
-    .manual-section-body {
-      padding: 0.8rem 1rem;
-      font-size: 0.7rem;
-      line-height: 1.6;
-      display: none;
-    }
-
-    .manual-section-body.open {
-      display: block;
-    }
-
-    .manual-step {
-      display: flex;
-      gap: 0.7rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .step-number {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-
-    .tip {
-      background: rgba(245, 175, 25, 0.1);
-      padding: 0.6rem;
-      border-radius: 12px;
-      font-size: 0.65rem;
-      border-left: 3px solid #f5af19;
-      margin-top: 0.7rem;
-    }
-
-    .quick-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
-    }
-
-    .quick-link {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.25rem 0.8rem;
-      border-radius: 50px;
-      font-size: 0.6rem;
-      cursor: pointer;
-    }
-
-    .quick-link:hover {
-      background: rgba(245, 175, 25, 0.2);
-    }
-
-    /* Acerca de */
-    .acerca-container {
-      text-align: center;
-      padding: 1rem;
-    }
-
-    .acerca-logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem auto;
-    }
-
-    .acerca-logo i {
-      font-size: 2.5rem;
-      color: white;
-    }
-
-    .acerca-container h3 {
-      font-size: 1.3rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #f5af19, #f12711);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .acerca-version {
-      font-size: 0.7rem;
-      color: #f5af19;
-      margin-bottom: 1rem;
-    }
-
-    .acerca-info {
-      font-size: 0.7rem;
-      line-height: 1.6;
-      opacity: 0.8;
-      margin-bottom: 1rem;
-    }
-
-    .acerca-legal {
-      font-size: 0.55rem;
-      opacity: 0.5;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 1rem;
-      margin-top: 1rem;
-    }
-
-    /* Configuración */
-    .config-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(245, 175, 25, 0.1);
-    }
-
-    /* Páginas */
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    /* Keyboard hint */
-    .keyboard-hint {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.6rem;
-      color: #64748b;
-      z-index: 99;
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        max-height: 100vh;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        overflow-y: auto;
-      }
-
-      .sidebar.active {
-        transform: translateX(0);
-      }
-
-      .main-container {
-        margin-left: 0;
-        padding: 1rem;
-      }
-
-      .topbar {
-        padding: 0.6rem 1rem;
-        flex-direction: column;
-        gap: 0.6rem;
-        align-items: flex-start;
-      }
-
-      .mobile-toggle {
-        display: block;
-      }
-
-      .topbar-actions {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-
-      .user-profile {
-        padding: 0.2rem 0.5rem;
-      }
-
-      #userEmail {
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-      }
-
-      .stat-card {
-        padding: 0.8rem;
-      }
-
-      .stat-number {
-        font-size: 1.5rem;
-      }
-
-      .card {
-        padding: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .login-card {
-        width: 90%;
-        padding: 1.5rem;
-      }
-
-      .modal-content {
-        min-width: 90%;
-        width: 90%;
-        padding: 1rem;
-      }
-
-      .modal-buttons {
-        flex-direction: column-reverse;
-      }
-
-      .modal-buttons .btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .nav-item .shortcut {
-        display: none;
-      }
-
-      .carga-tabs {
-        flex-direction: column;
-      }
-
-      .filters-bar {
-        flex-direction: column;
-      }
-
-      .data-table thead {
-        display: none;
-      }
-
-      .data-table tr {
-        display: block;
-        margin-bottom: 1rem;
-        border: 1px solid rgba(245, 175, 25, 0.2);
-        border-radius: 12px;
-        padding: 0.5rem;
-      }
-
-      .data-table td {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.4rem 0.5rem;
-        border: none;
-      }
-
-      .data-table td::before {
-        content: attr(data-label);
-        font-weight: 700;
-        color: #f5af19;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-API AI Chat | Pro Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --text-color: #f8fafc;
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --accent-color: #10b981;
+            --user-bubble: #2563eb;
+            --ai-bubble: #334155;
+            --border-color: #334155;
+            --input-bg: #1e293b;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .light-mode {
+            --bg-color: #f1f5f9;
+            --sidebar-bg: #ffffff;
+            --text-color: #0f172a;
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --accent-color: #059669;
+            --user-bubble: #2563eb;
+            --ai-bubble: #e2e8f0;
+            --border-color: #cbd5e1;
+            --input-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .config-section {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding-right: 0.5rem;
+        }
+
+        .config-section::-webkit-scrollbar {
+            width: 4px;
+        }
+        .config-section::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .config-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .config-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .select-input, .text-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .api-key-container {
+            position: relative;
+        }
+
+        .btn-test {
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            width: 100%;
+            margin-top: 0.25rem;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            display: inline-block;
+            margin-top: 0.25rem;
+        }
+
+        .status-off { background: #ef4444; color: white; }
+        .status-on { background: #10b981; color: white; }
+
+        /* Main Chat Area */
+        .main-chat {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--sidebar-bg);
+        }
+
+        .messages-container {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--user-bubble);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background-color: var(--ai-bubble);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .ai-message pre {
+            background-color: #00000033;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 1rem;
+            align-self: flex-start;
+        }
+
+        .dot {
+            height: 8px;
+            width: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 3px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        .btn-stop {
+            display: none;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            align-self: center;
+        }
+
+        .suggestions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .suggestion-chip {
+            background: var(--ai-bubble);
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        .input-area {
+            padding: 2rem;
+            background-color: var(--bg-color);
+        }
+
+        .input-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            background-color: var(--input-bg);
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        textarea {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            resize: none;
+            max-height: 200px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: 0.2s;
+        }
+
+        .btn-icon:hover {
+            color: var(--primary-color);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-send {
+            color: var(--primary-color);
+        }
+
+        /* Responsive */
+        .mobile-toggle {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -320px;
+                height: 100%;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .message {
+                max-width: 95%;
+            }
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.1);
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .ai-message:hover .copy-btn {
+            opacity: 1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--sidebar-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .guide-step {
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-step h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .guide-step p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .api-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .api-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
-<div class="login-container" id="loginContainer">
-  <div class="login-card">
-    <h2>StreamFlow Pro</h2>
-    <div id="loginPanel">
-      <input type="email" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginPassword" placeholder="Contraseña">
-      <button class="btn btn-primary" id="btnLogin">Iniciar sesión</button>
-      <p style="text-align:center; margin-top:0.8rem; font-size:0.7rem;"><span id="forgotPasswordBtn" style="color:#f5af19; cursor:pointer;">¿Olvidaste tu contraseña?</span></p>
-      <p style="text-align:center; margin-top:0.5rem; font-size:0.7rem;">¿No tienes cuenta? <span id="showRegister" style="color:#f5af19; cursor:pointer;">Regístrate</span></p>
-      <div style="position: relative; margin: 0.5rem 0; text-align: center;">
-        <span style="background: #1e293b; padding: 0 0.8rem; font-size: 0.7rem; color: #64748b;">O continúa con</span>
-      </div>
-      <button id="btnGoogle" class="btn" style="background: white; color: #1e293b; justify-content: center;"><i class="fab fa-google" style="color: #4285f4;"></i> Google</button>
-    </div>
-    <div id="registerPanel" style="display:none;">
-      <input type="email" id="regEmail" placeholder="Email">
-      <input type="password" id="regPassword" placeholder="Contraseña">
-      <input type="password" id="regPasswordConfirm" placeholder="Confirmar contraseña">
-      <button class="btn btn-primary" id="btnRegister">Registrarse</button>
-      <p style="text-align:center; margin-top:1rem; font-size:0.7rem;"><span id="showLogin" style="color:#f5af19; cursor:pointer;">Volver a inicio</span></p>
-    </div>
-    <div id="authError" style="color:#ef4444; text-align:center; margin-top:1rem; font-size:0.7rem;"></div>
-  </div>
-</div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>Multi-AI Pro</span>
+            </div>
+            <button class="btn-icon" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
 
-<div id="appContainer" style="display:none;">
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-icon"><i class="fas fa-gem"></i></div>
-      <h2>StreamFlow Pro</h2>
-      <p>GESTIÓN PROFESIONAL</p>
-    </div>
-    <div class="sidebar-nav">
-      <div class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span><span class="shortcut">Ctrl+D</span></div>
-      <div class="nav-item" data-page="carga"><i class="fas fa-plus-circle"></i><span>Cargar Cuentas</span><span class="shortcut">Ctrl+N</span></div>
-      <div class="nav-item" data-page="perfiles"><i class="fas fa-list-ul"></i><span>Perfiles</span><span class="shortcut">Ctrl+P</span></div>
-      <div class="nav-item" data-page="historial"><i class="fas fa-history"></i><span>Historial</span><span class="shortcut">Ctrl+H</span></div>
-      <div class="nav-item" data-page="stats"><i class="fas fa-chart-line"></i><span>Estadísticas</span><span class="shortcut">Ctrl+S</span></div>
-      <div class="nav-item" data-page="ayuda"><i class="fas fa-book"></i><span>Manual</span><span class="shortcut">Ctrl+M</span></div>
-      <div class="nav-item" data-page="ajustes"><i class="fas fa-cog"></i><span>Ajustes</span><span class="shortcut">Ctrl+A</span></div>
-    </div>
-    <div class="sidebar-footer">
-      <div class="plan-badge" id="planBadge"><i class="fas fa-gift"></i> DEMO</div>
-      <button class="btn btn-sm" id="logoutBtn" style="width:100%; justify-content:center;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
-    </div>
-  </div>
+        <div class="config-section">
+            <div class="config-group">
+                <label>Proveedor de IA</label>
+                <select class="select-input" id="api-provider">
+                    <option value="gemini">Google Gemini</option>
+                    <option value="groq">Groq (Llama 3)</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="mistral">Mistral AI</option>
+                    <option value="freetheai">FreeTheAI</option>
+                </select>
+            </div>
 
-  <div class="main-container">
-    <div class="topbar">
-      <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
-      <div class="topbar-title" id="pageTitle">Dashboard</div>
-      <div class="topbar-actions">
-        <div class="sync-status synced" id="syncStatus"><i class="fas fa-cloud"></i> Sincronizado</div>
-        <div class="user-profile" id="userProfile">
-          <div class="user-avatar" id="userAvatar">U</div>
-          <span id="userEmail" style="font-size:0.75rem;">usuario@mail.com</span>
-        </div>
-      </div>
-    </div>
+            <div class="config-group">
+                <label>Modelo</label>
+                <select class="select-input" id="api-model">
+                    <!-- Dinámico -->
+                </select>
+            </div>
 
-    <!-- Dashboard -->
-    <div id="page-dashboard" class="page active">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="totalPerfiles">0</div>
-          <div class="stat-label">Total Perfiles</div>
-          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
-            <div id="barTotal" style="width:0%; height:100%; background:var(--primary); transition:width 1s;"></div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="libresHoy">0</div>
-          <div class="stat-label">Disponibles</div>
-          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
-            <div id="barLibres" style="width:0%; height:100%; background:#34d399; transition:width 1s;"></div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="vencenHoy">0</div>
-          <div class="stat-label">Próximos</div>
-          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
-            <div id="barVencen" style="width:0%; height:100%; background:#fbbf24; transition:width 1s;"></div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="ventasHoy">0</div>
-          <div class="stat-label">Ventas Hoy</div>
-          <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:1rem; overflow:hidden;">
-            <div id="barVentas" style="width:0%; height:100%; background:#a78bfa; transition:width 1s;"></div>
-          </div>
-        </div>
-      </div>
+            <div class="config-group">
+                <label>API Key</label>
+                <div class="api-key-container">
+                    <input type="password" class="text-input" id="api-key" placeholder="Pega tu clave aquí...">
+                    <button class="btn-test" id="btn-test-conn">Probar Conexión</button>
+                    <div id="conn-status" class="status-badge status-off">Desconectada</div>
+                </div>
+            </div>
 
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
-        <div class="card" style="margin-bottom:0;">
-          <div class="card-title"><i class="fas fa-bolt"></i> Acciones Rápidas</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <button class="btn" onclick="changePage('carga')" style="justify-content:center; background:rgba(245,175,25,0.1); color:var(--primary); border:1px solid rgba(245,175,25,0.2);"><i class="fas fa-plus"></i> Nueva Carga</button>
-            <button class="btn" id="quickSearchBtn" style="justify-content:center;"><i class="fas fa-search"></i> Buscar Cuenta</button>
-            <button class="btn" onclick="changePage('stats')" style="justify-content:center;"><i class="fas fa-chart-pie"></i> Ver Reportes</button>
-            <button class="btn" onclick="changePage('ajustes')" style="justify-content:center;"><i class="fas fa-cog"></i> Configurar</button>
-          </div>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+            <div class="config-group">
+                <label>Herramientas</label>
+                <button class="btn-test" style="background: var(--accent-color); margin-bottom: 0.5rem;" id="btn-help">
+                    <i class="fas fa-question-circle"></i> Cómo obtener APIs
+                </button>
+                <button class="btn-test" style="background: var(--secondary-color); margin-bottom: 0.5rem;" id="btn-clear-chat">
+                    <i class="fas fa-trash"></i> Borrar Chat
+                </button>
+                <button class="btn-test" style="background: var(--secondary-color); margin-bottom: 0.5rem;" id="btn-export">
+                    <i class="fas fa-download"></i> Exportar JSON
+                </button>
+            </div>
         </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="card-title"><i class="fas fa-fire"></i> Tendencias</div>
-          <div id="tendencias" style="font-size:0.8rem; margin-bottom:1rem; min-height: 40px;"></div>
-          <div class="card-title" style="font-size:0.65rem; opacity:0.8; margin-top:0.5rem;"><i class="fas fa-star"></i> Combo sugerido</div>
-          <div id="combos" style="font-size:0.8rem; color:var(--primary); font-weight:600;"></div>
+
+        <div class="stats" style="font-size: 0.75rem; color: var(--secondary-color); text-align: center;">
+            Mensajes en esta sesión: <span id="msg-count">0</span>
         </div>
-      </div>
+    </aside>
+
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Guía de Obtención de APIs</h3>
+                <span class="close-modal" id="close-modal">&times;</span>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fab fa-google"></i> Google Gemini</h4>
+                <p>Es la opción más fácil y gratuita. Permite modelos potentes como Gemini 2.0 Flash.</p>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="api-link">Obtener Clave en Google AI Studio &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-bolt"></i> Groq (Llama 3 / Mixtral)</h4>
+                <p>Extremadamente rápida y gratuita por ahora. Ideal para respuestas instantáneas.</p>
+                <a href="https://console.groq.com/keys" target="_blank" class="api-link">Obtener Clave en Groq Console &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-fish"></i> DeepSeek</h4>
+                <p>Modelo muy capaz y económico. Regalan 5 millones de tokens al registrarte.</p>
+                <a href="https://platform.deepseek.com/api_keys" target="_blank" class="api-link">Obtener Clave en DeepSeek Platform &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-wind"></i> Mistral AI</h4>
+                <p>Inteligencia europea de alta calidad. Tienen un plan gratuito "La Plateforme".</p>
+                <a href="https://console.mistral.ai/api-keys/" target="_blank" class="api-link">Obtener Clave en Mistral Console &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-ghost"></i> FreeTheAI</h4>
+                <p>Una alternativa que permite usar modelos como Kimi gratis. Regístrate mediante su servidor de Discord.</p>
+                <a href="https://freetheai.xyz/" target="_blank" class="api-link">Visitar FreeTheAI &rarr;</a>
+            </div>
+
+            <div class="tip" style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 0.5rem; font-size: 0.85rem;">
+                <strong>💡 Nota:</strong> Tus claves se guardan localmente en tu navegador. Nadie más tiene acceso a ellas.
+            </div>
+        </div>
     </div>
 
-    <!-- Cargar Cuentas -->
-    <div id="page-carga" class="page">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-plus-circle"></i> Cargar datos</div>
-        <div class="carga-tabs">
-          <button class="carga-tab active" data-mod="completa">📦 Cuenta Completa</button>
-          <button class="carga-tab" data-mod="individual">🎭 Perfil Individual</button>
-          <button class="carga-tab" data-mod="masiva">📋 Carga Masiva</button>
+    <main class="main-chat">
+        <header class="chat-header">
+            <button class="btn-icon mobile-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div id="current-api-display" style="font-weight: 600;">
+                <i class="fas fa-bolt" style="color: #eab308;"></i> Gemini 2.0 Flash
+            </div>
+            <div></div> <!-- Spacer -->
+        </header>
+
+        <div class="messages-container" id="chat-box">
+            <div class="message ai-message">
+                Hola! Soy tu asistente Multi-AI. Selecciona un proveedor, ingresa tu API Key y comencemos a trabajar.
+            </div>
         </div>
 
-        <div id="modo-completa">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <div><label>Plataforma</label><select id="platCompleta"><option value="">Seleccionar...</option><option value="Netflix">Netflix (5)</option><option value="Netflix indiv">Netflix indiv (1)</option><option value="Disney">Disney (7)</option><option value="Max">Max (5)</option><option value="Paramount">Paramount (5)</option><option value="Crunchyroll">Crunchyroll (1)</option><option value="Prime video">Prime video (6)</option><option value="Spotify">Spotify (1)</option><option value="YouTube">YouTube (1)</option><option value="Otros">Otros</option></select></div>
-            <div><label>N° Cuenta</label><input type="text" id="cuentaIdCompleta" placeholder="Ej: Cuenta 1"></div>
-          </div>
-          <div id="otraPlatCompletaDiv" style="display:none; margin-top:0.8rem;"><label>Nombre</label><input type="text" id="otraPlatCompleta" placeholder="Apple TV+"></div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:0.8rem;"><div><label>Correo</label><input type="email" id="mailCompleta" placeholder="usuario@mail.com"></div><div><label>Contraseña</label><input type="text" id="passCompleta" placeholder="Contraseña"></div></div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:0.8rem;"><div><label>Vencimiento</label><input type="date" id="fechaCompleta"></div><div><label>Precio</label><input type="number" id="precioCompleta" placeholder="2500"></div></div>
-          <div style="margin-top:0.8rem;"><label>Proveedor</label><input type="text" id="proveedorCompleta"></div>
-          <div style="margin-top:0.8rem;"><label>WhatsApp proveedor</label><input type="tel" id="whatsappCompleta" placeholder="5491112345678"></div>
-          <div style="margin-top:0.8rem;"><label>Observaciones</label><textarea id="obsCompleta" rows="2"></textarea></div>
-          <button class="btn btn-primary" id="btnGuardarCompleta" style="width:100%; margin-top:1rem; justify-content:center;"><i class="fas fa-save"></i> Guardar cuenta</button>
+        <div class="typing-indicator" id="typing">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
         </div>
 
-        <div id="modo-individual" style="display:none;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <div><label>Plataforma</label><select id="platIndividual"><option value="">Seleccionar...</option><option value="Netflix">Netflix</option><option value="Netflix indiv">Netflix indiv</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Paramount">Paramount</option><option value="Crunchyroll">Crunchyroll</option><option value="Prime video">Prime video</option><option value="Spotify">Spotify</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select></div>
-            <div><label>N° Cuenta</label><input type="text" id="cuentaIdIndividual" placeholder="Ej: Cuenta 1"></div>
-          </div>
-          <div id="otraPlatIndividualDiv" style="display:none; margin-top:0.8rem;"><label>Nombre</label><input type="text" id="otraPlatIndividual" placeholder="Apple TV+"></div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:0.8rem;"><div><label>Perfil</label><input type="text" id="nombrePerfilIndividual" placeholder="Nombre del perfil"></div><div><label>PIN</label><input type="text" id="pinIndividual" placeholder="Opcional"></div></div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:0.8rem;"><div><label>Correo</label><input type="email" id="mailIndividual" placeholder="usuario@mail.com"></div><div><label>Contraseña</label><input type="text" id="passIndividual" placeholder="Contraseña"></div></div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:0.8rem;"><div><label>Vencimiento</label><input type="date" id="fechaIndividual"></div><div><label>Precio</label><input type="number" id="precioIndividual" placeholder="2500"></div></div>
-          <div style="margin-top:0.8rem;"><label>Proveedor</label><input type="text" id="proveedorIndividual"></div>
-          <div style="margin-top:0.8rem;"><label>WhatsApp proveedor</label><input type="tel" id="whatsappIndividual" placeholder="5491112345678"></div>
-          <div style="margin-top:0.8rem;"><label>Observaciones</label><textarea id="obsIndividual" rows="2"></textarea></div>
-          <div style="display:flex; gap:0.8rem; margin-top:1rem;">
-            <button class="btn btn-primary" id="btnGuardarIndividual" style="flex:2; justify-content:center;"><i class="fas fa-save"></i> Guardar perfil</button>
-            <button class="btn" id="btnCancelarEdicion" style="flex:1; justify-content:center;"><i class="fas fa-times"></i> Cancelar</button>
-          </div>
+        <button id="btn-stop" class="btn-stop">
+            <i class="fas fa-stop"></i> Detener Generación
+        </button>
+
+        <div class="input-area">
+            <div class="suggestions" id="suggestions">
+                <div class="suggestion-chip">¿Cómo funciona esta app?</div>
+                <div class="suggestion-chip">Escribe un poema sobre IA</div>
+                <div class="suggestion-chip">Explícame el Teorema de Pitágoras</div>
+                <div class="suggestion-chip">Crea una receta saludable</div>
+            </div>
+            <div class="input-container">
+                <textarea id="chat-input" placeholder="Pregunta algo... (Shift+Enter para nueva línea)" rows="1"></textarea>
+                <button class="btn-icon btn-send" id="btn-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
+    </main>
 
-        <div id="modo-masiva" style="display:none;">
-          <div class="tip">Separa cada cuenta con línea en blanco o "---". Formato libre (Mail: pass | Perfil).</div>
-          <div style="margin-bottom:0.8rem;"><label>Plataforma para este lote</label>
-            <select id="platMasiva"><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Paramount">Paramount</option><option value="Crunchyroll">Crunchyroll</option><option value="Prime video">Prime video</option><option value="Spotify">Spotify</option><option value="YouTube">YouTube</option><option value="Otros">Otros</option></select>
-          </div>
-          <textarea id="batchTexto" rows="8" placeholder="Mail: usuario@mail.com | Pass: 1234&#10;Perfil: Juan&#10;Proveedor: Maria&#10;&#10;Mail: otro@mail.com | Pass: abcd"></textarea>
-          <div style="display:flex; gap:0.8rem; margin-top:1rem;">
-            <button class="btn" id="btnPrevisualizar"><i class="fas fa-eye"></i> Previsualizar</button>
-            <button class="btn btn-primary" id="btnCargarMasivo"><i class="fas fa-upload"></i> Cargar todo</button>
-          </div>
-          <div id="batchResultados" style="display:none; margin-top:1rem; padding:0.8rem; background:rgba(0,0,0,0.3); border-radius:12px; font-size:0.7rem;"></div>
-        </div>
-      </div>
-    </div>
+    <script>
+        // Configuración de modelos
+        const PROVIDERS = {
+            gemini: {
+                name: "Google Gemini",
+                models: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
+                endpoint: (key, model) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`
+            },
+            groq: {
+                name: "Groq",
+                models: ["llama-3.3-70b-versatile", "mixtral-8x7b-32768", "gemma2-9b-it"],
+                endpoint: () => "https://api.groq.com/openai/v1/chat/completions"
+            },
+            deepseek: {
+                name: "DeepSeek",
+                models: ["deepseek-chat", "deepseek-reasoner"],
+                endpoint: () => "https://api.deepseek.com/v1/chat/completions"
+            },
+            mistral: {
+                name: "Mistral AI",
+                models: ["mistral-tiny", "mistral-small", "mistral-medium"],
+                endpoint: () => "https://api.mistral.ai/v1/chat/completions"
+            },
+            freetheai: {
+                name: "FreeTheAI",
+                models: ["bbg", "moonshotai", "Kimi-K2.5"],
+                endpoint: () => "https://api.freetheai.xyz/v1/chat/completions"
+            }
+        };
 
-    <!-- Perfiles -->
-    <div id="page-perfiles" class="page">
-      <div class="card">
-        <div class="filters-bar">
-          <select id="filtroPlataforma"><option value="">Todas</option><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Prime video">Prime video</option></select>
-          <select id="filtroEstado"><option value="">Todos</option><option value="activo">Activos</option><option value="proximo">Próximos</option><option value="vencido">Vencidos</option><option value="libre">Libres</option><option value="vendido">Vendidos</option></select>
-          <input type="text" id="buscarTexto" placeholder="Buscar...">
-          <input type="text" id="filtroProveedor" placeholder="Proveedor...">
-          <input type="date" id="fechaDesde"><input type="date" id="fechaHasta">
-          <select id="registrosPorPagina" style="width:70px;"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option></select>
-          <button class="btn" id="btnOrdenar"><i class="fas fa-sort"></i> Ordenar</button>
-          <button class="btn" id="btnLimpiarFiltros">Limpiar</button>
-          <button class="btn btn-success" id="btnExportar"><i class="fas fa-download"></i> Exportar</button>
-          <button class="btn btn-success" id="btnExportarCSV"><i class="fas fa-file-csv"></i> CSV</button>
-          <button class="btn" id="btnImportar"><i class="fas fa-upload"></i> Importar</button>
-          <input type="file" id="archivoImportar" accept=".json" style="display:none;">
-          <button class="btn btn-danger" id="btnBorrarTodo"><i class="fas fa-trash"></i> Borrar todo</button>
-          <div id="bulkActions" style="display:none; gap:0.5rem; background:rgba(245,175,25,0.1); padding:0.5rem 1rem; border-radius:12px; border:1px solid var(--primary);">
-            <span style="font-size:0.7rem; font-weight:700; color:var(--primary); align-self:center;">Acciones lote:</span>
-            <button class="btn btn-sm btn-danger" id="btnBulkDelete"><i class="fas fa-trash"></i> Eliminar</button>
-            <button class="btn btn-sm btn-success" id="btnBulkRenew"><i class="fas fa-sync-alt"></i> Renovar</button>
-            <button class="btn btn-sm" id="btnBulkWA" style="background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> Compartir</button>
-          </div>
-        </div>
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
-                <th>Plataforma</th><th>Cuenta</th><th>Perfil</th><th>Correo</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr>
-            </thead>
-            <tbody id="tablaPerfilesBody"></tbody>
-          </table>
-        </div>
-        <div class="pagination-bar">
-          <div class="pagination-info" id="paginationInfo"></div>
-          <div>
-            <button class="btn btn-sm" id="btnPaginaAnterior" disabled><i class="fas fa-chevron-left"></i> Anterior</button>
-            <button class="btn btn-sm" id="btnPaginaSiguiente">Siguiente <i class="fas fa-chevron-right"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
+        // Estado Global
+        let currentMessages = JSON.parse(localStorage.getItem('chat_history')) || [];
+        let apiKeys = JSON.parse(localStorage.getItem('api_keys')) || {};
+        let messageCount = currentMessages.length;
+        let abortController = null;
 
-    <!-- Historial -->
-    <div id="page-historial" class="page">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-history"></i> Historial de Ventas</div>
-        <div class="filters-bar">
-          <select id="historialFiltroPlataforma"><option value="">Todas</option><option value="Netflix">Netflix</option><option value="Disney">Disney</option><option value="Max">Max</option><option value="Prime video">Prime video</option></select>
-          <input type="text" id="historialBuscar" placeholder="Buscar...">
-          <input type="date" id="historialFechaInicio"><input type="date" id="historialFechaFin">
-        </div>
-        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Fecha</th><th>Plataforma</th><th>Perfil</th><th>Cliente</th><th>Precio</th><th></th></tr></thead><tbody id="historialLista"></tbody></table></div>
-      </div>
-    </div>
+        // Elementos DOM
+        const chatBox = document.getElementById('chat-box');
+        const chatInput = document.getElementById('chat-input');
+        const providerSelect = document.getElementById('api-provider');
+        const modelSelect = document.getElementById('api-model');
+        const apiKeyInput = document.getElementById('api-key');
+        const typingIndicator = document.getElementById('typing');
+        const btnStop = document.getElementById('btn-stop');
+        const msgCountDisplay = document.getElementById('msg-count');
+        const currentApiDisplay = document.getElementById('current-api-display');
+        const suggestionContainer = document.getElementById('suggestions');
 
-    <!-- Estadísticas -->
-    <div id="page-stats" class="page">
-      <div class="card"><div class="card-title"><i class="fas fa-chart-bar"></i> Por plataforma</div><div id="resumenStreaming"></div></div>
-      <div class="card"><div class="card-title"><i class="fas fa-users"></i> Por proveedor</div><div id="resumenProveedores"></div></div>
-      <div class="card"><div class="card-title"><i class="fas fa-coins"></i> Ganancias</div><div><span id="totalGanado" style="font-size:1.5rem; color:#f5af19; font-weight:800;">$0</span> total | <strong id="cantidadVendidos">0</strong> vendidos</div>
-      <button class="btn btn-danger" id="btnResetVentas" style="margin-top:1rem; width:100%; justify-content:center;"><i class="fas fa-sync-alt"></i> Reiniciar ventas</button></div>
-    </div>
+        // Inicialización
+        function init() {
+            updateModels();
+            loadHistory();
+            msgCountDisplay.textContent = messageCount;
 
-    <!-- Manual de Ayuda -->
-    <div id="page-ayuda" class="page">
-      <div class="card">
-        <button class="btn" id="btnVolverDeAyuda" style="margin-bottom:1rem; width:100%; justify-content:center;"><i class="fas fa-arrow-left"></i> Volver a Ajustes</button>
-        <div class="card-title"><i class="fas fa-book-open"></i> Manual de Usuario</div>
-        <div class="manual-search"><input type="text" id="manualSearch" placeholder="Buscar en el manual..."></div>
-        <div class="quick-nav" id="manualQuickNav">
-          <span class="quick-link" data-section="intro">Inicio</span>
-          <span class="quick-link" data-section="carga">Cargar</span>
-          <span class="quick-link" data-section="gestion">Gestión</span>
-          <span class="quick-link" data-section="ventas">Ventas</span>
-          <span class="quick-link" data-section="dashboard">Dashboard</span>
-          <span class="quick-link" data-section="filtros">Filtros</span>
-          <span class="quick-link" data-section="backup">Backup</span>
-          <span class="quick-link" data-section="config">Configuración</span>
-          <span class="quick-link" data-section="token">Token</span>
-        </div>
-        <div class="manual-section" id="manual-intro"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 📌 1. Introducción</div><div class="manual-section-body"><p><strong>StreamFlow Pro</strong> es tu centro de control para administrar cuentas de streaming de manera profesional.</p><div class="manual-step"><div class="step-number">1</div><div class="step-text">Registrate con email y contraseña, o con Google.</div></div><div class="manual-step"><div class="step-number">2</div><div class="step-text">Andá a <strong>Cargar Cuentas</strong> y empezá a agregar perfiles.</div></div><div class="manual-step"><div class="step-number">3</div><div class="step-text">En <strong>Perfiles</strong> gestioná todas tus cuentas.</div></div><div class="tip">💡 La app funciona sin internet. Los cambios se sincronizan automáticamente cuando vuelve la conexión.</div></div></div>
-        <div class="manual-section" id="manual-carga"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 📦 2. Cargar Cuentas</div><div class="manual-section-body"><p><strong>Tres modos de carga:</strong></p><ul><li><strong>Cuenta Completa:</strong> Genera automáticamente todos los perfiles de una plataforma.</li><li><strong>Perfil Individual:</strong> Para agregar un solo perfil específico.</li><li><strong>Carga Masiva:</strong> Pegá un bloque de texto con varias cuentas.</li></ul><div class="tip">Usá <strong>Previsualizar</strong> antes de cargar masivamente para evitar errores.</div></div></div>
-        <div class="manual-section" id="manual-gestion"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> ⚙️ 3. Gestión de Perfiles</div><div class="manual-section-body"><p><strong>Botones de acción rápida:</strong></p><ul><li>👁️ <strong>Mostrar/ocultar contraseña</strong></li><li>📱 <strong>WhatsApp Proveedor</strong></li><li>📋 <strong>Copiar datos</strong></li><li>✏️ <strong>Editar perfil</strong></li><li>🔄 <strong>Renovar (+1 mes)</strong></li><li>⭕ <strong>Marcar como libre</strong></li><li>🗐 <strong>Duplicar perfil</strong></li><li>🏷️ <strong>Vender perfil</strong></li><li>📅 <strong>Reasignar fecha</strong></li><li>🗑️ <strong>Eliminar perfil</strong></li></ul></div></div>
-        <div class="manual-section" id="manual-ventas"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 💰 4. Ventas</div><div class="manual-section-body"><p><strong>Pasos para vender un perfil:</strong></p><div class="manual-step"><div class="step-number">1</div><div class="step-text">Buscá un perfil en estado <strong>Libre</strong>.</div></div><div class="manual-step"><div class="step-number">2</div><div class="step-text">Hacé clic en <strong>Vender</strong>.</div></div><div class="manual-step"><div class="step-number">3</div><div class="step-text">Completá el precio y el WhatsApp del cliente.</div></div><div class="manual-step"><div class="step-number">4</div><div class="step-text">Confirmá. La app genera la plantilla y abre WhatsApp.</div></div></div></div>
-        <div class="manual-section" id="manual-dashboard"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 📊 5. Dashboard</div><div class="manual-section-body"><p>El Dashboard muestra métricas clave: total de perfiles, disponibles, próximos a vencer y ventas del día, además de tendencias y combos promocionales.</p></div></div>
-        <div class="manual-section" id="manual-filtros"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 🔍 6. Filtros</div><div class="manual-section-body"><p>Podés filtrar perfiles por plataforma, estado, proveedor, rango de fechas o búsqueda por texto. También podés ordenar por fecha de vencimiento.</p></div></div>
-        <div class="manual-section" id="manual-backup"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 💾 7. Backup</div><div class="manual-section-body"><p>Exportá tus datos en formato JSON o CSV desde la pestaña Perfiles. Importá un archivo JSON para restaurar una copia de seguridad.</p></div></div>
-        <div class="manual-section" id="manual-config"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> ⚙️ 8. Configuración</div><div class="manual-section-body"><p>En la pestaña Ajustes podés cambiar el tema, activar/desactivar sincronización automática, notificaciones, modo kiosco y ajustar el tamaño de letra.</p></div></div>
-        <div class="manual-section" id="manual-token"><div class="manual-section-header"><i class="fas fa-chevron-right"></i> 🔑 9. Token de Suscripción</div><div class="manual-section-body"><p>Tenés 3 días de prueba gratis. Después necesitás un token de 30 días. Contactanos por WhatsApp para adquirirlo.</p></div></div>
-      </div>
-    </div>
-
-    <!-- Ajustes -->
-    <div id="page-ajustes" class="page">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-shield-alt"></i> Token de Acceso</div>
-        <div style="display:flex; gap:0.5rem;"><input type="password" id="tokenAcceso" placeholder="SF-XXXX-XXXX-XXXX"><button class="btn btn-primary" id="btnValidarToken">Validar</button></div>
-        <div id="tokenEstado" style="margin-top:0.5rem; font-size:0.7rem;"></div>
-        <button class="btn btn-success" id="btnComprarToken" style="margin-top:0.5rem; width:100%; justify-content:center;"><i class="fab fa-whatsapp"></i> Comprar Token por WhatsApp</button>
-
-        <div class="card-title" style="margin-top:1rem;"><i class="fas fa-sliders-h"></i> Configuración</div>
-        <div class="config-row"><span>Tema claro</span><input type="checkbox" id="themeToggle"></div>
-        <div class="config-row"><span>Sincronización automática</span><input type="checkbox" id="autoSyncToggle" checked></div>
-        <div class="config-row"><span>Notificaciones de vencimiento</span><input type="checkbox" id="notificationsToggle" checked></div>
-        <div class="config-row"><span>Modo kiosco</span><input type="checkbox" id="kioscoToggle"></div>
-        <div class="config-row"><span>PIN de Seguridad</span><input type="password" id="pinConfig" value="1234" style="width:80px; text-align:center;"></div>
-        <div class="config-row"><span>Días para "Próximo"</span><input type="number" id="diasProximo" min="1" max="10" value="3" style="width:80px;"></div>
-        <div class="config-row"><span>Tamaño de letra</span>
-          <select id="fontSizeSelect">
-            <option value="small">Pequeño</option>
-            <option value="medium" selected>Mediano</option>
-            <option value="large">Grande</option>
-          </select>
-        </div>
-        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-          <button class="btn" id="btnExportConfig"><i class="fas fa-download"></i> Exportar config</button>
-          <button class="btn" id="btnImportConfig"><i class="fas fa-upload"></i> Importar config</button>
-          <button class="btn" id="btnResetConfig"><i class="fas fa-undo-alt"></i> Resetear</button>
-        </div>
-        <input type="file" id="archivoConfig" accept=".json" style="display:none;">
-
-        <hr style="margin:1rem 0; border-color:rgba(245,175,25,0.1);">
-        <button class="btn" id="btnAbrirManual" style="width:100%; justify-content:center;"><i class="fas fa-book"></i> Ver Manual Completo</button>
-        <button class="btn" id="btnAcercaDe" style="width:100%; margin-top:0.5rem; justify-content:center;"><i class="fas fa-info-circle"></i> Acerca de esta app</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Bloqueo de suscripción -->
-<div id="lockOverlay" style="display:none; position:fixed; inset:0; background:rgba(10,12,16,0.95); backdrop-filter:blur(15px); z-index:9999; flex-direction:column; align-items:center; justify-content:center; padding:2rem; text-align:center;">
-  <div class="card" style="max-width:400px; border-color:var(--secondary);">
-    <div class="logo-icon" style="background:var(--secondary);"><i class="fas fa-lock"></i></div>
-    <h2 style="color:white; margin-bottom:1rem;">Acceso Bloqueado</h2>
-    <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:1.5rem;">Tu periodo de prueba ha finalizado o tu suscripción ha expirado. Por favor, ingresa un token válido para continuar.</p>
-    <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-      <input type="password" id="lockTokenInput" placeholder="SF-XXXX-XXXX-XXXX">
-      <button class="btn btn-primary" id="btnLockValidate">Validar</button>
-    </div>
-    <button class="btn btn-success" id="btnLockBuy" style="width:100%; justify-content:center;"><i class="fab fa-whatsapp"></i> Comprar Token</button>
-    <p id="lockError" style="color:var(--secondary); font-size:0.7rem; margin-top:1rem;"></p>
-    <hr style="margin:1.5rem 0; opacity:0.1;">
-    <button class="btn btn-sm" id="lockLogout" style="width:100%; justify-content:center;"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
-  </div>
-</div>
-
-<!-- Modales -->
-<div class="modal" id="ventaModal">
-  <div class="modal-content">
-    <h3>Vender perfil</h3>
-    <div id="ventaPerfilInfo" style="margin-bottom:0.8rem;"></div>
-    <div class="venta-field-group"><label>Precio ($)</label><input type="number" id="ventaPrecio" step="1" min="1"></div>
-    <div class="venta-field-group"><label>WhatsApp del cliente</label><input type="tel" id="ventaCliente" placeholder="Ej: 5491112345678"></div>
-    <div class="modal-buttons"><button class="btn btn-primary" id="ventaConfirmar">Vender</button><button class="btn" id="ventaCancelar">Cancelar</button></div>
-  </div>
-</div>
-
-<div class="modal" id="reasignarModal">
-  <div class="modal-content">
-    <h3>Reasignar fecha</h3>
-    <div id="reasignarPerfilInfo" style="margin-bottom:0.8rem;"></div>
-    <input type="date" id="reasignarFecha">
-    <div class="modal-buttons"><button class="btn btn-primary" id="reasignarConfirmar">Reasignar</button><button class="btn" id="reasignarCancelar">Cancelar</button></div>
-  </div>
-</div>
-
-<div class="modal" id="resetPasswordModal">
-  <div class="modal-content">
-    <h3>Restablecer contraseña</h3>
-    <p style="margin-bottom:0.8rem;">Ingresá tu correo y te enviaremos un enlace.</p>
-    <input type="email" id="resetEmail" placeholder="tu@email.com">
-    <div class="modal-buttons"><button class="btn btn-primary" id="btnResetSend">Enviar</button><button class="btn" id="btnResetCancel">Cancelar</button></div>
-    <div id="resetMessage" style="margin-top:0.8rem; font-size:0.7rem;"></div>
-  </div>
-</div>
-
-<div class="modal" id="acercaModal">
-  <div class="modal-content">
-    <div class="acerca-container">
-      <div class="acerca-logo"><i class="fas fa-gem"></i></div>
-      <h3>StreamFlow Pro</h3>
-      <div class="acerca-version">Versión 2.0 · Build 2026</div>
-      <div class="acerca-info"><strong>Desarrollado y creado por</strong><br><span style="font-size:1rem; font-weight:700; color:#f5af19;">La Clave Argentina & Tienda SSH</span><br><br>Soluciones digitales profesionales para gestión de streaming.<br>Plataforma integral de administración, venta y control de cuentas.<br><br><strong>Tecnologías:</strong> Firebase, HTML5, CSS3, JavaScript ES6+, PWA<br><strong>Arquitectura:</strong> SPA con sincronización en tiempo real</div>
-      <div class="acerca-legal">© 2026 La Clave Argentina & Tienda SSH. Todos los derechos reservados.<br><br>Este software está protegido por las leyes de propiedad intelectual de la República Argentina (Ley 11.723) y tratados internacionales. Queda expresamente prohibida la reproducción no autorizada.<br><br><i class="fas fa-shield-alt"></i> Todos los datos se transmiten cifrados mediante protocolos seguros.</div>
-      <div class="modal-buttons"><button class="btn" id="acercaCerrar">Cerrar</button></div>
-    </div>
-  </div>
-</div>
-
-<div class="keyboard-hint"><i class="fas fa-keyboard"></i> Atajos: Ctrl+D, N, P, H, S, M, A</div>
-
-<script type="importmap">
-  {
-    "imports": {
-      "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-      "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
-      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
-    }
-  }
-</script>
-
-<script type="module">
-  import { initializeApp } from "firebase/app";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-  import { getFirestore, doc, setDoc, onSnapshot, getDoc, runTransaction } from "firebase/firestore";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAFnqUOd8kTvVOgtrhb9ZyDqQk6vgrLHcE",
-    authDomain: "streammanagerpro.firebaseapp.com",
-    projectId: "streammanagerpro",
-    storageBucket: "streammanagerpro.firebasestorage.app",
-    messagingSenderId: "692292552612",
-    appId: "1:692292552612:web:5c6e514d5f87f6e40e2331"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const googleProvider = new GoogleAuthProvider();
-
-  const _0x5f2e = ["U0YtQTdLMi1NOVA0LVg4TjE=", "U0YtQjNGOC1SNlcyLVE1TDk=", "U0YtQzlNNC1UMVk3LVYySDY=", "U0YtRDVSMS1LOFUzLVc3WjA="];
-  const TOKENS_VALIDOS = new Set(_0x5f2e.map(t => atob(t)));
-
-  let perfiles = [];
-  let currentUser = null;
-  let autoSync = true;
-  let notificationsEnabled = true;
-  let kioscoMode = false;
-  let DIAS_PROXIMO = 3;
-  let ordenAsc = true;
-  let versionLocal = 0;
-  let unsubscribeFirestore = null;
-  let pendingVentaId = null;
-  let pendingReasignarId = null;
-  let editandoId = null;
-  let paginaActual = 1;
-  let registrosPorPagina = 50;
-  let appDesbloqueada = false;
-  let planEstado = "demo";
-  let diasPruebaRestantes = 0;
-  let pinKiosco = "1234";
-
-  function translateAuthError(code) {
-    const map = {
-      "auth/invalid-credential": "Email o contraseña incorrectos.",
-      "auth/user-not-found": "Usuario no encontrado.",
-      "auth/wrong-password": "Contraseña incorrecta.",
-      "auth/invalid-email": "Email inválido.",
-      "auth/email-already-in-use": "El email ya está registrado.",
-      "auth/weak-password": "La contraseña debe tener al menos 6 caracteres.",
-      "auth/network-request-failed": "Error de conexión. Revisá tu internet."
-    };
-    return map[code] || "Ocurrió un error en la autenticación.";
-  }
-
-  function toast(msg) { let t = document.querySelector(".toast"); if (t) t.remove(); t = document.createElement("div"); t.className = "toast"; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
-  function escapeHtml(t) { if (!t) return ""; return t.replace(/[&<>]/g, m => m === '&' ? '&amp;' : '<' ? '&lt;' : '&gt;'); }
-  function generateId() { return Date.now() + '-' + Math.random().toString(36).substr(2, 9); }
-  function formatDate(str) { if (!str) return ""; const p = str.split("-"); return `${p[2]}/${p[1]}/${p[0]}`; }
-  function parseDate(str) { const p = str.split("-"); return new Date(p[0], p[1]-1, p[2]); }
-  function getEstado(fecha) {
-    if (!fecha) return "libre";
-    const hoy = new Date(); hoy.setHours(0,0,0,0);
-    const venc = parseDate(fecha); venc.setHours(0,0,0,0);
-    const diff = (venc - hoy) / 86400000;
-    if (diff < 0) return "vencido";
-    if (diff <= DIAS_PROXIMO) return "proximo";
-    return "activo";
-  }
-  function estadoTexto(e) { const m = { activo:"Activo", proximo:"Próximo", vencido:"Vencido", libre:"Libre", vendido:"Vendido" }; return m[e] || e; }
-  function estadoClase(e) { const m = { activo:"badge-success", proximo:"badge-warning", vencido:"badge-danger", libre:"badge-info", vendido:"badge-purple" }; return m[e] || "badge-info"; }
-
-  function plantillaProveedor(p) { return `📺 ${p.plataforma}\n✉️ ${p.mail}\n🔐 ${p.password}\n👤 ${p.perfilNombre}\n📅 ${p.fechaVencimiento || "-"}\n👤 ${p.proveedor}`; }
-  function plantillaCliente(p, esVenta) {
-    const fv = p.fechaVencimiento ? formatDate(p.fechaVencimiento) : "Sin fecha";
-    return `${esVenta ? "🎉 CUENTA ACTIVADA" : "🔄 RENOVACIÓN"}\n\n📺 ${p.plataforma}\n👤 ${p.perfilNombre}\n📧 ${p.mail}\n🔐 ${p.password}\n📅 Vence: ${fv}\n\n✅ Perfil verificado\n🔒 No modificar datos\n🛡️ Garantía hasta ${fv}`;
-  }
-  function copiarTexto(t) { navigator.clipboard?.writeText(t); toast("Copiado"); }
-
-  function saveLocal() {
-    localStorage.setItem("streamflow_perfiles", JSON.stringify(perfiles));
-    localStorage.setItem("streamflow_version", versionLocal);
-  }
-  function loadLocal() {
-    const r = localStorage.getItem("streamflow_perfiles");
-    if (r) {
-      try {
-        perfiles = JSON.parse(r);
-        const v = localStorage.getItem("streamflow_version");
-        if (v) versionLocal = parseInt(v);
-      } catch(e) { perfiles = []; }
-    }
-  }
-
-  async function loadFromFirebase() {
-    if (!currentUser) return;
-    const userRef = doc(db, "usuarios", currentUser.uid);
-    const snap = await getDoc(userRef);
-    if (snap.exists()) {
-      const data = snap.data();
-      if (data.perfiles && ( (data.version || 0) > versionLocal || (versionLocal === 0 && Array.isArray(data.perfiles) && data.perfiles.length > 0) )) {
-        perfiles = data.perfiles;
-        versionLocal = data.version || Date.now();
-        saveLocal();
-        renderAll();
-        toast("📥 Datos sincronizados desde la nube");
-      }
-    }
-  }
-
-  async function saveToFirebase() {
-    if (!currentUser || !autoSync) return;
-    const userRef = doc(db, "usuarios", currentUser.uid);
-    const nuevaVersion = Date.now();
-    try {
-      document.getElementById("syncStatus").className = "sync-status syncing";
-      document.getElementById("syncStatus").innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sincronizando...';
-      await runTransaction(db, async (transaction) => {
-        const snap = await transaction.get(userRef);
-        let versionNube = 0;
-        if (snap.exists()) versionNube = snap.data().version || 0;
-        if (versionNube > versionLocal) throw new Error("CONFLICTO");
-        transaction.set(userRef, { perfiles: perfiles, version: nuevaVersion, ultimaActualizacion: new Date().toISOString() }, { merge: true });
-      });
-      versionLocal = nuevaVersion;
-      saveLocal();
-      document.getElementById("syncStatus").className = "sync-status synced";
-      document.getElementById("syncStatus").innerHTML = '<i class="fas fa-cloud"></i> Sincronizado';
-    } catch (error) {
-      if (error.message === "CONFLICTO") {
-        toast("⚠️ Conflicto: recargando datos...");
-        await loadFromFirebase();
-        setTimeout(() => saveToFirebase(), 500);
-      } else {
-        document.getElementById("syncStatus").className = "sync-status error";
-        document.getElementById("syncStatus").innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
-      }
-    }
-  }
-
-  function startListener(uid) {
-    if (unsubscribeFirestore) unsubscribeFirestore();
-    const userRef = doc(db, "usuarios", uid);
-    unsubscribeFirestore = onSnapshot(userRef, (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.perfiles && ((data.version || 0) > versionLocal || (versionLocal === 0 && perfiles.length === 0))) {
-          perfiles = data.perfiles;
-          versionLocal = data.version;
-          saveLocal();
-          renderAll();
-          document.getElementById("syncStatus").className = "sync-status synced";
-          document.getElementById("syncStatus").innerHTML = '<i class="fas fa-cloud"></i> Sincronizado';
-          toast("🔄 Datos actualizados");
+            // Cargar API Key si existe para el proveedor inicial
+            apiKeyInput.value = apiKeys[providerSelect.value] || '';
+            checkStatusBadge();
         }
-      }
-    }, (error) => { console.error("Listener error:", error); });
-  }
 
-  function getFilteredPerfiles() {
-    let datos = [...perfiles];
-    const fp = document.getElementById("filtroPlataforma")?.value;
-    const fe = document.getElementById("filtroEstado")?.value;
-    const busqueda = document.getElementById("buscarTexto")?.value.toLowerCase();
-    const pf = document.getElementById("filtroProveedor")?.value.toLowerCase();
-    const fd = document.getElementById("fechaDesde")?.value;
-    const fh = document.getElementById("fechaHasta")?.value;
-    if (fp) datos = datos.filter(p => p.plataforma === fp);
-    if (fe) datos = datos.filter(p => p.estado === fe);
-    if (busqueda) datos = datos.filter(p => p.perfilNombre?.toLowerCase().includes(busqueda) || p.mail?.toLowerCase().includes(busqueda));
-    if (pf) datos = datos.filter(p => p.proveedor?.toLowerCase().includes(pf));
-    if (fd) datos = datos.filter(p => p.fechaVencimiento && p.fechaVencimiento >= fd);
-    if (fh) datos = datos.filter(p => p.fechaVencimiento && p.fechaVencimiento <= fh);
-    return datos;
-  }
-
-  function renderTabla() {
-    const tbody = document.getElementById("tablaPerfilesBody");
-    if (!tbody) return;
-    const datos = getFilteredPerfiles();
-    const total = datos.length;
-    const totalPaginas = Math.ceil(total / registrosPorPagina);
-    if (paginaActual > totalPaginas) paginaActual = totalPaginas || 1;
-    const inicio = (paginaActual - 1) * registrosPorPagina;
-    const paginaDatos = datos.slice(inicio, inicio + registrosPorPagina);
-    document.getElementById("paginationInfo").textContent = `Mostrando ${paginaDatos.length} de ${total} perfiles (Pág. ${paginaActual} de ${totalPaginas || 1})`;
-    document.getElementById("btnPaginaAnterior").disabled = paginaActual <= 1;
-    document.getElementById("btnPaginaSiguiente").disabled = paginaActual >= totalPaginas;
-    if (datos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:3rem; opacity:0.6;">
-        <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:1rem; display:block;"></i>
-        No se encontraron perfiles con los filtros actuales.
-      </td></tr>`;
-      return;
-    }
-    tbody.innerHTML = paginaDatos.map(p => `
-      <tr ondblclick="editarPerfilCompleto('${p.id}')">
-        <td data-label="Sel."><input type="checkbox" class="row-select" data-id="${p.id}"></td>
-        <td data-label="Plataforma"><span class="badge ${estadoClase(p.estado)}">${escapeHtml(p.plataforma)}</span></td>
-        <td data-label="Cuenta">${escapeHtml(p.cuentaId || '-')}</td>
-        <td data-label="Perfil">${escapeHtml(p.perfilNombre || '-')} <button class="btn btn-sm" onclick="togglePassword('${p.id}')"><i class="fas fa-eye"></i></button></td>
-        <td data-label="Correo">${escapeHtml(p.mail || '-')}</td>
-        <td data-label="Vencimiento">${p.fechaVencimiento ? formatDate(p.fechaVencimiento) : '-'}</td>
-        <td data-label="Estado"><span class="badge ${estadoClase(p.estado)}">${estadoTexto(p.estado)}</span></td>
-        <td data-label="Acciones" style="white-space:nowrap;">
-          ${p.whatsappProveedor ? `<button class="btn btn-sm" onclick="window.open('https://wa.me/${p.whatsappProveedor.replace(/[^0-9]/g,'')}')" title="WA Proveedor"><i class="fab fa-whatsapp"></i></button>` : ''}
-          <button class="btn btn-sm" onclick="copiarPerfil('${p.id}')" title="Copiar"><i class="fas fa-copy"></i></button>
-          ${!kioscoMode ? `<button class="btn btn-sm" onclick="editarPerfilCompleto('${p.id}')" title="Editar"><i class="fas fa-edit"></i></button>` : ''}
-          <button class="btn btn-sm btn-success" onclick="renovarPerfil('${p.id}')" title="Renovar"><i class="fas fa-sync-alt"></i></button>
-          <button class="btn btn-sm" onclick="marcarLibre('${p.id}')" title="Marcar libre"><i class="fas fa-circle"></i></button>
-          ${p.estado === 'libre' && !kioscoMode ? `<button class="btn btn-sm btn-primary" onclick="mostrarVentaModal('${p.id}')" title="Vender"><i class="fas fa-tag"></i></button>` : ''}
-          <button class="btn btn-sm" onclick="mostrarReasignarModal('${p.id}')" title="Reasignar fecha"><i class="fas fa-calendar-alt"></i></button>
-          ${!kioscoMode ? `<button class="btn btn-sm" onclick="duplicarPerfil('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>` : ''}
-          ${!kioscoMode ? `<button class="btn btn-sm btn-danger" onclick="eliminarPerfil('${p.id}')" title="Eliminar"><i class="fas fa-trash"></i></button>` : ''}
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  window.togglePassword = function(id) { const p = perfiles.find(p => p.id === id); if (p) toast(`Contraseña: ${p.password}`); };
-  window.copiarPerfil = function(id) { const p = perfiles.find(p => p.id === id); if (p) copiarTexto(plantillaProveedor(p)); };
-  window.renovarPerfil = async function(id) {
-    const idx = perfiles.findIndex(p => p.id === id);
-    if (idx === -1) return;
-    let base = perfiles[idx].fechaVencimiento ? parseDate(perfiles[idx].fechaVencimiento) : new Date();
-    base.setMonth(base.getMonth() + 1);
-    perfiles[idx].fechaVencimiento = base.toISOString().split('T')[0];
-    perfiles[idx].estado = getEstado(perfiles[idx].fechaVencimiento);
-    await saveToFirebase();
-    renderAll();
-    toast("Renovado hasta " + formatDate(perfiles[idx].fechaVencimiento));
-  };
-  window.marcarLibre = async function(id) {
-    const idx = perfiles.findIndex(p => p.id === id);
-    if (idx === -1) return;
-    if (confirm("¿Marcar como libre?")) {
-      perfiles[idx].estado = "libre";
-      perfiles[idx].fechaVencimiento = null;
-      perfiles[idx].fechaVenta = null;
-      perfiles[idx].precioVenta = null;
-      perfiles[idx].whatsappCliente = "";
-      await saveToFirebase();
-      renderAll();
-      toast("Marcado libre");
-    }
-  };
-  window.eliminarPerfil = async function(id) {
-    if (kioscoMode) { toast("Modo kiosco activado"); return; }
-    if (!confirm("¿Eliminar este perfil?")) return;
-    perfiles = perfiles.filter(p => p.id !== id);
-    await saveToFirebase();
-    renderAll();
-    toast("Perfil eliminado");
-  };
-  window.duplicarPerfil = async function(id) {
-    const orig = perfiles.find(p => p.id === id);
-    if (!orig) return;
-    const nombre = prompt("Nombre nuevo:", orig.perfilNombre + " (copia)");
-    if (nombre) {
-      const copia = { ...orig, id: generateId(), perfilNombre: nombre, estado: "libre", fechaVencimiento: null, fechaVenta: null, whatsappCliente: "" };
-      perfiles.push(copia);
-      await saveToFirebase();
-      renderAll();
-      toast("Duplicado: " + nombre);
-    }
-  };
-  window.mostrarVentaModal = function(id) {
-    if (kioscoMode) { toast("Modo kiosco activado"); return; }
-    const p = perfiles.find(p => p.id === id);
-    if (!p || p.estado !== "libre") { toast("Solo perfiles libres"); return; }
-    pendingVentaId = id;
-    document.getElementById("ventaPerfilInfo").innerHTML = `<strong>${p.plataforma} - ${p.perfilNombre}</strong>`;
-    document.getElementById("ventaModal").classList.add("active");
-  };
-  window.mostrarReasignarModal = function(id) {
-    const p = perfiles.find(p => p.id === id);
-    if (!p) return;
-    pendingReasignarId = id;
-    document.getElementById("reasignarPerfilInfo").innerHTML = `<strong>${p.plataforma} - ${p.perfilNombre}</strong>`;
-    document.getElementById("reasignarFecha").value = p.fechaVencimiento || "";
-    document.getElementById("reasignarModal").classList.add("active");
-  };
-  window.editarPerfilCompleto = function(id) {
-    if (kioscoMode) { toast("Modo kiosco activado"); return; }
-    const p = perfiles.find(p => p.id === id);
-    if (!p) return;
-    editandoId = id;
-    document.getElementById("platIndividual").value = p.plataforma;
-    document.getElementById("cuentaIdIndividual").value = p.cuentaId || "";
-    document.getElementById("nombrePerfilIndividual").value = p.perfilNombre || "";
-    document.getElementById("pinIndividual").value = p.pin || "";
-    document.getElementById("mailIndividual").value = p.mail || "";
-    document.getElementById("passIndividual").value = p.password || "";
-    document.getElementById("fechaIndividual").value = p.fechaVencimiento || "";
-    document.getElementById("precioIndividual").value = p.precio || "";
-    document.getElementById("proveedorIndividual").value = p.proveedor || "";
-    document.getElementById("whatsappIndividual").value = p.whatsappProveedor || "";
-    document.getElementById("obsIndividual").value = p.observaciones || "";
-    document.querySelectorAll(".carga-tab").forEach(b => b.classList.remove("active"));
-    document.querySelector(".carga-tab[data-mod='individual']").classList.add("active");
-    document.getElementById("modo-completa").style.display = "none";
-    document.getElementById("modo-individual").style.display = "block";
-    document.getElementById("modo-masiva").style.display = "none";
-    document.getElementById("btnGuardarIndividual").textContent = "Guardar cambios";
-    document.getElementById("btnGuardarIndividual").onclick = () => guardarEdicion(id);
-    changePage("carga");
-    toast("Editando perfil...");
-  };
-  async function guardarEdicion(id) {
-    let plataforma = document.getElementById("platIndividual").value;
-    if (plataforma === "Otros") plataforma = document.getElementById("otraPlatIndividual").value;
-    const idx = perfiles.findIndex(p => p.id === id);
-    if (idx !== -1) {
-      perfiles[idx] = {
-        ...perfiles[idx],
-        plataforma: plataforma,
-        cuentaId: document.getElementById("cuentaIdIndividual").value,
-        perfilNombre: document.getElementById("nombrePerfilIndividual").value,
-        pin: document.getElementById("pinIndividual").value,
-        mail: document.getElementById("mailIndividual").value,
-        password: document.getElementById("passIndividual").value,
-        fechaVencimiento: document.getElementById("fechaIndividual").value || null,
-        precio: document.getElementById("precioIndividual").value,
-        proveedor: document.getElementById("proveedorIndividual").value,
-        whatsappProveedor: document.getElementById("whatsappIndividual").value,
-        observaciones: document.getElementById("obsIndividual").value,
-        estado: document.getElementById("fechaIndividual").value ? getEstado(document.getElementById("fechaIndividual").value) : "libre"
-      };
-      await saveToFirebase();
-      renderAll();
-      toast("Cambios guardados");
-      editandoId = null;
-      document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil";
-      document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual;
-      limpiarFormularioIndividual();
-    }
-  }
-  function limpiarFormularioIndividual() {
-    ["platIndividual", "cuentaIdIndividual", "nombrePerfilIndividual", "pinIndividual", "mailIndividual", "passIndividual", "fechaIndividual", "precioIndividual", "proveedorIndividual", "whatsappIndividual", "obsIndividual"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("otraPlatIndividualDiv").style.display = "none";
-  }
-  async function confirmarVenta() {
-    const precio = document.getElementById("ventaPrecio").value;
-    const cliente = document.getElementById("ventaCliente").value.trim();
-    if (!precio || precio <= 0) { toast("Precio inválido"); return; }
-    const idx = perfiles.findIndex(p => p.id === pendingVentaId);
-    if (idx === -1) return;
-    perfiles[idx].fechaVenta = new Date().toISOString();
-    perfiles[idx].precioVenta = parseFloat(precio);
-    perfiles[idx].whatsappCliente = cliente;
-    perfiles[idx].estado = "vendido";
-    if (!perfiles[idx].fechaVencimiento) {
-      let nueva = new Date();
-      nueva.setDate(nueva.getDate() + 30);
-      perfiles[idx].fechaVencimiento = nueva.toISOString().split('T')[0];
-    }
-    await saveToFirebase();
-    renderAll();
-    if (cliente) {
-      const mensaje = plantillaCliente(perfiles[idx], true);
-      window.open(`https://wa.me/${cliente.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(mensaje)}`, '_blank');
-    }
-    document.getElementById("ventaModal").classList.remove("active");
-    document.getElementById("ventaPrecio").value = "";
-    document.getElementById("ventaCliente").value = "";
-    toast("Venta registrada");
-  }
-  async function guardarCuentaCompleta() {
-    let plataforma = document.getElementById("platCompleta").value;
-    if (plataforma === "Otros") plataforma = document.getElementById("otraPlatCompleta").value;
-    if (!plataforma) { toast("Seleccioná plataforma"); return; }
-    const cuentaId = document.getElementById("cuentaIdCompleta").value;
-    const mail = document.getElementById("mailCompleta").value;
-    const password = document.getElementById("passCompleta").value;
-    const proveedor = document.getElementById("proveedorCompleta").value;
-    const fecha = document.getElementById("fechaCompleta").value || null;
-    if (!mail || !password || !proveedor) { toast("Completá todos los campos"); return; }
-    const cantidades = { "Netflix":5, "Netflix indiv":1, "Disney":7, "Max":5, "Paramount":5, "Crunchyroll":1, "Prime video":6, "Spotify":1, "YouTube":1, "Otros":1 };
-    const cantidad = cantidades[plataforma] || 1;
-    const idCuenta = cuentaId || "CTA_" + Date.now();
-    for (let i = 1; i <= cantidad; i++) {
-      perfiles.push({
-        id: generateId(), plataforma, cuentaId: idCuenta, mail, password,
-        perfilNombre: cantidad === 1 ? "Principal" : "Perfil " + i,
-        pin: "", fechaVencimiento: fecha, proveedor, whatsappProveedor: document.getElementById("whatsappCompleta").value,
-        observaciones: document.getElementById("obsCompleta").value, precio: document.getElementById("precioCompleta").value,
-        estado: fecha ? getEstado(fecha) : "libre", fechaVenta: null, precioVenta: null, whatsappCliente: ""
-      });
-    }
-    await saveToFirebase();
-    renderAll();
-    toast(`${plataforma} guardada (${cantidad} perfiles)`);
-    ["cuentaIdCompleta","mailCompleta","passCompleta","fechaCompleta","precioCompleta","proveedorCompleta","whatsappCompleta","obsCompleta"].forEach(id => document.getElementById(id).value = "");
-  }
-  async function guardarPerfilIndividual() {
-    let plataforma = document.getElementById("platIndividual").value;
-    if (plataforma === "Otros") plataforma = document.getElementById("otraPlatIndividual").value;
-    if (!plataforma) { toast("Seleccioná plataforma"); return; }
-    const nuevo = {
-      id: generateId(), plataforma, cuentaId: document.getElementById("cuentaIdIndividual").value,
-      mail: document.getElementById("mailIndividual").value, password: document.getElementById("passIndividual").value,
-      perfilNombre: document.getElementById("nombrePerfilIndividual").value, pin: document.getElementById("pinIndividual").value || "",
-      fechaVencimiento: document.getElementById("fechaIndividual").value || null,
-      proveedor: document.getElementById("proveedorIndividual").value, whatsappProveedor: document.getElementById("whatsappIndividual").value,
-      observaciones: document.getElementById("obsIndividual").value, precio: document.getElementById("precioIndividual").value,
-      estado: document.getElementById("fechaIndividual").value ? getEstado(document.getElementById("fechaIndividual").value) : "libre",
-      fechaVenta: null, precioVenta: null, whatsappCliente: ""
-    };
-    if (!nuevo.mail || !nuevo.password || !nuevo.proveedor || !nuevo.perfilNombre) { toast("Completá todos los campos"); return; }
-    perfiles.push(nuevo);
-    await saveToFirebase();
-    renderAll();
-    toast("Perfil individual guardado");
-    limpiarFormularioIndividual();
-  }
-  function parseBatchText(texto) {
-    const blocks = texto.split(/\n\s*\n|---|==+/);
-    const results = [];
-    blocks.forEach(block => {
-      const lines = block.split("\n").map(l => l.trim()).filter(l => l);
-      if (lines.length === 0) return;
-      let data = { mail:"", pass:"", perfil:"Principal", prov:"" };
-      const fullText = lines.join(" ");
-      if (fullText.includes("|")) {
-        const parts = fullText.split("|");
-        parts.forEach(p => {
-          const lower = p.toLowerCase();
-          if (lower.includes("mail") || lower.includes("@")) data.mail = p.split(":")[1]?.trim() || p.trim();
-          if (lower.includes("pass") || lower.includes("contra")) data.pass = p.split(":")[1]?.trim() || p.trim();
-          if (lower.includes("perfil")) data.perfil = p.split(":")[1]?.trim() || p.trim();
-          if (lower.includes("prov")) data.prov = p.split(":")[1]?.trim() || p.trim();
+        // Cambio de proveedor
+        providerSelect.addEventListener('change', () => {
+            updateModels();
+            apiKeyInput.value = apiKeys[providerSelect.value] || '';
+            updateHeaderDisplay();
+            checkStatusBadge();
         });
-      } else {
-        lines.forEach(l => {
-          const lower = l.toLowerCase();
-          if (lower.includes("mail") || lower.includes("@")) data.mail = l.split(":")[1]?.trim() || l.trim();
-          if (lower.includes("pass") || lower.includes("contra")) data.pass = l.split(":")[1]?.trim() || l.trim();
-          if (lower.includes("perfil")) data.perfil = l.split(":")[1]?.trim() || l.trim();
-          if (lower.includes("prov")) data.prov = l.split(":")[1]?.trim() || l.trim();
+
+        function updateModels() {
+            const provider = PROVIDERS[providerSelect.value];
+            modelSelect.innerHTML = provider.models.map(m => `<option value="${m}">${m}</option>`).join('');
+            updateHeaderDisplay();
+        }
+
+        function updateHeaderDisplay() {
+            const pName = PROVIDERS[providerSelect.value].name;
+            const mName = modelSelect.value;
+            currentApiDisplay.innerHTML = `<i class="fas fa-bolt" style="color: #eab308;"></i> ${pName} - ${mName}`;
+        }
+
+        modelSelect.addEventListener('change', updateHeaderDisplay);
+
+        // API Key Storage
+        apiKeyInput.addEventListener('input', () => {
+            apiKeys[providerSelect.value] = apiKeyInput.value;
+            localStorage.setItem('api_keys', JSON.stringify(apiKeys));
+            checkStatusBadge();
         });
-      }
-      if (data.mail && data.pass) results.push(data);
-    });
-    return results;
-  }
 
-  async function cargarMasiva() {
-    const texto = document.getElementById("batchTexto").value;
-    const plat = document.getElementById("platMasiva").value;
-    const items = parseBatchText(texto);
-    let agregados = 0;
-    items.forEach(item => {
-      perfiles.push({
-        id: generateId(), plataforma: plat, cuentaId: "MASIVA",
-        mail: item.mail, password: item.pass, perfilNombre: item.perfil,
-        proveedor: item.prov, estado: "libre"
-      });
-      agregados++;
-    });
-    if (agregados > 0) {
-      await saveToFirebase();
-      renderAll();
-      toast(`${agregados} perfiles agregados`);
-      document.getElementById("batchTexto").value = "";
-    } else toast("No se encontraron cuentas");
-  }
-  function previsualizarMasiva() {
-    const texto = document.getElementById("batchTexto").value;
-    const items = parseBatchText(texto);
-    const div = document.getElementById("batchResultados");
-    div.style.display = "block";
-    div.innerHTML = items.length ? `<strong>Vista previa:</strong><br>${items.map((it, idx) => `${idx+1}. ${it.mail}`).join("<br>")}` : "No se detectaron cuentas";
-  }
-  function renderDashboard() {
-    const total = perfiles.length;
-    const libres = perfiles.filter(p => p.estado === "libre").length;
-    const vencen = perfiles.filter(p => p.estado === "proximo").length;
-    const hoyStr = new Date().toISOString().split('T')[0];
-    const ventasHoy = perfiles.filter(p => p.fechaVenta && p.fechaVenta.split('T')[0] === hoyStr).length;
-
-    document.getElementById("totalPerfiles").textContent = total;
-    document.getElementById("libresHoy").textContent = libres;
-    document.getElementById("vencenHoy").textContent = vencen;
-    document.getElementById("ventasHoy").textContent = ventasHoy;
-
-    document.getElementById("barTotal").style.width = total > 0 ? "100%" : "0%";
-    document.getElementById("barLibres").style.width = total > 0 ? (libres / total * 100) + "%" : "0%";
-    document.getElementById("barVencen").style.width = total > 0 ? (vencen / total * 100) + "%" : "0%";
-    document.getElementById("barVentas").style.width = "100%"; // O meta diaria
-
-    document.getElementById("totalGanado").textContent = "$" + perfiles.reduce((s,p) => s + (p.precioVenta || 0), 0);
-    document.getElementById("cantidadVendidos").textContent = perfiles.filter(p => p.fechaVenta).length;
-
-    const ventasPlata = {};
-    perfiles.forEach(p => { if (p.fechaVenta) ventasPlata[p.plataforma] = (ventasPlata[p.plataforma] || 0) + 1; });
-    const mas = Object.entries(ventasPlata).sort((a,b) => b[1] - a[1])[0];
-    document.getElementById("tendencias").innerHTML = mas ? `<strong>${mas[0]}</strong> es tu plataforma estrella con ${mas[1]} ventas.` : "Aún no hay datos de ventas para mostrar tendencias.";
-    document.getElementById("combos").innerHTML = "<div>Netflix + Disney + Max</div>";
-  }
-  function renderHistorial() {
-    const ventas = perfiles.filter(p => p.fechaVenta).sort((a,b) => new Date(b.fechaVenta) - new Date(a.fechaVenta));
-    document.getElementById("historialLista").innerHTML = ventas.map(p => `
-      <tr>
-        <td data-label="Fecha">${new Date(p.fechaVenta).toLocaleDateString()}</td>
-        <td data-label="Plataforma">${escapeHtml(p.plataforma)}</td>
-        <td data-label="Perfil">${escapeHtml(p.perfilNombre)}</td>
-        <td data-label="Cliente">${p.whatsappCliente || '-'}</td>
-        <td data-label="Precio">$${p.precioVenta || 0}</td>
-        <td data-label="WhatsApp"><button class="btn btn-sm" onclick="window.open('https://wa.me/${(p.whatsappCliente||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(plantillaCliente(p, true))}')"><i class="fab fa-whatsapp"></i></button></td>
-      </tr>
-    `).join('') || '<tr><td colspan="6">No hay ventas</td></tr>';
-  }
-  function renderStats() {
-    const porPlataforma = {};
-    const porProveedor = {};
-    perfiles.forEach(p => {
-      const plat = p.plataforma || "Otros";
-      if (!porPlataforma[plat]) porPlataforma[plat] = { total: 0, vendidos: 0 };
-      porPlataforma[plat].total++;
-      if (p.fechaVenta) porPlataforma[plat].vendidos++;
-      const prov = p.proveedor || "Sin proveedor";
-      if (!porProveedor[prov]) porProveedor[prov] = { total: 0, vendidos: 0 };
-      porProveedor[prov].total++;
-      if (p.fechaVenta) porProveedor[prov].vendidos++;
-    });
-    document.getElementById("resumenStreaming").innerHTML = Object.entries(porPlataforma).map(([k,v]) => `<div><strong>${escapeHtml(k)}</strong>: ${v.total} perfiles (${v.vendidos} vendidos)</div>`).join('');
-    document.getElementById("resumenProveedores").innerHTML = Object.entries(porProveedor).map(([k,v]) => `<div><strong>${escapeHtml(k)}</strong>: ${v.total} perfiles (${v.vendidos} vendidos)</div>`).join('');
-  }
-  function mostrarAvisoVencimientos() {
-    if (!notificationsEnabled) return;
-    const hoy = new Date(); hoy.setHours(0,0,0,0);
-    const vencidos = perfiles.filter(p => p.fechaVencimiento && parseDate(p.fechaVencimiento) < hoy);
-    const proximos = perfiles.filter(p => p.fechaVencimiento && (parseDate(p.fechaVencimiento) - hoy) / 86400000 <= DIAS_PROXIMO && (parseDate(p.fechaVencimiento) - hoy) / 86400000 >= 0);
-    if (vencidos.length > 0 || proximos.length > 0) {
-      let msg = "📢 Recordatorio de vencimientos:\n";
-      if (vencidos.length) msg += `🔴 Vencidos: ${vencidos.length}\n`;
-      if (proximos.length) msg += `🟡 Próximos a vencer: ${proximos.length}`;
-      toast(msg);
-    }
-  }
-  async function exportarJSON() {
-    const blob = new Blob([JSON.stringify(perfiles, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.download = `streamflow_${new Date().toISOString().split('T')[0]}.json`;
-    a.href = URL.createObjectURL(blob);
-    a.click();
-    toast("Exportado JSON");
-  }
-  async function exportarCSV() {
-    let csv = "Plataforma,Cuenta,Perfil,Correo,Vence,Estado,Proveedor,WhatsApp\n";
-    perfiles.forEach(p => {
-      csv += `"${p.plataforma}","${p.cuentaId || ''}","${p.perfilNombre || ''}","${p.mail || ''}","${p.fechaVencimiento || ''}","${estadoTexto(p.estado)}","${p.proveedor || ''}","${p.whatsappProveedor || ''}"\n`;
-    });
-    const blob = new Blob([csv], { type: "text/csv" });
-    const a = document.createElement("a");
-    a.download = `streamflow_${new Date().toISOString().split('T')[0]}.csv`;
-    a.href = URL.createObjectURL(blob);
-    a.click();
-    toast("Exportado CSV");
-  }
-  async function importarJSON(file) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (confirm("¿Reemplazar datos actuales?")) {
-          perfiles = data;
-          await saveToFirebase();
-          renderAll();
-          toast("Importado correctamente");
+        function checkStatusBadge() {
+            const badge = document.getElementById('conn-status');
+            if (apiKeyInput.value.length > 5) {
+                badge.className = 'status-badge status-on';
+                badge.textContent = 'Clave Ingresada';
+            } else {
+                badge.className = 'status-badge status-off';
+                badge.textContent = 'Falta Clave';
+            }
         }
-      } catch(err) { toast("Archivo inválido"); }
-    };
-    reader.readAsText(file);
-  }
-  async function resetVentas() {
-    if (confirm("¿Reiniciar todas las ventas?")) {
-      perfiles.forEach(p => {
-        p.fechaVenta = null;
-        p.precioVenta = null;
-        p.whatsappCliente = "";
-        if (p.estado === "vendido") p.estado = "libre";
-      });
-      await saveToFirebase();
-      renderAll();
-      toast("Ventas reiniciadas");
-    }
-  }
-  function guardarConfigLocal() {
-    const config = {
-      tema: document.body.classList.contains("light") ? "light" : "dark",
-      autoSync: autoSync,
-      notifications: notificationsEnabled,
-      kiosco: kioscoMode,
-      pin: pinKiosco,
-      diasProximo: DIAS_PROXIMO,
-      fontSize: document.getElementById("fontSizeSelect").value
-    };
-    localStorage.setItem("streamflow_config", JSON.stringify(config));
-  }
-  function cargarConfigLocal() {
-    const config = localStorage.getItem("streamflow_config");
-    if (config) {
-      try {
-        const c = JSON.parse(config);
-        if (c.tema === "light") document.body.classList.add("light");
-        autoSync = c.autoSync !== undefined ? c.autoSync : true;
-        notificationsEnabled = c.notifications !== undefined ? c.notifications : true;
-        kioscoMode = c.kiosco || false;
-        pinKiosco = c.pin || "1234";
-        DIAS_PROXIMO = c.diasProximo || 3;
-        document.getElementById("autoSyncToggle").checked = autoSync;
-        document.getElementById("notificationsToggle").checked = notificationsEnabled;
-        document.getElementById("kioscoToggle").checked = kioscoMode;
-        document.getElementById("pinConfig").value = pinKiosco;
-        document.getElementById("diasProximo").value = DIAS_PROXIMO;
-        if (c.fontSize) {
-          document.getElementById("fontSizeSelect").value = c.fontSize;
-          document.body.classList.remove("font-small", "font-medium", "font-large");
-          document.body.classList.add(`font-${c.fontSize}`);
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = chatInput.scrollHeight + 'px';
+        });
+
+        // Enviar mensaje
+        async function sendMessage(customText = null) {
+            const text = customText || chatInput.value.trim();
+            const providerKey = providerSelect.value;
+            const model = modelSelect.value;
+            const apiKey = apiKeyInput.value;
+
+            if (!text) return;
+            if (!apiKey) {
+                alert('Por favor ingresa tu API Key en la barra lateral.');
+                return;
+            }
+
+            // UI Update
+            appendMessage('user', text);
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            typingIndicator.style.display = 'block';
+            btnStop.style.display = 'block';
+            suggestionContainer.style.display = 'none';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Historial para contexto
+            currentMessages.push({ role: 'user', content: text });
+
+            abortController = new AbortController();
+
+            try {
+                const response = await callAI(providerKey, model, apiKey, currentMessages, abortController.signal);
+                appendMessage('ai', response);
+                currentMessages.push({ role: 'assistant', content: response });
+                saveHistory();
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    appendMessage('ai', '⚠️ Generación cancelada por el usuario.');
+                } else {
+                    console.error(error);
+                    appendMessage('ai', `❌ Error: ${error.message}. Verifica tu API key y conexión.`);
+                }
+            } finally {
+                typingIndicator.style.display = 'none';
+                btnStop.style.display = 'none';
+                messageCount++;
+                msgCountDisplay.textContent = messageCount;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                abortController = null;
+            }
         }
-      } catch(e) {}
-    }
-  }
-  function exportarConfig() {
-    const config = {
-      tema: document.body.classList.contains("light") ? "light" : "dark",
-      autoSync: autoSync,
-      notifications: notificationsEnabled,
-      kiosco: kioscoMode,
-      diasProximo: DIAS_PROXIMO,
-      fontSize: document.getElementById("fontSizeSelect").value
-    };
-    const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.download = `streamflow_config_${new Date().toISOString().split('T')[0]}.json`;
-    a.href = URL.createObjectURL(blob);
-    a.click();
-    toast("Configuración exportada");
-  }
-  function importarConfig(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const c = JSON.parse(e.target.result);
-        if (c.tema === "light") document.body.classList.add("light"); else document.body.classList.remove("light");
-        autoSync = c.autoSync !== undefined ? c.autoSync : true;
-        notificationsEnabled = c.notifications !== undefined ? c.notifications : true;
-        kioscoMode = c.kiosco || false;
-        DIAS_PROXIMO = c.diasProximo || 3;
-        document.getElementById("autoSyncToggle").checked = autoSync;
-        document.getElementById("notificationsToggle").checked = notificationsEnabled;
-        document.getElementById("kioscoToggle").checked = kioscoMode;
-        document.getElementById("diasProximo").value = DIAS_PROXIMO;
-        if (c.fontSize) {
-          document.getElementById("fontSizeSelect").value = c.fontSize;
-          document.body.classList.remove("font-small", "font-medium", "font-large");
-          document.body.classList.add(`font-${c.fontSize}`);
+
+        async function callAI(provider, model, key, messages, signal) {
+            const config = PROVIDERS[provider];
+
+            // Gemini usa una estructura distinta
+            if (provider === 'gemini') {
+                const url = config.endpoint(key, model);
+                const geminiBody = {
+                    contents: messages.map(m => ({
+                        role: m.role === 'assistant' ? 'model' : 'user',
+                        parts: [{ text: m.content }]
+                    }))
+                };
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(geminiBody),
+                    signal: signal
+                });
+
+                const data = await res.json();
+                if (data.error) throw new Error(data.error.message);
+                return data.candidates[0].content.parts[0].text;
+            }
+
+            // Resto de APIs (OpenAI Compatible)
+            const res = await fetch(config.endpoint(), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${key}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7
+                }),
+                signal: signal
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error?.message || errorData.error || res.statusText);
+            }
+
+            const data = await res.json();
+            return data.choices[0].message.content;
         }
-        guardarConfigLocal();
-        toast("Configuración importada");
-        renderAll();
-      } catch(err) { toast("Archivo inválido"); }
-    };
-    reader.readAsText(file);
-  }
-  function resetearConfig() {
-    if (confirm("¿Restablecer configuración a valores de fábrica?")) {
-      document.body.classList.remove("light", "font-small", "font-medium", "font-large");
-      document.body.classList.add("font-medium");
-      autoSync = true;
-      notificationsEnabled = true;
-      kioscoMode = false;
-      DIAS_PROXIMO = 3;
-      document.getElementById("autoSyncToggle").checked = true;
-      document.getElementById("notificationsToggle").checked = true;
-      document.getElementById("kioscoToggle").checked = false;
-      document.getElementById("diasProximo").value = 3;
-      document.getElementById("fontSizeSelect").value = "medium";
-      document.getElementById("themeToggle").checked = false;
-      guardarConfigLocal();
-      toast("Configuración restablecida");
-      renderAll();
-    }
-  }
-  function actualizarBadgePlan() {
-    const badge = document.getElementById("planBadge");
-    const overlay = document.getElementById("lockOverlay");
-    if (overlay) overlay.style.display = appDesbloqueada ? "none" : "flex";
 
-    if (!badge) return;
-    if (!appDesbloqueada) {
-      badge.innerHTML = '<i class="fas fa-lock"></i> BLOQUEADO';
-      badge.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1))';
-      badge.style.color = '#ef4444';
-    } else if (planEstado === "token") {
-      badge.innerHTML = '<i class="fas fa-crown"></i> PRO';
-      badge.style.background = 'linear-gradient(135deg, rgba(245,175,25,0.25), rgba(241,39,17,0.12))';
-      badge.style.color = '#f5af19';
-    } else {
-      badge.innerHTML = '<i class="fas fa-gift"></i> DEMO ' + diasPruebaRestantes + 'd';
-      badge.style.background = 'linear-gradient(135deg, rgba(245,175,25,0.12), rgba(245,175,25,0.05))';
-      badge.style.color = '#f5af19';
-    }
-  }
-  async function verificarSuscripcion(uid) {
-    const suscRef = doc(db, "usuarios", uid, "suscripcion", "estado");
-    try {
-      const snap = await getDoc(suscRef);
-      const ahora = new Date();
-      if (!snap.exists()) {
-        await setDoc(suscRef, { fechaPrimerIngreso: ahora.toISOString(), estado: "prueba", fechaExpiracionToken: null });
-        appDesbloqueada = true; diasPruebaRestantes = 3; planEstado = "demo";
-        actualizarBadgePlan();
-        return;
-      }
-      const data = snap.data();
-      const fechaInicio = new Date(data.fechaPrimerIngreso);
-      const fechaFinPrueba = new Date(fechaInicio); fechaFinPrueba.setDate(fechaFinPrueba.getDate() + 3);
-      if (data.estado === "prueba" && ahora < fechaFinPrueba) {
-        appDesbloqueada = true; diasPruebaRestantes = Math.ceil((fechaFinPrueba - ahora) / 86400000); planEstado = "demo";
-        actualizarBadgePlan();
-        return;
-      }
-      if (data.estado === "prueba" && ahora >= fechaFinPrueba) {
-        appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado";
-        actualizarBadgePlan();
-        return;
-      }
-      if (data.estado === "token" && data.fechaExpiracionToken) {
-        const expToken = new Date(data.fechaExpiracionToken);
-        if (ahora < expToken) {
-          appDesbloqueada = true; diasPruebaRestantes = 0; planEstado = "token";
-          actualizarBadgePlan();
-          return;
-        } else {
-          appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado";
-          actualizarBadgePlan();
-          return;
+        function appendMessage(role, content) {
+            const div = document.createElement('div');
+            div.className = `message ${role}-message`;
+
+            if (role === 'ai') {
+                div.innerHTML = marked.parse(content);
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(content);
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => copyBtn.innerHTML = '<i class="fas fa-copy"></i>', 2000);
+                };
+                div.appendChild(copyBtn);
+            } else {
+                div.textContent = content;
+            }
+
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
-      }
-      appDesbloqueada = false; diasPruebaRestantes = 0; planEstado = "bloqueado";
-      actualizarBadgePlan();
-    } catch(e) {
-      console.error("Error verificando suscripción:", e);
-      appDesbloqueada = false; planEstado = "bloqueado"; diasPruebaRestantes = 0;
-      actualizarBadgePlan();
-    }
-  }
-  async function validarToken(token, uid) {
-    token = token.trim().toUpperCase();
-    if (!token) return { valido: false, estado: "invalido", mensaje: "Ingresá un token válido." };
-    if (!TOKENS_VALIDOS.has(token)) return { valido: false, estado: "invalido", mensaje: "Token no válido." };
-    try {
-      const tokenRef = doc(db, "tokens_usados", token);
-      const resultado = await runTransaction(db, async (transaction) => {
-        const snap = await transaction.get(tokenRef);
-        if (snap.exists()) {
-          const datos = snap.data();
-          if (datos.usadoPor !== uid) return { valido: false, estado: "invalido", mensaje: "Token ya usado en otra cuenta." };
-          const exp = new Date(datos.fechaExpiracion);
-          if (exp > new Date()) return { valido: true, estado: "activo", fechaExpiracion: datos.fechaExpiracion.split('T')[0], mensaje: "Suscripción activa" };
-          return { valido: false, estado: "expirado", mensaje: "Suscripción expirada." };
+
+        // Eventos de botones
+        document.getElementById('btn-send').addEventListener('click', () => sendMessage());
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        btnStop.addEventListener('click', () => {
+            if (abortController) {
+                abortController.abort();
+            }
+        });
+
+        // Sugerencias
+        document.querySelectorAll('.suggestion-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                sendMessage(chip.textContent);
+            });
+        });
+
+        document.getElementById('btn-clear-chat').addEventListener('click', () => {
+            if (confirm('¿Borrar todo el historial de conversación?')) {
+                currentMessages = [];
+                localStorage.removeItem('chat_history');
+                chatBox.innerHTML = '';
+                appendMessage('ai', 'Chat reiniciado. ¿En qué puedo ayudarte?');
+                messageCount = 0;
+                msgCountDisplay.textContent = '0';
+            }
+        });
+
+        document.getElementById('btn-export').addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentMessages, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href",     dataStr);
+            downloadAnchorNode.setAttribute("download", "chat_history.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+
+        // Modal Help
+        const helpModal = document.getElementById('help-modal');
+        document.getElementById('btn-help').addEventListener('click', () => helpModal.style.display = 'flex');
+        document.getElementById('close-modal').addEventListener('click', () => helpModal.style.display = 'none');
+        window.addEventListener('click', (e) => { if(e.target == helpModal) helpModal.style.display = 'none'; });
+
+        // Theme Toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.querySelector('#theme-toggle i').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        });
+
+        // Sidebar Mobile
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        function saveHistory() {
+            localStorage.setItem('chat_history', JSON.stringify(currentMessages));
         }
-        const ahora = new Date();
-        const expiracion = new Date(ahora);
-        expiracion.setDate(expiracion.getDate() + 30);
-        transaction.set(tokenRef, { token, usadoPor: uid, fechaActivacion: ahora.toISOString(), fechaExpiracion: expiracion.toISOString(), usado: true });
-        transaction.set(doc(db, "usuarios", uid, "suscripcion", "estado"), { estado: "token", fechaExpiracionToken: expiracion.toISOString() }, { merge: true });
-        return { valido: true, estado: "activo", fechaExpiracion: expiracion.toISOString().split('T')[0], mensaje: "Suscripción activada por 30 días." };
-      });
-      if (resultado.valido) {
-        appDesbloqueada = true; planEstado = "token"; diasPruebaRestantes = 0;
-        localStorage.setItem("streamflow_token", token);
-        localStorage.setItem("streamflow_token_expiracion", resultado.fechaExpiracion);
-        actualizarBadgePlan();
-      }
-      return resultado;
-    } catch(e) {
-      return { valido: false, estado: "pendiente", mensaje: "Error de conexión." };
-    }
-  }
-  async function ejecutarValidacionToken() {
-    const token = document.getElementById("tokenAcceso").value.trim().toUpperCase();
-    if (!token) { toast("Ingresá un token"); return; }
-    if (!currentUser) { toast("Iniciá sesión primero"); return; }
-    const btn = document.getElementById("btnValidarToken");
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Validando...';
-    try {
-      const resultado = await validarToken(token, currentUser.uid);
-      if (resultado.valido) {
-        document.getElementById("tokenAcceso").value = "";
-        toast("✅ Token válido. 30 días activos.");
-        document.getElementById("tokenEstado").innerHTML = `<span style="color:#10b981;">✅ Token válido - Vence: ${resultado.fechaExpiracion}</span>`;
-      } else {
-        toast(resultado.mensaje || "❌ Token inválido");
-        document.getElementById("tokenEstado").innerHTML = `<span style="color:#ef4444;">❌ ${resultado.mensaje}</span>`;
-      }
-    } catch(e) { toast("Error: " + e.message); }
-    finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-circle"></i> Validar'; }
-  }
 
-  function renderAll() {
-    renderDashboard();
-    renderTabla();
-    renderHistorial();
-    renderStats();
-    if (notificationsEnabled) mostrarAvisoVencimientos();
-  }
+        function loadHistory() {
+            if (currentMessages.length > 0) {
+                chatBox.innerHTML = '';
+                currentMessages.forEach(msg => appendMessage(msg.role === 'assistant' ? 'ai' : 'user', msg.content));
+            }
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('#theme-toggle i').className = 'fas fa-sun';
+            }
+        }
 
-  window.changePage = function(page) {
-    if (kioscoMode && page === "ajustes") {
-      const pin = prompt("Acceso restringido. Ingresá el PIN:");
-      if (pin !== pinKiosco) { toast("PIN incorrecto"); return; }
-    }
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    const targetPage = document.getElementById(`page-${page}`);
-    if (targetPage) targetPage.classList.add("active");
+        // Test de Conexión
+        document.getElementById('btn-test-conn').addEventListener('click', async () => {
+            const provider = providerSelect.value;
+            const key = apiKeyInput.value;
+            const model = modelSelect.value;
 
-    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-    const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
-    if (navItem) navItem.classList.add("active");
+            if (!key) return alert('Ingresa una API key primero.');
 
-    document.querySelector(".sidebar").classList.remove("active");
-    document.getElementById("pageTitle").textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            const btn = document.getElementById('btn-test-conn');
+            btn.textContent = 'Probando...';
+            btn.disabled = true;
 
-    if (page === "perfiles") { paginaActual = 1; renderTabla(); }
-    if (page === "historial") renderHistorial();
-    if (page === "stats") renderStats();
-  };
+            try {
+                // Test simple
+                const testMsg = [{ role: 'user', content: 'responde solo "OK"' }];
+                await callAI(provider, model, key, testMsg);
+                alert('¡Conexión Exitosa!');
+            } catch (e) {
+                alert('Error de conexión: ' + e.message);
+            } finally {
+                btn.textContent = 'Probar Conexión';
+                btn.disabled = false;
+            }
+        });
 
-  // Event Listeners
-  document.getElementById("mobileToggle")?.addEventListener("click", () => {
-    document.querySelector(".sidebar").classList.toggle("active");
-  });
-  document.querySelectorAll(".nav-item").forEach(item => { item.addEventListener("click", () => changePage(item.dataset.page)); });
-  document.getElementById("btnGuardarCompleta")?.addEventListener("click", guardarCuentaCompleta);
-  document.getElementById("btnGuardarIndividual")?.addEventListener("click", guardarPerfilIndividual);
-  document.getElementById("btnCancelarEdicion")?.addEventListener("click", () => {
-    editandoId = null;
-    document.getElementById("btnGuardarIndividual").textContent = "Guardar perfil";
-    document.getElementById("btnGuardarIndividual").onclick = guardarPerfilIndividual;
-    limpiarFormularioIndividual();
-    changePage("dashboard");
-    toast("Edición cancelada");
-  });
-  document.getElementById("btnExportar")?.addEventListener("click", exportarJSON);
-  document.getElementById("btnExportarCSV")?.addEventListener("click", exportarCSV);
-  document.getElementById("btnImportar")?.addEventListener("click", () => document.getElementById("archivoImportar").click());
-  document.getElementById("archivoImportar")?.addEventListener("change", (e) => { if (e.target.files[0]) importarJSON(e.target.files[0]); e.target.value = ""; });
-  document.getElementById("btnBorrarTodo")?.addEventListener("click", async () => { if (confirm("¿Borrar TODO?")) { perfiles = []; await saveToFirebase(); renderAll(); toast("Todo borrado"); } });
-  document.getElementById("btnResetVentas")?.addEventListener("click", resetVentas);
-  document.getElementById("quickSearchBtn")?.addEventListener("click", () => {
-    changePage('perfiles');
-    setTimeout(() => document.getElementById('buscarTexto').focus(), 100);
-  });
-
-  document.getElementById("btnLimpiarFiltros")?.addEventListener("click", () => {
-    document.getElementById("filtroPlataforma").value = "";
-    document.getElementById("filtroEstado").value = "";
-    document.getElementById("buscarTexto").value = "";
-    document.getElementById("filtroProveedor").value = "";
-    document.getElementById("fechaDesde").value = "";
-    document.getElementById("fechaHasta").value = "";
-    paginaActual = 1;
-    renderTabla();
-  });
-  document.getElementById("btnOrdenar")?.addEventListener("click", () => {
-    perfiles.sort((a,b) => {
-      if (!a.fechaVencimiento) return 1;
-      if (!b.fechaVencimiento) return -1;
-      return ordenAsc ? new Date(a.fechaVencimiento) - new Date(b.fechaVencimiento) : new Date(b.fechaVencimiento) - new Date(a.fechaVencimiento);
-    });
-    ordenAsc = !ordenAsc;
-    saveToFirebase();
-    renderTabla();
-    toast(ordenAsc ? "Orden ascendente" : "Orden descendente");
-  });
-  document.getElementById("btnPaginaAnterior")?.addEventListener("click", () => { if (paginaActual > 1) { paginaActual--; renderTabla(); } });
-  document.getElementById("btnPaginaSiguiente")?.addEventListener("click", () => { paginaActual++; renderTabla(); });
-  document.getElementById("registrosPorPagina")?.addEventListener("change", (e) => { registrosPorPagina = parseInt(e.target.value); paginaActual = 1; renderTabla(); });
-  document.getElementById("ventaConfirmar")?.addEventListener("click", confirmarVenta);
-  document.getElementById("ventaCancelar")?.addEventListener("click", () => document.getElementById("ventaModal").classList.remove("active"));
-  document.getElementById("reasignarConfirmar")?.addEventListener("click", async () => {
-    const nueva = document.getElementById("reasignarFecha").value;
-    if (!nueva) { toast("Seleccioná fecha"); return; }
-    const idx = perfiles.findIndex(p => p.id === pendingReasignarId);
-    if (idx !== -1) {
-      perfiles[idx].fechaVencimiento = nueva;
-      perfiles[idx].estado = getEstado(nueva);
-      await saveToFirebase();
-      renderAll();
-      toast("Fecha reasignada");
-    }
-    document.getElementById("reasignarModal").classList.remove("active");
-  });
-  document.getElementById("reasignarCancelar")?.addEventListener("click", () => document.getElementById("reasignarModal").classList.remove("active"));
-  document.getElementById("btnAcercaDe")?.addEventListener("click", () => document.getElementById("acercaModal").classList.add("active"));
-  document.getElementById("acercaCerrar")?.addEventListener("click", () => document.getElementById("acercaModal").classList.remove("active"));
-  document.getElementById("btnAbrirManual")?.addEventListener("click", () => changePage("ayuda"));
-  document.getElementById("btnVolverDeAyuda")?.addEventListener("click", () => changePage("ajustes"));
-  const validateAction = async (inputId, errorId) => {
-    const token = document.getElementById(inputId).value.trim().toUpperCase();
-    if (!token) { toast("Ingresá un token"); return; }
-    const res = await validarToken(token, currentUser.uid);
-    if (res.valido) {
-      document.getElementById(inputId).value = "";
-      toast("✅ Suscripción activada");
-      if (errorId) document.getElementById(errorId).innerText = "";
-    } else {
-      const msg = res.mensaje || "Token inválido";
-      toast("❌ " + msg);
-      if (errorId) document.getElementById(errorId).innerText = msg;
-    }
-  };
-
-  document.getElementById("btnValidarToken")?.addEventListener("click", () => validateAction("tokenAcceso", "tokenEstado"));
-  document.getElementById("btnLockValidate")?.addEventListener("click", () => validateAction("lockTokenInput", "lockError"));
-
-  const buyTokenAction = () => {
-    window.open("https://wa.me/5492291530515?text=" + encodeURIComponent("Hola, quiero comprar un token para StreamFlow Pro. Mi correo es " + (currentUser?.email || "usuario@ejemplo.com")), '_blank');
-  };
-  document.getElementById("btnComprarToken")?.addEventListener("click", buyTokenAction);
-  document.getElementById("btnLockBuy")?.addEventListener("click", buyTokenAction);
-  document.getElementById("lockLogout")?.addEventListener("click", async () => { await signOut(auth); });
-  document.getElementById("themeToggle")?.addEventListener("change", (e) => { if (e.target.checked) document.body.classList.add("light"); else document.body.classList.remove("light"); guardarConfigLocal(); });
-  document.getElementById("autoSyncToggle")?.addEventListener("change", (e) => { autoSync = e.target.checked; guardarConfigLocal(); });
-  document.getElementById("notificationsToggle")?.addEventListener("change", (e) => { notificationsEnabled = e.target.checked; guardarConfigLocal(); });
-  document.getElementById("kioscoToggle")?.addEventListener("change", (e) => {
-    if (e.target.checked) {
-      kioscoMode = true;
-      renderTabla();
-      guardarConfigLocal();
-    } else {
-      const pin = prompt("Ingresá el PIN para desactivar el Modo Kiosco:");
-      if (pin === pinKiosco) {
-        kioscoMode = false;
-        renderTabla();
-        guardarConfigLocal();
-      } else {
-        e.target.checked = true;
-        toast("PIN incorrecto");
-      }
-    }
-  });
-  document.getElementById("pinConfig")?.addEventListener("change", (e) => { pinKiosco = e.target.value || "1234"; guardarConfigLocal(); toast("PIN actualizado"); });
-  document.getElementById("diasProximo")?.addEventListener("change", (e) => { DIAS_PROXIMO = parseInt(e.target.value) || 3; renderAll(); guardarConfigLocal(); });
-  document.getElementById("fontSizeSelect")?.addEventListener("change", (e) => {
-    document.body.classList.remove("font-small", "font-medium", "font-large");
-    document.body.classList.add(`font-${e.target.value}`);
-    guardarConfigLocal();
-  });
-  document.getElementById("btnExportConfig")?.addEventListener("click", exportarConfig);
-  document.getElementById("btnImportConfig")?.addEventListener("click", () => document.getElementById("archivoConfig").click());
-  document.getElementById("archivoConfig")?.addEventListener("change", (e) => { if (e.target.files[0]) importarConfig(e.target.files[0]); e.target.value = ""; });
-  document.getElementById("btnResetConfig")?.addEventListener("click", resetearConfig);
-  document.getElementById("btnPrevisualizar")?.addEventListener("click", previsualizarMasiva);
-  document.getElementById("btnCargarMasivo")?.addEventListener("click", cargarMasiva);
-  document.getElementById("forgotPasswordBtn")?.addEventListener("click", () => document.getElementById("resetPasswordModal").classList.add("active"));
-  document.getElementById("btnResetSend")?.addEventListener("click", async () => {
-    const email = document.getElementById("resetEmail").value;
-    if (!email) { document.getElementById("resetMessage").innerText = "Ingresá un email"; return; }
-    try {
-      await sendPasswordResetEmail(auth, email);
-      document.getElementById("resetMessage").innerHTML = "✅ Correo enviado. Revisá tu bandeja.";
-      setTimeout(() => document.getElementById("resetPasswordModal").classList.remove("active"), 2000);
-    } catch(e) { document.getElementById("resetMessage").innerHTML = "❌ Error: " + e.message; }
-  });
-  document.getElementById("btnResetCancel")?.addEventListener("click", () => document.getElementById("resetPasswordModal").classList.remove("active"));
-  document.querySelectorAll(".carga-tab").forEach(btn => {
-    btn.addEventListener("click", function() {
-      document.querySelectorAll(".carga-tab").forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
-      const mod = this.dataset.mod;
-      document.getElementById("modo-completa").style.display = mod === "completa" ? "block" : "none";
-      document.getElementById("modo-individual").style.display = mod === "individual" ? "block" : "none";
-      document.getElementById("modo-masiva").style.display = mod === "masiva" ? "block" : "none";
-    });
-  });
-  document.getElementById("platCompleta")?.addEventListener("change", (e) => { document.getElementById("otraPlatCompletaDiv").style.display = e.target.value === "Otros" ? "block" : "none"; });
-  document.getElementById("platIndividual")?.addEventListener("change", (e) => { document.getElementById("otraPlatIndividualDiv").style.display = e.target.value === "Otros" ? "block" : "none"; });
-  document.getElementById("filtroPlataforma")?.addEventListener("change", () => { paginaActual = 1; renderTabla(); });
-  document.getElementById("filtroEstado")?.addEventListener("change", () => { paginaActual = 1; renderTabla(); });
-  document.getElementById("buscarTexto")?.addEventListener("input", () => { paginaActual = 1; renderTabla(); });
-  document.getElementById("filtroProveedor")?.addEventListener("input", () => { paginaActual = 1; renderTabla(); });
-  document.getElementById("fechaDesde")?.addEventListener("change", () => { paginaActual = 1; renderTabla(); });
-  document.getElementById("fechaHasta")?.addEventListener("change", () => { paginaActual = 1; renderTabla(); });
-  document.getElementById("historialFiltroPlataforma")?.addEventListener("change", renderHistorial);
-  document.getElementById("historialBuscar")?.addEventListener("input", renderHistorial);
-  document.getElementById("historialFechaInicio")?.addEventListener("change", renderHistorial);
-  document.getElementById("historialFechaFin")?.addEventListener("change", renderHistorial);
-
-  document.getElementById("selectAll")?.addEventListener("change", (e) => {
-    const checked = e.target.checked;
-    document.querySelectorAll(".row-select").forEach(cb => cb.checked = checked);
-    actualizarBulkUI();
-  });
-
-  document.addEventListener("change", (e) => {
-    if (e.target.classList.contains("row-select")) {
-      actualizarBulkUI();
-    }
-  });
-
-  function actualizarBulkUI() {
-    const selected = document.querySelectorAll(".row-select:checked");
-    const container = document.getElementById("bulkActions");
-    container.style.display = selected.length > 0 ? "flex" : "none";
-  }
-
-  document.getElementById("btnBulkDelete")?.addEventListener("click", async () => {
-    const selectedIds = Array.from(document.querySelectorAll(".row-select:checked")).map(cb => cb.dataset.id);
-    if (selectedIds.length === 0) return;
-    if (confirm(`¿Eliminar ${selectedIds.length} perfiles seleccionados?`)) {
-      perfiles = perfiles.filter(p => !selectedIds.includes(p.id));
-      await saveToFirebase();
-      renderAll();
-      actualizarBulkUI();
-      toast("Lote eliminado");
-    }
-  });
-
-  document.getElementById("btnBulkRenew")?.addEventListener("click", async () => {
-    const selectedIds = Array.from(document.querySelectorAll(".row-select:checked")).map(cb => cb.dataset.id);
-    if (selectedIds.length === 0) return;
-    selectedIds.forEach(id => {
-      const idx = perfiles.findIndex(p => p.id === id);
-      if (idx !== -1) {
-        let base = perfiles[idx].fechaVencimiento ? parseDate(perfiles[idx].fechaVencimiento) : new Date();
-        base.setMonth(base.getMonth() + 1);
-        perfiles[idx].fechaVencimiento = base.toISOString().split('T')[0];
-        perfiles[idx].estado = getEstado(perfiles[idx].fechaVencimiento);
-      }
-    });
-    await saveToFirebase();
-    renderAll();
-    actualizarBulkUI();
-    toast("Lote renovado");
-  });
-
-  document.getElementById("btnBulkWA")?.addEventListener("click", () => {
-    const selectedIds = Array.from(document.querySelectorAll(".row-select:checked")).map(cb => cb.dataset.id);
-    if (selectedIds.length === 0) return;
-    let mensaje = "📋 *LOTE DE CUENTAS - StreamFlow Pro*\n\n";
-    selectedIds.forEach(id => {
-      const p = perfiles.find(p => p.id === id);
-      if (p) mensaje += `📺 *${p.plataforma}* - ${p.perfilNombre}\n📧 ${p.mail} | 🔑 ${p.password}\n📅 Vence: ${p.fechaVencimiento || "-"}\n\n`;
-    });
-    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
-  });
-
-  document.querySelectorAll(".manual-section-header").forEach(header => {
-    header.addEventListener("click", function() {
-      const body = this.nextElementSibling;
-      body.classList.toggle("open");
-      const icon = this.querySelector("i");
-      if (body.classList.contains("open")) { icon.classList.remove("fa-chevron-right"); icon.classList.add("fa-chevron-down"); }
-      else { icon.classList.remove("fa-chevron-down"); icon.classList.add("fa-chevron-right"); }
-    });
-  });
-  document.getElementById("manualSearch")?.addEventListener("input", function() {
-    const query = this.value.toLowerCase();
-    document.querySelectorAll(".manual-section").forEach(section => {
-      if (query === "" || section.textContent.toLowerCase().includes(query)) { section.style.display = "block"; }
-      else { section.style.display = "none"; }
-    });
-  });
-  document.querySelectorAll("#manualQuickNav .quick-link").forEach(link => {
-    link.addEventListener("click", function() {
-      const sectionId = "manual-" + this.dataset.section;
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth" });
-        const body = section.querySelector(".manual-section-body");
-        body.classList.add("open");
-        const icon = section.querySelector(".manual-section-header i");
-        icon.classList.remove("fa-chevron-right");
-        icon.classList.add("fa-chevron-down");
-      }
-    });
-  });
-  document.getElementById("btnLogin")?.addEventListener("click", async () => {
-    try { await signInWithEmailAndPassword(auth, document.getElementById("loginEmail").value, document.getElementById("loginPassword").value); }
-    catch(e) { document.getElementById("authError").innerText = translateAuthError(e.code); }
-  });
-  document.getElementById("btnRegister")?.addEventListener("click", async () => {
-    try { await createUserWithEmailAndPassword(auth, document.getElementById("regEmail").value, document.getElementById("regPassword").value); }
-    catch(e) { document.getElementById("authError").innerText = translateAuthError(e.code); }
-  });
-  document.getElementById("btnGoogle")?.addEventListener("click", async () => {
-    try { await signInWithPopup(auth, googleProvider); }
-    catch(e) { document.getElementById("authError").innerText = translateAuthError(e.code); }
-  });
-  document.getElementById("logoutBtn")?.addEventListener("click", async () => { await signOut(auth); });
-  document.getElementById("showRegister")?.addEventListener("click", () => { document.getElementById("loginPanel").style.display = "none"; document.getElementById("registerPanel").style.display = "block"; });
-  document.getElementById("showLogin")?.addEventListener("click", () => { document.getElementById("registerPanel").style.display = "none"; document.getElementById("loginPanel").style.display = "block"; });
-  document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey) {
-      switch(e.key) {
-        case 'd': e.preventDefault(); changePage("dashboard"); break;
-        case 'n': e.preventDefault(); changePage("carga"); break;
-        case 'p': e.preventDefault(); changePage("perfiles"); break;
-        case 'h': e.preventDefault(); changePage("historial"); break;
-        case 's': e.preventDefault(); changePage("stats"); break;
-        case 'm': e.preventDefault(); changePage("ayuda"); break;
-        case 'a': e.preventDefault(); changePage("ajustes"); break;
-      }
-    }
-  });
-  cargarConfigLocal();
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      currentUser = user;
-      document.getElementById("loginContainer").style.display = "none";
-      document.getElementById("appContainer").style.display = "block";
-      document.getElementById("userEmail").textContent = user.email;
-      document.getElementById("userAvatar").textContent = user.email.charAt(0).toUpperCase();
-      await verificarSuscripcion(user.uid);
-      loadLocal();
-      await loadFromFirebase();
-      startListener(user.uid);
-      renderAll();
-      toast(`Bienvenido ${user.email}`);
-    } else {
-      currentUser = null;
-      if (unsubscribeFirestore) unsubscribeFirestore();
-      document.getElementById("loginContainer").style.display = "flex";
-      document.getElementById("appContainer").style.display = "none";
-    }
-  });
-</script>
+        init();
+    </script>
 </body>
-  </html>
+</html>
