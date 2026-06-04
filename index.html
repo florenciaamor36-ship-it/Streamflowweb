@@ -351,6 +351,80 @@
         .ai-message:hover .copy-btn {
             opacity: 1;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--sidebar-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+
+        .guide-step {
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-step h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .guide-step p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .api-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .api-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -398,6 +472,9 @@
 
             <div class="config-group">
                 <label>Herramientas</label>
+                <button class="btn-test" style="background: var(--accent-color); margin-bottom: 0.5rem;" id="btn-help">
+                    <i class="fas fa-question-circle"></i> Cómo obtener APIs
+                </button>
                 <button class="btn-test" style="background: var(--secondary-color); margin-bottom: 0.5rem;" id="btn-clear-chat">
                     <i class="fas fa-trash"></i> Borrar Chat
                 </button>
@@ -411,6 +488,49 @@
             Mensajes en esta sesión: <span id="msg-count">0</span>
         </div>
     </aside>
+
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Guía de Obtención de APIs</h3>
+                <span class="close-modal" id="close-modal">&times;</span>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fab fa-google"></i> Google Gemini</h4>
+                <p>Es la opción más fácil y gratuita. Permite modelos potentes como Gemini 2.0 Flash.</p>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="api-link">Obtener Clave en Google AI Studio &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-bolt"></i> Groq (Llama 3 / Mixtral)</h4>
+                <p>Extremadamente rápida y gratuita por ahora. Ideal para respuestas instantáneas.</p>
+                <a href="https://console.groq.com/keys" target="_blank" class="api-link">Obtener Clave en Groq Console &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-fish"></i> DeepSeek</h4>
+                <p>Modelo muy capaz y económico. Regalan 5 millones de tokens al registrarte.</p>
+                <a href="https://platform.deepseek.com/api_keys" target="_blank" class="api-link">Obtener Clave en DeepSeek Platform &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-wind"></i> Mistral AI</h4>
+                <p>Inteligencia europea de alta calidad. Tienen un plan gratuito "La Plateforme".</p>
+                <a href="https://console.mistral.ai/api-keys/" target="_blank" class="api-link">Obtener Clave en Mistral Console &rarr;</a>
+            </div>
+
+            <div class="guide-step">
+                <h4><i class="fas fa-ghost"></i> FreeTheAI</h4>
+                <p>Una alternativa que permite usar modelos como Kimi gratis. Regístrate mediante su servidor de Discord.</p>
+                <a href="https://freetheai.xyz/" target="_blank" class="api-link">Visitar FreeTheAI &rarr;</a>
+            </div>
+
+            <div class="tip" style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 0.5rem; font-size: 0.85rem;">
+                <strong>💡 Nota:</strong> Tus claves se guardan localmente en tu navegador. Nadie más tiene acceso a ellas.
+            </div>
+        </div>
+    </div>
 
     <main class="main-chat">
         <header class="chat-header">
@@ -723,6 +843,12 @@
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
         });
+
+        // Modal Help
+        const helpModal = document.getElementById('help-modal');
+        document.getElementById('btn-help').addEventListener('click', () => helpModal.style.display = 'flex');
+        document.getElementById('close-modal').addEventListener('click', () => helpModal.style.display = 'none');
+        window.addEventListener('click', (e) => { if(e.target == helpModal) helpModal.style.display = 'none'; });
 
         // Theme Toggle
         document.getElementById('theme-toggle').addEventListener('click', () => {
